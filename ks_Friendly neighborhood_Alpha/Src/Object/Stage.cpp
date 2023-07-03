@@ -20,20 +20,28 @@ Stage::~Stage(void)
 
 void Stage::Init(void)
 {
-	swingpoint_.Load();
+	std::ifstream f("Src/Json/Data.json");
+	if (!f)
+	{
+		auto l = 0.0f;
+	}
+	json_ = json::parse(f);
 
-	transform_.SetModel(
-		resourceManager_.LoadModelDuplicate(ResourceManager::SRC::STAGE));
+	json_ = json_["StageModel"]["StageMV1"];
+
+
+	//transform_.SetModel();
 	//モデルのロード
 	//モデルの設定
-	transform_.scl = { 1.0f, 1.0f, 1.0f };
-	transform_.pos = { 0.0f, 0.0f, 0.0f };
-	transform_.localPos = { -0.0f,-1500.0f,0.0f };
-	transform_.pos = VAdd(transform_.pos, transform_.localPos);
-	transform_.quaRot = Quaternion();
-	transform_.Update();
-	//当たり判定の生成
-	MakeStageCol();
+	//transform_.scl = { 1.0f, 1.0f, 1.0f };
+	//transform_.pos = { 0.0f, 0.0f, 0.0f };
+	//transform_.localPos = { -0.0f,-1500.0f,0.0f };
+	//transform_.pos = VAdd(transform_.pos, transform_.localPos);
+	//transform_.quaRot = Quaternion();
+	//transform_.Update();
+	////当たり判定の生成
+	//MakeStageCol();
+	Load();
 }
 
 void Stage::Update(void)
@@ -47,7 +55,12 @@ void Stage::Draw(void)
 	DrawFormatString(300, 300, 0xffffff, "B" + p + pp);
 	VECTOR pos{ -46.07962f, 8.936572f, 16.83637f };
 	DrawSphere3D(test, 60.0f, 20, 0xffffff, 0xffffff, true);
-	MV1DrawModel(transform_.modelId);
+
+	for (auto stagedraw : stagePiece_)
+	{
+		stagedraw.second->Draw();
+	}
+
 	auto mom = MV1GetFramePosition(transform_.modelId, 10781);
 	DrawFormatString(300, 500, 0xffffff,"%f,%f,%f", mom.x,mom.y,mom.z);
 
@@ -111,22 +124,25 @@ void Stage::MakeStageCol(void)
 
 void Stage::Load(void)
 {
-	Transform planetTrans;
-	planetTrans.SetModel(
-		resourceManager_.LoadModelDuplicate(ResourceManager::SRC::STAGE));
-	planetTrans.scl = AsoUtility::VECTOR_ONE;
-	planetTrans.quaRot = Quaternion();
-	planetTrans.pos = { 0.0f, -100.0f, 0.0f };
+	for (int model = 0; model < 20; model++)
+	{
+		//auto st = 
+		auto name = json_[model];
+		//auto nn = name.c_str();
+		//auto modelId = MV1LoadModel("Data/Model/" +nn);
+		Transform planetTrans;
+		//planetTrans.SetModel(modelId);
+		planetTrans.scl = AsoUtility::VECTOR_ONE;
+		planetTrans.quaRot = Quaternion();
+		planetTrans.pos = { 0.0f, -100.0f, 0.0f };
+		StagePiece* stagepiece = new StagePiece(static_cast<STAGE_NUM>(model), planetTrans);
+		// 当たり判定(コライダ)作成
+		planetTrans.MakeStageCollider(Collider::TYPE::STAGE);
+		stagePiece_.emplace(static_cast<STAGE_NUM>(model), stagepiece);
+		planetTrans.Update();
 
-	// 当たり判定(コライダ)作成
-	planetTrans.MakeCollider(Collider::TYPE::STAGE);
+	}
 
-	planetTrans.Update();
-
-	STAGE_NUM num = STAGE_NUM::S1_1;
-	StagePiece* stagePiece = new StagePiece(num,  planetTrans);
-	//stagePiece_->Init();
-	stagePiece_.emplace(num, stagePiece);
 
 
 }

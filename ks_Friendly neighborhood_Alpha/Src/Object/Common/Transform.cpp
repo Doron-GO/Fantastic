@@ -119,6 +119,15 @@ void Transform::MakeCollider2(Collider::TYPE type,int frameIndex)
 
 }
 
+void Transform::MakeStageCollider(Collider::TYPE type)
+{
+	if (modelId == -1){return;}
+
+	collider = new Collider(type, modelId);
+	int ret = MV1SetupCollInfo(modelId, -1, 40, 10, 40);
+
+}
+
 VECTOR Transform::GetForward(void) const
 {
 	return GetDir(AsoUtility::DIR_F);

@@ -1,9 +1,9 @@
 #include "SwingPoint.h"
 
-
-SwingPoint::SwingPoint()
+SwingPoint::SwingPoint(Stage::STAGE_NUM num, Transform transform)
 {
-	Load();
+	num_ = num;
+	transform_ = transform;
 }
 
 SwingPoint::~SwingPoint()
@@ -12,15 +12,9 @@ SwingPoint::~SwingPoint()
 
 void SwingPoint::Load(void)
 {
-	std::ifstream f("Src/Json/Data.json");
-	if (!f)
-	{
-		auto l = 0.0f;
-	}
-	json_ = json::parse(f);
+}
 
-	json_ = json_["Building1"]["Bldg1"];
-
-	
-
+void SwingPoint::Draw(void)
+{
+	MV1DrawModel(transform_.modelId);
 }

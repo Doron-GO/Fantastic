@@ -2,11 +2,15 @@
 #include "Common/Transform.h"
 #include<vector>
 #include<map>
-#include"SwingPoint.h";
-#include"StagePiece.h"
+#include<fstream>
+#include"../Json/json.hpp"
+
+using json = nlohmann::json;
+
 class ResourceManager;
 class Player;
 class SwingPoint;
+class StagePiece;
 
 class Stage 
 {
@@ -56,22 +60,22 @@ private:
 	//ステージの当たり判定生成
 	void MakeStageCol(void);
 
-	std::map<STAGE_NUM, StagePiece*> stagePiece_;
-
 	//モデルの読み込み
 	ResourceManager& resourceManager_;
 
-	SwingPoint swingpoint_;
 
 	// モデル制御の基本情報
 	Transform transform_;
 
-	std::vector<int> frameIndex_;
+	std::map < STAGE_NUM, std::vector < std::pair <VECTOR, VECTOR>>> swingPoint_;
+	std::map < STAGE_NUM, StagePiece* > stagePiece_;
 
 	VECTOR test;
 	//ポリゴン情報格納先
 	MV1_REF_POLYGONLIST polygonList_[2];
 
 	int modelH_[2];
+
+	json json_;
 };
 

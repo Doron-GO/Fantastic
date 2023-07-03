@@ -2,23 +2,26 @@
 #include<DxLib.h>
 #include<map>
 #include<string>
-#include<list>
-#include<fstream>
 #include"../Json/json.hpp"
-using json = nlohmann::json;
+#include"Common/Transform.h"
+#include"Stage.h"
+
 
 class SwingPoint
 {
 public:
-	SwingPoint();
+	SwingPoint(Stage::STAGE_NUM num,Transform transform);
 	~SwingPoint();
 
 	void Load(void);
+	void Draw(void);
 
 private:
 
-	std::map < std::string, std::list < std::pair <VECTOR,VECTOR>>> swingPoint_;
-	
+	//std::map < std::string, std::list < std::pair <VECTOR,VECTOR>>> swingPoint_;
+	Transform transform_;
+	Stage::STAGE_NUM num_;
+
 	json json_;
 
 };

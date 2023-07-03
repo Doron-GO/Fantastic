@@ -1,6 +1,7 @@
 #pragma once
 #include"Stage.h"
 #include"Common/Transform.h"
+class Stage;
 class StagePiece
 {
 public:
@@ -14,7 +15,6 @@ public:
 private:
 
 	Transform transform_;
-
 	Stage::STAGE_NUM num_;
 
 };

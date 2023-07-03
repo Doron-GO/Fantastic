@@ -466,10 +466,8 @@ Quaternion Quaternion::FromToRotation(VECTOR fromDir, VECTOR toDir)
 			axis = AsoUtility::DIR_U;
 		}
 	}
-
 	axis = AsoUtility::VNormalize(axis);
 	return Quaternion::AngleAxis(AsoUtility::Deg2RadD(angle), axis);
-
 }
 
 Quaternion Quaternion::RotateTowards(const Quaternion& from, const Quaternion& to, float maxDegreesDelta)

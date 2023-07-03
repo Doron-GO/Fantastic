@@ -2,7 +2,6 @@
 #include <map>
 #include <string>
 #include "Resource.h"
-
 #define lpResourceMng  ResourceManager::GetInstance()
 
 class ResourceManager
@@ -20,6 +19,7 @@ public:
 		PLAYER,
 		PLAYER_SHADOW
 	};
+
 
 	// 明示的にインステンスを生成する
 	static void CreateInstance(void);

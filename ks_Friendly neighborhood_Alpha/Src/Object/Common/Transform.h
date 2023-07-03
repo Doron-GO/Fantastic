@@ -56,6 +56,7 @@ public:
 	void SetModel(int modelHId);
 	void MakeCollider(Collider::TYPE type, std::map<int, int> col,int idx);
 	void MakeCollider2(Collider::TYPE type,int frameindex);
+	void MakeStageCollider(Collider::TYPE type);
 
 	// ‘O•û•ûŒü‚ðŽæ“¾
 	VECTOR GetForward(void) const;

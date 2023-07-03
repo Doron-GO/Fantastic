@@ -15,6 +15,7 @@ StagePiece::~StagePiece(void)
 
 void StagePiece::Draw(void)
 {
+	MV1DrawModel(transform_.modelId);
 }
 
 Transform* StagePiece::GetTransform(void)
