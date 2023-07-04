@@ -8,6 +8,7 @@
 #include "../Object/Common/Collider.h"
 #include "../Object/SkyDome.h"
 #include "../Object/Stage.h"
+#include "../Object/StagePiece.h"
 #include "../Object/Player.h"
 #include "GameScene.h"
 #include "../Object/Common/Grid.h"
@@ -32,7 +33,14 @@ void GameScene::Init(void)
 	stage_->Init();
 
 	player_->Init();
-	player_->AddCollider(stage_->GetTransform(0)->collider);
+
+	for (int i =1; i<21;i++ )
+	{ 
+		auto p = stage_->GetPiece();
+		auto oo = p[static_cast<Stage::STAGE_NUM>(i)];
+		player_->AddCollider(oo->GetTransform()->collider);
+	}
+
 
 	skyDome_->Init();
 

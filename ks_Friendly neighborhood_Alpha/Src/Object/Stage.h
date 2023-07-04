@@ -49,6 +49,7 @@ public:
 	void Draw(void);
 	void Release(void);
 
+	 std::map< STAGE_NUM, StagePiece* >  GetPiece(void);
 
 	int GetModelId(void) const;
 	const Transform* GetTransform(int num);
@@ -68,7 +69,9 @@ private:
 	Transform transform_;
 
 	std::map < STAGE_NUM, std::vector < std::pair <VECTOR, VECTOR>>> swingPoint_;
+
 	std::map < STAGE_NUM, StagePiece* > stagePiece_;
+	//std::vector <int> stegeCol_;
 
 	VECTOR test;
 	//ƒ|ƒŠƒSƒ“î•ñŠi”[æ

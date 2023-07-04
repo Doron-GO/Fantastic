@@ -40,7 +40,7 @@ void ResourceManager::Init(void)
 	resouceMap_.emplace(SRC::STAGE, res);
 
 	//ÉvÉåÉCÉÑÅ[
-	res = Resource(Resource::TYPE::MODEL, Application::PATH_MODEL + "Player/spider-man.mv1");
+	res = Resource(Resource::TYPE::MODEL, Application::PATH_MODEL + "Player/ps4spider.mv1");
 	resouceMap_.emplace(SRC::PLAYER, res);
 
 }

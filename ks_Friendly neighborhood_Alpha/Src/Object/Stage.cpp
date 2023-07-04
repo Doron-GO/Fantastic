@@ -56,13 +56,13 @@ void Stage::Draw(void)
 	VECTOR pos{ -46.07962f, 8.936572f, 16.83637f };
 	DrawSphere3D(test, 60.0f, 20, 0xffffff, 0xffffff, true);
 
-	for (auto stagedraw : stagePiece_)
+	for (const auto stagedraw : stagePiece_)
 	{
 		stagedraw.second->Draw();
 	}
 
-	auto mom = MV1GetFramePosition(transform_.modelId, 10781);
-	DrawFormatString(300, 500, 0xffffff,"%f,%f,%f", mom.x,mom.y,mom.z);
+	//auto mom = MV1GetFramePosition(transform_.modelId, 10781);
+	//DrawFormatString(300, 500, 0xffffff,"%f,%f,%f", mom.x,mom.y,mom.z);
 
 }
 
@@ -70,6 +70,12 @@ void Stage::Release(void)
 {
 	MV1DeleteModel(transform_.modelId);
 }
+
+ std::map<Stage::STAGE_NUM, StagePiece*> Stage:: GetPiece(void)
+{
+	return  stagePiece_;
+}
+
 
 int Stage::GetModelId(void) const
 {
@@ -124,23 +130,30 @@ void Stage::MakeStageCol(void)
 
 void Stage::Load(void)
 {
-	for (int model = 0; model < 20; model++)
+	for (int model = 1; model <= 20; model++)
 	{
-		//auto st = 
-		auto name = json_[model];
-		//auto nn = name.c_str();
-		//auto modelId = MV1LoadModel("Data/Model/" +nn);
-		Transform planetTrans;
-		//planetTrans.SetModel(modelId);
-		planetTrans.scl = AsoUtility::VECTOR_ONE;
-		planetTrans.quaRot = Quaternion();
-		planetTrans.pos = { 0.0f, -100.0f, 0.0f };
-		StagePiece* stagepiece = new StagePiece(static_cast<STAGE_NUM>(model), planetTrans);
-		// 当たり判定(コライダ)作成
-		planetTrans.MakeStageCollider(Collider::TYPE::STAGE);
-		stagePiece_.emplace(static_cast<STAGE_NUM>(model), stagepiece);
-		planetTrans.Update();
+		std::string st = std::to_string(model);
+		const char* i = st.c_str();
+		std::string name = json_.at(i).get<std::string>();
+		std::string ss = "Data/Model/" + name;
 
+		//auto modelId = MV1LoadModel("Data/Model/Stage/B34.mv1");
+		auto modelId = MV1LoadModel(ss.c_str());
+		Transform stageTrans;
+		stageTrans.SetModel(modelId);
+		stageTrans.scl = AsoUtility::VECTOR_ONE;
+		stageTrans.quaRot = Quaternion();
+		stageTrans.pos = { 0.0f, 0.0f, 0.0f };
+		stageTrans.localPos = { 0.0f, -1500.0f, 0.0f };
+		stageTrans.pos = VAdd(stageTrans.pos, stageTrans.localPos);
+		stageTrans.Update();
+		// 当たり判定(コライダ)作成
+		stageTrans.MakeStageCollider(Collider::TYPE::STAGE);
+
+		StagePiece* stagepiece = new StagePiece(static_cast<STAGE_NUM>(model), stageTrans);
+
+
+		stagePiece_.emplace(static_cast<STAGE_NUM>(model), stagepiece);
 	}
 
 
