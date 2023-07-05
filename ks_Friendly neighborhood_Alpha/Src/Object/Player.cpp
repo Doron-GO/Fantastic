@@ -41,7 +41,7 @@ void Player::Init(void)
 	transform_.pos = { 120.0f, 120.0f, 100.0f };
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal =
-		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(180.0f), 0.0f });
+		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f });
 	transform_.Update();
 	
 	capsule_ = std::make_unique<Capsule>(&transform_);
@@ -254,7 +254,7 @@ void Player::AnimationInit(void)
 
 	animationController_ = new AnimationController(transform_.modelId);
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "RUN.mv1", 30.0f);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "FastRun.mv1", 30.0f);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Jump.mv1", 24.0f);
 	animationController_->Add((int)ANIM_TYPE::SWING, path + "Start_Swing.mv1", 20.0f);
 	animationController_->Play((int)ANIM_TYPE::IDLE);
