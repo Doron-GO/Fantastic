@@ -254,9 +254,9 @@ void Player::AnimationInit(void)
 
 	animationController_ = new AnimationController(transform_.modelId);
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
-	animationController_->Add((int)ANIM_TYPE::RUN, path + "FastRun.mv1", 30.0f);
+	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run1.mv1", 30.0f);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Gwen_Jump.mv1", 24.0f);
-	animationController_->Add((int)ANIM_TYPE::SWING, path + "Start_Swing.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::SWING, path + "Swing1.mv1", 20.0f);
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
 }
