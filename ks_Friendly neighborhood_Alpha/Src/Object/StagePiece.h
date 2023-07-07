@@ -1,5 +1,6 @@
 #pragma once
 #include"Stage.h"
+#include<vector>
 #include"Common/Transform.h"
 class Stage;
 class StagePiece
