@@ -37,7 +37,7 @@ void GameScene::Init(void)
 	for (int i =1; i<21;i++ )
 	{ 
 		auto p = stage_->GetPiece();
-		auto oo = p[static_cast<Stage::STAGE_NUM>(i)];
+		auto oo = p[static_cast<Stage::STAGE_NUM>(i-1)];
 		player_->AddCollider(oo->GetTransform()->collider);
 	}
 

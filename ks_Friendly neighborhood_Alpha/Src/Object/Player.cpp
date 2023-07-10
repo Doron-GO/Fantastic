@@ -64,7 +64,7 @@ void Player::Update(float delta, VECTOR pos)
 
 	//controller_->Update();
 	(this->*phase_)(delta);
-	//CalcGravityPow();
+	CalcGravityPow();
 	Collision();
 	ProcessMove();
 	ProcessJump();
@@ -98,11 +98,11 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 	endPos_ = end;
 	stringV_ = VSub(transform_.pos,endPos_);//支点から錘へののベクトル
 	length_ = Magnitude(stringV_);				//ヒモの長さ
-	auto x = Dot(gravityNorm_, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
-	yNorm_ = stringV_ - gravityNorm_ * x;//錘から重力軸までのベクトル
-	auto y = Magnitude(yNorm_);					//錘から重力軸までの正規化済みベクトル
-	yNorm_ = Normalized(yNorm_);
-	theta_ = atan2f(y, x);				//支点の近接二辺のそれぞれの大きさを使用して角度を出す
+	//auto x = Dot(gravityNorm_, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
+	//yNorm_ = stringV_ - gravityNorm_ * x;//錘から重力軸までのベクトル
+	//auto y = Magnitude(yNorm_);					//錘から重力軸までの正規化済みベクトル
+	//yNorm_ = Normalized(yNorm_);
+	//theta_ = atan2f(y, x);				//支点の近接二辺のそれぞれの大きさを使用して角度を出す
 
 
 	//試しに変えている
@@ -111,12 +111,10 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 	swingGravityNorm = Normalized(swingGravity);
 	//swingGravityNorm = VECTOR{ 1.0f,jk.y,0.2f };
 
-
 	auto x2 = Dot(swingGravityNorm, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
 	swingYnorm_ = stringV_ - swingGravityNorm * x2;//錘から重力軸までのベクトル
 	auto y2 = Magnitude(swingYnorm_);				//錘から重力軸までの正規化済みベクトル
 	swingYnorm_=Normalized(swingYnorm_);
-	
 	theta_ = atan2f(y2, x2);				//支点の近接二辺のそれぞれの大きさを使用して角度を出す
 	auto gravity_ = VScale(swingGravityNorm, 3500.0f);
 	
@@ -173,13 +171,10 @@ void Player::Swing(float delta)
 	//transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(gravity_) + length_ * sin(theta_) * yNorm_;
 
 
-	//stringV_ = VSub(transform_.pos, endPos_);
-	//auto stNorm = Normalized(stringV_);
-	//auto dot = Dot(movePow_, stNorm);
-	//auto stDot1= dot* stNorm;
-	//auto stDot2 = stDot1 * (-2.0f);
-	//movePow_ = stDot2;
-	//transform_.pos = movedPos_;
+	animationController_->Play(static_cast<int>(ANIM_TYPE::SWING), true, 50.0f, 62.0f);
+
+	animationController_->SetEndLoop(50.0f, 55.0f, 3.0f);
+
 
 	//カメラ向いている方向に対しての前後左右の重力を傾ける
 	Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotOutX();
@@ -491,8 +486,10 @@ void Player::CollisionGravity(void)
 	//足元のちょっと下の座標
 	auto gravHitDown = VAdd(movedPos_, VScale(dirGravity, CheckPow));
 
+
 	for (auto c : mColliders)
 	{
+
 		//地面(ステージモデル)との衝突				　↓始点		↓終点
 		auto hit = MV1CollCheck_Line(c->modelId_, -1, gravHitUp, gravHitDown);
 		//落下時だけ足元の当たり判定

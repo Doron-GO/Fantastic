@@ -93,39 +93,21 @@ void Transform::SetModel(int model)
 
 void Transform::MakeCollider(Collider::TYPE type,std::map<int, int> col,int idx)
 {
-
 	if (modelId == -1)
 	{
 		return;
 	}
-
-	collider = new Collider(type, modelId);
+	//collider = new Collider(type, modelId);
 	//int ret = MV1SetupCollInfo(modelId, -1,1,1,1);
-
-	
 	int ret = MV1SetupCollInfo(modelId, col[idx]);
 }
 
-void Transform::MakeCollider2(Collider::TYPE type,int frameIndex)
-{
 
-	if (modelId == -1)
-	{
-		return;
-	}
-
-	collider = new Collider(type, modelId);
-	int ret = MV1SetupCollInfo(modelId, frameIndex,40,10,40);
-
-}
-
-void Transform::MakeStageCollider(Collider::TYPE type)
+void Transform::MakeStageCollider(Collider::TYPE type,int num)
 {
 	if (modelId == -1){return;}
-
-	collider = new Collider(type, modelId);
+	collider = new Collider(type, modelId, num);
 	int ret = MV1SetupCollInfo(modelId, -1, 40, 10, 40);
-
 }
 
 VECTOR Transform::GetForward(void) const

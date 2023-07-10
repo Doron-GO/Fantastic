@@ -1,5 +1,4 @@
 #pragma once
-#include<map>
 class Collider
 {
 public :
@@ -11,7 +10,7 @@ public :
 	};
 
 	// コンストラクタ
-	Collider(TYPE type, int modelId);
+	Collider(TYPE type, int modelId,int num);
 
 	// デストラクタ
 	~Collider(void);
@@ -21,6 +20,8 @@ public :
 
 	// モデルのハンドルID
 	int modelId_;
-	std::map<int, int> col_;
+
+	// 分割されたステージの何番目か
+	int num_;
 };
 

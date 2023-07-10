@@ -72,8 +72,8 @@ private:
 	void CalcGravityPow(void);
 	void Collision(void);
 	void CollisionCupsule(void);
-	void CollisionSphere(void);
-	void CollisionGravity(void);
+	void CollisionSphere(void); //壁との当たり判定
+	void CollisionGravity(void); 
 
 	void SetGoalRotate(float rotRad);	//	到達したい角度を設定
 	void SetGoalRotate2(VECTOR vec);	//	到達したい角度を設定
@@ -89,10 +89,10 @@ private:
 	float stepJump_;
 	VECTOR movedPos_;	//移動後の座標
 	VECTOR jumpPow_;		//ジャンプ量
-
 	float jumpDot_;
-
 	Camera* camera_;
+
+
 
 	VECTOR movePow_;
 	VECTOR endPos_;	//支点の座標

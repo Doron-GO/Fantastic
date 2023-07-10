@@ -58,8 +58,6 @@ public:
 	std::map<int, int> col2_;
 
 private:	
-	//ステージの当たり判定生成
-	void MakeStageCol(void);
 
 	//モデルの読み込み
 	ResourceManager& resourceManager_;
