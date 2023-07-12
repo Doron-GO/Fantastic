@@ -66,8 +66,6 @@ private:
 	// ƒ‚ƒfƒ‹§Œä‚ÌŠî–{î•ñ
 	Transform transform_;
 
-	std::map < STAGE_NUM, std::vector < std::pair <VECTOR, VECTOR>>> swingPoint_;
-
 	std::map < STAGE_NUM, StagePiece* > stagePiece_;
 	//std::vector <int> stegeCol_;
 
