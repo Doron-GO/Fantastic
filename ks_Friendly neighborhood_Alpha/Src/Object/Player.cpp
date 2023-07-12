@@ -477,7 +477,7 @@ void Player::CollisionGravity(void)
 
 	//ë´å≥Å@movePow
 	float CheckPow = 10.0f;
-
+	
 	//ë´å≥ÇÃÇøÇÂÇ¡Ç∆è„ÇÃç¿ïW
 	auto gravHitUp = VAdd(movedPos_, VScale(dirUpGravity, 25.0f));
 	gravHitUp = VAdd(gravHitUp, VScale(dirUpGravity, CheckPow * 2.0f));

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Stage.h"
 #include"StagePiece.h"
+#include<fstream>
 
 
 Stage::Stage()
