@@ -25,7 +25,7 @@ public:
 	static constexpr float TIME_ROT = 1.0f;
 
 	//ジャンプ量
-	static constexpr float POW_JUMP = 60.0f;
+	static constexpr float POW_JUMP = 50.0f;
 
 	//ジャンプ受付時間
 	static constexpr float TIME_JUMP_IN = 0.5f;
@@ -46,30 +46,25 @@ public:
 	~Player(void);
 
 	void Init(void);
-	void Update(float delta ,VECTOR pos);
+	void Update(float delta,VECTOR pos);
 	void SetFollowTarget(Camera* target);
 	void AddCollider(Collider* collider);
-
 	void Draw(void);
-	void Release(void);
-
+	int CheckSection(void);
+	void SetEndPpos(VECTOR pos);
 	Transform* GetTransform(void);
 	Quaternion quaPaddir;
 private:
 
 	void AnimationInit(void);	//アニメーション読み込み
-
 	void DrawDebug(void);	//デバッグ表示
-
 	void UpdatePendulum(float delta);
 	void UpdateGround(float delta);
-
 	bool Start(VECTOR pos,VECTOR end);
 	void Swing(float delta);	//振り子の計算を行う
-
+	void Flying(float delta);
 	void ProcessMove(void);
 	void ProcessJump(void);
-
 	void CalcGravityPow(void);
 	void Collision(void);
 	void CollisionCupsule(void);
@@ -93,8 +88,8 @@ private:
 	float jumpDot_;
 	Camera* camera_;
 
-
-
+	float sectionPos[2];
+	int tttt;
 	VECTOR movePow_;
 	VECTOR endPos_;	//支点の座標
 	VECTOR stringV_;//支点からプレイヤーへのベクトル
@@ -115,6 +110,7 @@ private:
 	float xVecX, xVecY;
 
 	VECTOR dir_;
+	VECTOR dir_2;
 
 	float gMag_;		//重力の大きさ
 	float omega_;			//角速度
@@ -122,7 +118,6 @@ private:
 	bool isStarted_;		//開始済みか
 	float theta_;
 
-	//GravityManager& gravityManager_;	//重力制御
 	AnimationController* animationController_;	//プレイヤーのアニメーション制御
 	//std::unique_ptr<Controller> controller_;	//操作
 	Transform transform_;	//プレイヤーのモデル制御

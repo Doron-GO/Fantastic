@@ -73,15 +73,16 @@ void GameScene::Update(void)
 
 	}
 
+	player_->CheckSection();
 	auto& ins = InputManager::GetInstance();
 	if (ins.IsNew(KEY_INPUT_SPACE))
 	{
 		lpSceneMng.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-	swi_->SetSwingPoint(player_->GetTransform()->pos, 1);
-	player_->Update(SceneManager::GetInstance().GetDeltaTime(),
-		swi_->SetSwingPoint(player_->GetTransform()->pos, 1)
-	);
+	auto p= swi_->SetSwingPoint(player_->GetTransform()->pos,player_->CheckSection()); 
+
+	//player_->SetEndPpos(p);
+	player_->Update(SceneManager::GetInstance().GetDeltaTime(), SceneManager::GetInstance().GetCamera()->GetDir());
 
 	stage_->Update();
 
@@ -113,11 +114,7 @@ void GameScene::DrawDebug(void)
 
 void GameScene::Release(void)
 {	
-	player_->Release();
 	delete player_;
-
-	skyDome_->Release();
-	stage_->Release();
 
 }
 

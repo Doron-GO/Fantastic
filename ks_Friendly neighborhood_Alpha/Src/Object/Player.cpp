@@ -30,7 +30,7 @@ Player::~Player(void)
 void Player::Init(void)
 {
 		//controller_ = std::make_unique<Keybord>();
-	
+	tttt = 0;
 
 	//ÉÇÉfÉãèÓïÒÇäiî[
 	transform_.SetModel(
@@ -51,6 +51,8 @@ void Player::Init(void)
 
 	endPos_ = { 4200.0f,2200.0f,1200.0f };
 
+	sectionPos[0] = 25600.0f;
+	sectionPos[1] = 51071.0f;
 
 	// ÉAÉjÉÅÅ[ÉVÉáÉìÇÃê›íË
 	AnimationInit();
@@ -61,19 +63,19 @@ void Player::Update(float delta, VECTOR pos)
 {	
 	gravityNorm_ = Normalized(gravity_);		//èdóÕÇÃê≥ãKâªÉxÉNÉgÉã
 	swingGravityNorm = Normalized(swingGravity);
-
+	dir_ = pos;
+	dir_=Normalized(dir_);
 	//controller_->Update();
 	(this->*phase_)(delta);
 	CalcGravityPow();
 	Collision();
 	ProcessMove();
 	ProcessJump();
-	endPos_ = pos;
 
 	transform_.Update();
 	//endPos_= swingPoint_.SetSwingPoint(transform_.pos, 1);
 	animationController_->Update();
-
+	CheckSection();
 }
 
 void Player::UpdatePendulum(float delta)
@@ -121,7 +123,7 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 	auto gravity_ = VScale(swingGravityNorm, 3500.0f);
 	
 	gMag_ = Magnitude(gravity_);
-	omega_ = -1.0f;									//äpë¨ìxÇÕ0Ç≈èâä˙âª
+	omega_ = 0.0f;									//äpë¨ìxÇÕ0Ç≈èâä˙âª
 
 	isStarted_ = true;
 	transform_.Update();
@@ -162,8 +164,8 @@ void Player::Swing(float delta)
 	auto k4a = delta * coe * sin(theta_ + m3a);
 	auto m4a = delta * (omega_ + k3a);
 
-	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) / 6.0f;		//äpë¨ìxÇÃâ¡éZ
-	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 6.0f;		//ÇöäpìxÇÃâ¡éZ
+	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /3.0f;		//äpë¨ìxÇÃâ¡éZ
+	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 3.0f;		//ÇöäpìxÇÃâ¡éZ
 
 	auto stv = Normalized(stringV_);
 	auto stv2 = Normalized(gravity_);
@@ -191,9 +193,27 @@ void Player::Swing(float delta)
 	}
 	if (CheckHitKey(KEY_INPUT_P))
 	{
-		//phase_ = &Player::Flying;
-		dir_ = transform_.GetForward();
+		dir_2 = Normalized( dir_);
+		phase_ = &Player::Flying;
 	}
+
+}
+
+void Player::Flying(float delta)
+{
+	auto speed = 4.0f;
+	VECTOR dir = dir_2;
+	dir.y = 1.0f;
+	auto movePow = VScale(dir, (40.0f));
+
+	//mTransform.pos = VAdd(mTransform.pos, movePow2);
+
+  auto	grav = 9.81f / 40.0f;
+
+	transform_.pos = VAdd(transform_.pos, movePow);
+
+
+	auto graNorm = Normalized(gravity_);
 
 }
 
@@ -217,6 +237,8 @@ void Player::Draw(void)
 
 	DrawFormatString(50, 530, 0xffffff, "mJumpPow=%f", jumpPow_.y);
 	DrawFormatString(50, 470, 0xffffff, "step:%f", stepJump_);
+	DrawFormatString(50, 200, 0xffffff, "%f,%f,%f", endPos_.x, endPos_.y, endPos_.z);
+	DrawFormatString(50, 220, 0xffffff, "%d", tttt);
 	DrawFormatString(50, 550, 0xffffff, "movePow_:%f,%f,%f", movePow_.x, movePow_.y, movePow_.z);
 	VECTOR klk = { 4200.0f,2200.0f,1200.0f };
 
@@ -226,11 +248,44 @@ void Player::Draw(void)
 	DrawDebug();
 }
 
-void Player::Release(void)
+int Player::CheckSection(void)
 {
-	//ÉÇÉfÉãÇÃâï˙
-	MV1DeleteModel(transform_.modelId);
+
+
+	if (transform_.pos.x <= sectionPos[0] && transform_.pos.z <= sectionPos[0])
+	{
+		//19
+		tttt = 1;
+	}
+	if (sectionPos[0]<=transform_.pos.x&&transform_.pos.x <= sectionPos[1] &&
+		transform_.pos.z <= sectionPos[0])
+	{
+		//18
+		tttt = 2;
+
+	}
+	if (transform_.pos.x <= sectionPos[0] &&
+		sectionPos[0]<=transform_.pos.z&&transform_.pos.z <= sectionPos[1])
+	{
+		//14
+		tttt = 2;
+
+	}
+	if (sectionPos[0]<=transform_.pos.x&&transform_.pos.x <= sectionPos[1] &&
+		sectionPos[0]<= transform_.pos.z && transform_.pos.z <= sectionPos[1])
+	{
+		//13
+		tttt = 1;
+
+	}
+	return tttt;
 }
+
+void Player::SetEndPpos(VECTOR pos)
+{
+	endPos_ = pos;
+}
+
 
 Transform* Player::GetTransform(void)
 {
@@ -602,3 +657,6 @@ VECTOR operator-(const VECTOR& v)
 {
 	return { -v.x,-v.y ,-v.z };
 }
+
+
+

@@ -63,6 +63,9 @@ void Stage::Draw(void)
 	//}
 
 	stagePiece_[STAGE_NUM::S4_5]->Draw();
+	/*stagePiece_[STAGE_NUM::S4_4]->Draw();
+	stagePiece_[STAGE_NUM::S3_4]->Draw();
+	stagePiece_[STAGE_NUM::S3_5]->Draw();*/
 
 }
 

@@ -31,13 +31,13 @@ void SwingPoint::Load(void)
 		std::string Buildings = "Buildings" + tsn;
 		auto Buildings_ = json_[Buildings];
 		int totalBldgNum = Buildings_["TotalBldgNum"].get<int>();
-
+		BuildingList_.clear();
 		for (int idx = 1; idx <= totalBldgNum; idx++)
 		{
 			std::string st = std::to_string(idx);
 			std::string BldgNum = "Bldg" + st;
 			auto Bldg = Buildings_[BldgNum];
-			int VecNum = Bldg["VECTORTotalNum"].get<int>();
+			//int VecNum = Bldg["VECTORTotalNum"].get<int>();
 			int PointTotalNum = Bldg["PointTotalNum"];
 			std::string PointTotalNumSt = std::to_string(PointTotalNum);
 
@@ -48,6 +48,7 @@ void SwingPoint::Load(void)
 				std::string num = std::to_string(idx2);
 				std::string Side = "Side" + num;
 				auto sideObj = Bldg[Side];
+				int VecNum = sideObj["VECTORTotalNum"].get<int>();
 
 				auto norm = sideObj["Norm"];
 
@@ -68,7 +69,6 @@ void SwingPoint::Load(void)
 					if (Ptl == VecNum)
 					{
 						swingPoint_[static_cast<SIDE>(idx2 - 1)] = p;
-
 					}
 				}
 			}
@@ -82,10 +82,10 @@ void SwingPoint::Load(void)
 const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 {
 	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
-	auto swingSide = BuildingList[1];
-	auto swingPointOptions = swingSide[static_cast<SIDE>(0)];
+	auto swingSide = BuildingList[2];
+	auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
 
-	VECTOR swingPoint = swingPointOptions[0];
+	VECTOR swingPoint = swingPointOptions[2];
 	return swingPoint;
 }
 
