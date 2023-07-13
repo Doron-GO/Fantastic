@@ -5,7 +5,6 @@
 class SceneManager;
 class Grid;
 class SkyDome;
-class SwingPoint;
 
 class TitleScene 
 	: public SceneBase
@@ -33,6 +32,5 @@ private:
 
 	// îwåi
 	std::unique_ptr<SkyDome> skyDome_;
-	std::unique_ptr<SwingPoint> swi_;
 
 };

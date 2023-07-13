@@ -12,6 +12,8 @@
 #include "../Object/Player.h"
 #include "GameScene.h"
 #include "../Object/Common/Grid.h"
+#include "../Object/SwingPoint.h"
+
 GameScene::GameScene(void)
 	:SceneBase()
 {
@@ -29,8 +31,10 @@ void GameScene::Init(void)
 	skyDome_ = std::make_unique<SkyDome>();
 	// ƒOƒŠƒbƒhü
 	grid_ = std::make_unique<Grid>();
+	swi_ =std::make_unique<SwingPoint>();
 
 	stage_->Init();
+	swi_->Load();
 
 	player_->Init();
 
@@ -74,10 +78,12 @@ void GameScene::Update(void)
 	{
 		lpSceneMng.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-
+	swi_->SetSwingPoint(player_->GetTransform()->pos, 1);
+	player_->Update(SceneManager::GetInstance().GetDeltaTime(),
+		swi_->SetSwingPoint(player_->GetTransform()->pos, 1)
+	);
 
 	stage_->Update();
-	player_->Update(SceneManager::GetInstance().GetDeltaTime(), SceneManager::GetInstance().GetCamera()->GetPos());
 
 	skyDome_->Update();
 

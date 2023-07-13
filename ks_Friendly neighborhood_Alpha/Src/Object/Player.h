@@ -4,6 +4,7 @@
 #include <DxLib.h>
 #include"../Object/Stage.h"
 #include "../Object/Common/Transform.h"
+#include"SwingPoint.h"
 class AnimationController;
 class ResourceManager;
 class GravityManager;
@@ -110,6 +111,7 @@ private:
 	std::vector<Collider*>mColliders;
 	std::unique_ptr<Capsule>capsule_;
 
+	SwingPoint swingPoint_;
 	float xVecX, xVecY;
 
 	VECTOR dir_;

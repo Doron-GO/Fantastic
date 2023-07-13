@@ -1,12 +1,13 @@
 #pragma once
 #include "SceneBase.h"
-#include<thread>
 class SceneManager;
 class Controller;
 class Stage;
 class SkyDome;
 class Player;
 class Grid;
+class SwingPoint;
+
 
 class GameScene 
 	: public SceneBase
@@ -29,7 +30,8 @@ private:
 	std::unique_ptr<Grid> grid_;
 	bool isLoaded_;
 
-	std::thread loadThread_;
+
+	std::unique_ptr<SwingPoint> swi_;
 
 	bool isLoaded ;
 	//îwåi

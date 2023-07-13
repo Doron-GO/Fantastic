@@ -68,8 +68,10 @@ void Player::Update(float delta, VECTOR pos)
 	Collision();
 	ProcessMove();
 	ProcessJump();
+	endPos_ = pos;
 
 	transform_.Update();
+	//endPos_= swingPoint_.SetSwingPoint(transform_.pos, 1);
 	animationController_->Update();
 
 }

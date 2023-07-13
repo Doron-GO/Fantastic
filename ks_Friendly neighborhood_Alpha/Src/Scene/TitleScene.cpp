@@ -11,7 +11,6 @@
 #include "../Input/Controller.h"
 #include "../Object/Common/Grid.h"
 #include "../Object/SkyDome.h"
-#include "../Object/SwingPoint.h"
 #include "TitleScene.h"
 
 TitleScene::TitleScene(void)
@@ -44,9 +43,7 @@ void TitleScene::Init(void)
 	// ÉOÉäÉbÉhê¸
 	grid_ = std::make_unique<Grid>();
 	grid_->Init();
-	swi_ = std::make_unique<SwingPoint>();
 
-	swi_->Load();
 	// îwåi
 	//skyDome_ = std::make_unique<SkyDome>();
 	//skyDome_->Init();
