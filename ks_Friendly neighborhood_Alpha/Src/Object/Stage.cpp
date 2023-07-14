@@ -28,7 +28,7 @@ void Stage::Init(void)
 	}
 	json_ = json::parse(f);
 
-	json_ = json_["StageModel"];
+	json_ = json_["StageModel1"];
 
 
 	//transform_.SetModel();
@@ -62,10 +62,10 @@ void Stage::Draw(void)
 	//	stagedraw.second->Draw();
 	//}
 
-	stagePiece_[STAGE_NUM::S4_5]->Draw();
-	/*stagePiece_[STAGE_NUM::S4_4]->Draw();
-	stagePiece_[STAGE_NUM::S3_4]->Draw();
-	stagePiece_[STAGE_NUM::S3_5]->Draw();*/
+	stagePiece_[STAGE_NUM::S1_1]->Draw();
+	stagePiece_[STAGE_NUM::S1_2]->Draw();
+	stagePiece_[STAGE_NUM::S1_3]->Draw();
+	stagePiece_[STAGE_NUM::S1_4]->Draw();
 
 }
 

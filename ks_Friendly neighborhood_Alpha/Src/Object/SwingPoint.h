@@ -21,10 +21,15 @@ public:
 	SwingPoint();
 	~SwingPoint();
 
+	void Draw(void);
 	void Load(void);
 
 	const VECTOR SetSwingPoint(VECTOR PlayerPos,int section);
+	const VECTOR SetGravity(VECTOR PlayerPos);
 private:
+	float Magnitude(VECTOR pos)const;
+
+
 	json json_;
 
 	//std::map < Stage::STAGE_NUM, std::vector < std::pair <VECTOR, VECTOR>>> swingPoint_;
@@ -35,9 +40,14 @@ private:
 	
 	std::map<Stage::STAGE_NUM, std::map<int, std::map<SIDE, std::vector<VECTOR>>>> sectionList_;
 	
-	
-	
 	//std::map < std::string, std::list < std::pair <VECTOR,VECTOR>>> swingPoint_;
 	VECTOR norm_;
+
+	int total;
+	float min;
+	int minNum;
+	std::map<int, VECTOR> testPoint_;
+	std::vector<float> distance_;
+
 };
 
