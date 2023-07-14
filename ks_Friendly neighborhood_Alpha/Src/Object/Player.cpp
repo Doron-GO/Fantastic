@@ -53,34 +53,35 @@ void Player::Init(void)
 
 	sectionPos[0] = 25600.0f;
 	sectionPos[1] = 51071.0f;
-
+	swingFlag_ = false;
 	// アニメーションの設定
 	AnimationInit();
-
+	isSwingJump_ = false;
 }
 
-void Player::Update(float delta, VECTOR pos)
+void Player::Update(float delta, VECTOR dir,VECTOR gra,VECTOR endp)
 {	
+	endPos_2 = endp;
 	gravityNorm_ = Normalized(gravity_);		//重力の正規化ベクトル
-	swingGravityNorm = Normalized(swingGravity);
-	dir_ = pos;
+	//swingGravityNorm = Normalized(swingGravity);
+	dir_ = dir;
 	dir_=Normalized(dir_);
+	swingGravity_ = gra;
 	//controller_->Update();
 	(this->*phase_)(delta);
 	CalcGravityPow();
-	Collision();
-	ProcessMove();
 	ProcessJump();
-
+	Collision();
 	transform_.Update();
 	//endPos_= swingPoint_.SetSwingPoint(transform_.pos, 1);
 	animationController_->Update();
 	CheckSection();
+	MV1RefreshCollInfo(transform_.modelId);
 }
 
 void Player::UpdatePendulum(float delta)
 {
-
+	SwingDraw();
 	Swing(delta);
 
 	//transform_.Update();
@@ -88,7 +89,8 @@ void Player::UpdatePendulum(float delta)
 
 void Player::UpdateGround(float delta)
 {
-
+	ProcessMove();
+	SetEndPpos(endPos_2);
 	//衝突判定
 	transform_.quaRot = Quaternion{ 1.0f,0.0f,0.0f,0.0f };
 	transform_.quaRot = transform_.quaRot.Mult(pendulumRotY_);
@@ -97,22 +99,46 @@ void Player::UpdateGround(float delta)
 
 bool Player::Start(VECTOR pos ,VECTOR end)
 {
+	stringV_ = VSub(transform_.pos,endPos_);//支点から錘へののベクトル
+	VECTOR stst = VECTOR{ 0.0f,stringV_.y,0.0f };
+
+	VECTOR Ground = { 0.0f,100.0f,0.0f };
+	VECTOR GroundV = VSub(Ground, endPos_);
+
+	auto stleng = Magnitude(stringV_);
+	auto GroundLen = Magnitude(GroundV);
+	if (abs(stleng) >= abs(GroundLen))
+	{
+		return false;
+	}
+	length_ = Magnitude(stringV_);				//ヒモの長さ
+
 	//transform_.pos = pos;
 	//元のやつ
-	endPos_ = end;
-	stringV_ = VSub(transform_.pos,endPos_);//支点から錘へののベクトル
-	length_ = Magnitude(stringV_);				//ヒモの長さ
-	//auto x = Dot(gravityNorm_, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
-	//yNorm_ = stringV_ - gravityNorm_ * x;//錘から重力軸までのベクトル
-	//auto y = Magnitude(yNorm_);					//錘から重力軸までの正規化済みベクトル
-	//yNorm_ = Normalized(yNorm_);
-	//theta_ = atan2f(y, x);				//支点の近接二辺のそれぞれの大きさを使用して角度を出す
 
 
 	//試しに変えている
 	auto jk = Normalized(stringV_);
-	swingGravity = VECTOR{ 1.0f,-5.0f,-0.2f };
-	swingGravityNorm = Normalized(swingGravity);
+	VECTOR Fro;
+	if (0 < swingGravity_.x&&0>swingGravity_.z)
+	{
+		Fro = transform_.GetRight();
+	}
+	if (0 > swingGravity_.x&&0>swingGravity_.z)
+	{
+		Fro = transform_.GetLeft();
+	}
+	if (0 > swingGravity_.x&&0<swingGravity_.z)
+	{
+		Fro = transform_.GetForward();
+	}
+	if (0 < swingGravity_.x&&0<swingGravity_.z)
+	{
+		Fro = transform_.GetBack();
+	}
+	Fro.y = -1.0f;
+
+	swingGravityNorm = Normalized(Fro);
 	//swingGravityNorm = VECTOR{ 1.0f,jk.y,0.2f };
 
 	auto x2 = Dot(swingGravityNorm, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
@@ -127,8 +153,10 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 
 	isStarted_ = true;
 	transform_.Update();
-
+	swingFlag_ = true;
+	phase_ = &Player::UpdatePendulum;
 	return true;
+
 }
 
 void Player::SetFollowTarget(Camera* target)
@@ -148,6 +176,7 @@ void Player::Swing(float delta)
 	//{
 	//	return;
 	//}
+	auto& ins = InputManager::GetInstance();
 
 	auto coe = -gMag_ / length_;				//kの係数
 
@@ -164,19 +193,19 @@ void Player::Swing(float delta)
 	auto k4a = delta * coe * sin(theta_ + m3a);
 	auto m4a = delta * (omega_ + k3a);
 
-	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /3.0f;		//角速度の加算
-	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 3.0f;		//ｚ角度の加算
+	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /6.0f;		//角速度の加算
+	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 6.0f;		//ｚ角度の加算
 
 	auto stv = Normalized(stringV_);
-	auto stv2 = Normalized(gravity_);
-	auto stv3 = Normalized(swingGravityNorm);
-	stv3 = VScale(stv, 3500.0f);
-	transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
+	
+	if (swingFlag_==true) 
+	{
+		transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
+	}
 	//transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(gravity_) + length_ * sin(theta_) * yNorm_;
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::SWING), true, 50.0f, 62.0f);
-
 	animationController_->SetEndLoop(50.0f, 55.0f, 3.0f);
 
 
@@ -191,8 +220,9 @@ void Player::Swing(float delta)
 	{
 		swingGravity = VAdd(swingGravity, VScale(transform_.GetDown(), 0.02f));
 	}
-	if (CheckHitKey(KEY_INPUT_P))
+	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
 	{
+		
 		dir_2 = Normalized( dir_);
 		phase_ = &Player::Flying;
 	}
@@ -204,48 +234,59 @@ void Player::Flying(float delta)
 	auto speed = 4.0f;
 	VECTOR dir = dir_2;
 	dir.y = 1.0f;
+
+
 	auto movePow = VScale(dir, (40.0f));
-
-	//mTransform.pos = VAdd(mTransform.pos, movePow2);
-
-  auto	grav = 9.81f / 40.0f;
-
 	transform_.pos = VAdd(transform_.pos, movePow);
-
-
-	auto graNorm = Normalized(gravity_);
-
+	
+	phase_ = &Player::UpdateGround;
 }
 
-void Player::Draw(void)
+void Player::DrawDebug(void)
 {
-	// モデルの描画
-	MV1DrawModel(transform_.modelId);
-
-	auto fw = VAdd(transform_.pos, VScale(transform_.GetForward(), 60.0f));
-	DrawLine3D(transform_.pos, fw, 0x00ff00);
-	auto pa = VAdd(transform_.pos, VScale(quaPaddir.GetForward(), 60.0f));
-	DrawLine3D(transform_.pos, pa, 0x00ff00);
-
-	auto  lol = VECTOR{ 1.0f,1400.0f,0.2f };
-	//swingGravity = VECTOR{lol.x,-0.4f,lol.z };
-
-	auto kj = VAdd(endPos_, VScale(swingGravity, 600.0f));
-	auto kj2 = VAdd(transform_.pos, VScale(swingGravity, 600.0f));
-	DrawLine3D(endPos_, kj, 0x00ff00);
-	DrawLine3D(transform_.pos, kj2, 0x00ff00);
+	//デバッグ表示
+	DrawFormatString(0, 32, 0xffffff, "プレイヤー座標:%f,%f,%f",
+		transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
 	DrawFormatString(50, 530, 0xffffff, "mJumpPow=%f", jumpPow_.y);
 	DrawFormatString(50, 470, 0xffffff, "step:%f", stepJump_);
 	DrawFormatString(50, 200, 0xffffff, "%f,%f,%f", endPos_.x, endPos_.y, endPos_.z);
 	DrawFormatString(50, 220, 0xffffff, "%d", tttt);
 	DrawFormatString(50, 550, 0xffffff, "movePow_:%f,%f,%f", movePow_.x, movePow_.y, movePow_.z);
+	auto fw = VAdd(transform_.pos, VScale(transform_.GetForward(), 60.0f));
+	DrawLine3D(transform_.pos, fw, 0x00ff00);
+	auto pa = VAdd(transform_.pos, VScale(quaPaddir.GetForward(), 60.0f));
+	DrawLine3D(transform_.pos, pa, 0x00ff00);
+
+
+	auto  lol = VECTOR{ 1.0f,1400.0f,0.2f };
+	//swingGravity = VECTOR{lol.x,-0.4f,lol.z };
+
+	auto kj = VAdd(endPos_, VScale(swingGravityNorm, 600.0f));
+	auto kj2 = VAdd(transform_.pos, VScale(swingGravityNorm, 600.0f));
+	DrawLine3D(endPos_, kj, 0x00ff00);
+	DrawLine3D(transform_.pos, kj2, 0x00ff00);
 	VECTOR klk = { 4200.0f,2200.0f,1200.0f };
+	DrawLine3D(endPos_, transform_.pos, 0xff00ff);
 
 	DrawSphere3D(klk, 60.0f, 20.0f, 0xff0000, 0xffffff, true);
+
+}
+
+
+void Player::Draw(void)
+{
+	// モデルの描画
+	MV1DrawModel(transform_.modelId);
 	capsule_->Draw();
+	DrawLine3D(endPos_, transform_.pos, 0xff00ff);
+
 	//デバッグ表示
-	DrawDebug();
+	//DrawDebug();
+}
+
+void Player::SwingDraw(void)
+{
 }
 
 int Player::CheckSection(void)
@@ -292,14 +333,6 @@ Transform* Player::GetTransform(void)
 	//モデル基本情報の取得
 	return &transform_;
 }
-
-void Player::DrawDebug(void)
-{
-	//デバッグ表示
-	DrawFormatString(0, 32, 0xffffff, "プレイヤー座標:%f,%f,%f",
-		transform_.pos.x, transform_.pos.y, transform_.pos.z);
-}
-
 void Player::AnimationInit(void)
 {
 	std::string path = Application::PATH_MODEL + "Player/";
@@ -370,8 +403,9 @@ void Player::ProcessMove()
 
 	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
 	{
+		isJump_ = false;
+		transform_.pos.y += 200.0f;
 		Start(transform_.pos,endPos_);
-		phase_ = &Player::UpdatePendulum;
 	}
 
 	Rotate();	//回転(ゴールに対して、到達させたい)
@@ -392,7 +426,13 @@ void Player::ProcessJump()
 
 			animationController_->SetEndLoop(12.0f, 17.0f, 3.0f);
 		}
-		isJump_ = true;
+		if (swingFlag_)
+		{
+			isSwingJump_ = true;
+		}
+		else {
+			isJump_ = true;
+		}
 	}
 	else
 	{
@@ -401,6 +441,16 @@ void Player::ProcessJump()
 
 	if (isJump_)
 	{
+
+		stepJump_ += SceneManager::GetInstance().GetDeltaTime();
+		if (stepJump_ < TIME_JUMP_IN)
+		{
+			jumpPow_ = VScale(VECTOR{ 0.0f,1.0f,0.0f }, POW_JUMP);
+		}
+	}
+	if (isSwingJump_)
+	{
+
 		stepJump_ += SceneManager::GetInstance().GetDeltaTime();
 		if (stepJump_ < TIME_JUMP_IN)
 		{
@@ -488,6 +538,7 @@ void Player::CollisionCupsule(void)
 
 				if (pHit)
 				{
+					swingFlag_ = false;
 					//衝突している
 					float pow = 4.0f; //ちょっとだけ動かす
 					hit.Normal;		  //衝突したポリゴンの法線
@@ -561,6 +612,9 @@ void Player::CollisionGravity(void)
 
 			//衝突している
 			float dis = 2.0f;
+			phase_ = &Player::UpdateGround;
+
+			swingFlag_ = false;
 			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, dis));
 			//抵抗力の代わりに
 			jumpPow_ = AsoUtility::VECTOR_ZERO;
@@ -574,6 +628,7 @@ void Player::CollisionGravity(void)
 			}
 			//ジャンプ終了
 			isJump_ = false;
+			isSwingJump_ = false;
 			stepJump_ = 0.0f;
 		}
 

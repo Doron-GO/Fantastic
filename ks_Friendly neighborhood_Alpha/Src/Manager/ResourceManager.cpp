@@ -43,6 +43,10 @@ void ResourceManager::Init(void)
 	res = Resource(Resource::TYPE::MODEL, Application::PATH_MODEL + "Player/Gwen_model1.mv1");
 	resouceMap_.emplace(SRC::PLAYER, res);
 
+	//ÉRÉCÉì
+	res = Resource(Resource::TYPE::MODEL, Application::PATH_MODEL + "Player/Gwen_model1.mv1");
+	resouceMap_.emplace(SRC::COIN, res);
+
 }
 
 void ResourceManager::Release(void)

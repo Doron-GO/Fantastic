@@ -17,7 +17,8 @@ public:
 		SKYDOME,
 		STAGE,
 		PLAYER,
-		PLAYER_SHADOW
+		PLAYER_SHADOW,
+		COIN
 	};
 
 

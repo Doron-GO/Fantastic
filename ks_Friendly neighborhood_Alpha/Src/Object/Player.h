@@ -25,7 +25,7 @@ public:
 	static constexpr float TIME_ROT = 1.0f;
 
 	//ジャンプ量
-	static constexpr float POW_JUMP = 50.0f;
+	static constexpr float POW_JUMP = 60.0f;
 
 	//ジャンプ受付時間
 	static constexpr float TIME_JUMP_IN = 0.5f;
@@ -46,10 +46,11 @@ public:
 	~Player(void);
 
 	void Init(void);
-	void Update(float delta,VECTOR pos);
+	void Update(float delta,VECTOR pos, VECTOR gra, VECTOR end);
 	void SetFollowTarget(Camera* target);
 	void AddCollider(Collider* collider);
 	void Draw(void);
+	void SwingDraw(void);
 	int CheckSection(void);
 	void SetEndPpos(VECTOR pos);
 	Transform* GetTransform(void);
@@ -80,8 +81,12 @@ private:
 	VECTOR Normalized(VECTOR& v);
 
 	void (Player::* phase_)(float delta);//新たな分岐の仕方
+	bool swingFlag_;
 
+	int stepGrav;
 	bool isJump_;
+	bool isSwingJump_;
+
 	float stepJump_;
 	VECTOR movedPos_;	//移動後の座標
 	VECTOR jumpPow_;		//ジャンプ量
@@ -92,6 +97,7 @@ private:
 	int tttt;
 	VECTOR movePow_;
 	VECTOR endPos_;	//支点の座標
+	VECTOR endPos_2;	//支点の座標2
 	VECTOR stringV_;//支点からプレイヤーへのベクトル
 	VECTOR swingYnorm_;
 	VECTOR gravity_;	//重力
@@ -99,6 +105,8 @@ private:
 	VECTOR swingGravity;	
 	VECTOR swingGravityNorm;	
 	VECTOR yNorm_;//軸から錘の正規化済み垂直ベクトル
+	VECTOR swingGravity_; //swing時の呪力方向
+	VECTOR swingGravity_2; //swing時の呪力方向
 
 	Quaternion goalQuaRot_; //最終的に向きたい方向
 	Quaternion pendulumRotY_;	//y軸回転
@@ -111,6 +119,7 @@ private:
 
 	VECTOR dir_;
 	VECTOR dir_2;
+
 
 	float gMag_;		//重力の大きさ
 	float omega_;			//角速度

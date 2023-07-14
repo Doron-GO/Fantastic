@@ -9,11 +9,19 @@
 SwingPoint::SwingPoint()
 {
 	norm_ = VECTOR{ 0.0f,0.0f,0.0f };
+	min = 9999999.0f;
+
 }
 
 SwingPoint::~SwingPoint()
 {
 } 
+
+void SwingPoint::Draw(void)
+{
+	//DrawFormatString(50, 400, 0xffffff, " min %f", min);
+	//DrawFormatString(50, 440, 0xffffff, "testpoint %f,%f,%f", testPoint_[minNum].x, testPoint_[minNum].y, testPoint_[minNum].z);
+}
 
 void SwingPoint::Load(void)
 {
@@ -23,6 +31,7 @@ void SwingPoint::Load(void)
 		auto l = 0.0f;
 	}
  	json_ = json::parse(f);
+
 	int TotalSectionNum = json_["TotalSectionNum"].get<int>();
 
 	for (int TSN = 1; TSN <= TotalSectionNum; TSN++)
@@ -77,15 +86,88 @@ void SwingPoint::Load(void)
 			sectionList_[static_cast<Stage::STAGE_NUM>(TSN-1)]= BuildingList_;
 	}
 
+	auto BillPoint = json_["BillPoint"];
+	 total = BillPoint["Total"].get<int>();
+
+	for (int i = 1; i <= total; i++)
+	{
+		std::string num = std::to_string(i);
+		VECTOR f = { BillPoint[num]["VECTOR"]["x"].get<float>(),BillPoint[num]["VECTOR"]["y"].get<float>(),BillPoint[num]["VECTOR"]["z"].get<float>()};
+		testPoint_[i] = f;
+	}
 }
 
 const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 {
+	min = 9999999.0f;
+	auto pop = pos;
+	pop.y = 0.0f;
+	distance_.clear();
+	for (int i = 1; i <= total; i++)
+	{
+		auto p =VSub(pop, testPoint_[i]);
+		float pp = abs(p.x + p.z);
+		distance_.push_back(pp);
+	}
+	for (int f =0;f<  distance_.size();f++)
+	{
+		//if (distance_[f] <= min&& distance_[f]<300.0f)
+		if (distance_[f] <= min)
+		{
+			
+			min = distance_[f];
+			minNum = f+1;		
+		}
+	}
+	//for (int i = 0; i < 2; i++)
+	//{
+	//	for ( auto list:sectionList_[static_cast<Stage::STAGE_NUM>(i)])
+	//	{
+	//		for (int m = 0; m < 4; m++)
+	//		{
+	//			list.second[static_cast<SIDE>(0)];
+	//		}
+	//	}
+	//}
 	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
 	auto swingSide = BuildingList[2];
 	auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
 
 	VECTOR swingPoint = swingPointOptions[2];
-	return swingPoint;
+	return 	testPoint_[minNum];
+}
+
+const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)
+{
+	float z;
+	float x;
+	auto tz = abs(testPoint_[minNum].z);
+	auto tx = abs(testPoint_[minNum].x);
+	auto px = abs(PlayerPos.x);
+	auto pz = abs(PlayerPos.z);
+	if (tz <= pz)
+	{
+		z = 1.0f;
+	}
+	else {
+		z = -1.0f;
+
+	}
+	if (tx <= px)
+	{
+		x = 1.0f;
+	}
+	else {
+		x = -1.0f;
+
+	}
+
+	return VECTOR{x,-10.0f,z};
+}
+
+float SwingPoint::Magnitude(VECTOR pos) const
+{
+	 return sqrtf(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
+	
 }
 

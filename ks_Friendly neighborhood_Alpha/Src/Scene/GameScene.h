@@ -7,7 +7,7 @@ class SkyDome;
 class Player;
 class Grid;
 class SwingPoint;
-
+class Coin;
 
 class GameScene 
 	: public SceneBase
@@ -30,6 +30,11 @@ private:
 	std::unique_ptr<Grid> grid_;
 	bool isLoaded_;
 
+	//コインの情報生成
+	void MakeCoin(void);
+
+	//コインとプレイヤーの衝突判定
+	void IsHitCoinPlayer(void);
 
 	std::unique_ptr<SwingPoint> swi_;
 
@@ -37,7 +42,12 @@ private:
 	//背景
 	std::unique_ptr<SkyDome> skyDome_;
 
+	// コイン
+	std::vector<Coin*> coins_;
+
 	//プレイヤー
 	Player* player_;
+
+	int isHitNum_;
 
 };
