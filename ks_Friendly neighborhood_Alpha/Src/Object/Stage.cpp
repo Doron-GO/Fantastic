@@ -51,16 +51,11 @@ void Stage::Update(void)
 
 void Stage::Draw(void)
 {
-	char p = '0' + 1;
-	char pp = '0' + 2;
-	DrawFormatString(300, 300, 0xffffff, "B" + p + pp);
-	VECTOR pos{ -46.07962f, 8.936572f, 16.83637f };
-	DrawSphere3D(test, 60.0f, 20, 0xffffff, 0xffffff, true);
 
-	//for (const auto stagedraw : stagePiece_)
-	//{
-	//	stagedraw.second->Draw();
-	//}
+	for (const auto stagedraw : stagePiece_)
+	{
+		stagedraw.second->Draw();
+	}
 
 	stagePiece_[STAGE_NUM::S1_1]->Draw();
 	stagePiece_[STAGE_NUM::S1_2]->Draw();

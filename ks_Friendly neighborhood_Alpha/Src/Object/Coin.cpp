@@ -4,6 +4,8 @@
 #include "../Manager/SceneManager.h"
 #include "Player.h"
 #include "Coin.h"
+#include "Common/AnimationController.h"
+#include "../Application.h"
 
 Coin::Coin(Transform transform)
 	: resourceManager_(ResourceManager::GetInstance())
@@ -27,6 +29,10 @@ void Coin::Init(void)
 
 	//衝突判定
 	isHit_ = true;
+	std::string path = Application::PATH_MODEL + "Player/";
+
+	animationController_ = new AnimationController(transform_.modelId);
+	animationController_->Add(0, path + "Idle1.mv1", 20.0f);
 
 	//狼煙のエフェクト
 	//coinSmoke_ = ResourceManager::GetInstance().Load(
@@ -39,6 +45,7 @@ void Coin::Update(void)
 	ProcessRot();
 
 	transform_.Update();
+	animationController_->Play(0);
 
 	//エフェクト
 	PlayEffectCoinSmoke();

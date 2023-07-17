@@ -21,6 +21,11 @@ void SwingPoint::Draw(void)
 {
 	//DrawFormatString(50, 400, 0xffffff, " min %f", min);
 	//DrawFormatString(50, 440, 0xffffff, "testpoint %f,%f,%f", testPoint_[minNum].x, testPoint_[minNum].y, testPoint_[minNum].z);
+
+	for (auto point : testPoint_)
+	{
+		DrawSphere3D(point.second, 50.0f, 10.0f, 10.0f, 0xff0000, true);
+	}
 }
 
 void SwingPoint::Load(void)
@@ -95,6 +100,7 @@ void SwingPoint::Load(void)
 		VECTOR f = { BillPoint[num]["VECTOR"]["x"].get<float>(),BillPoint[num]["VECTOR"]["y"].get<float>(),BillPoint[num]["VECTOR"]["z"].get<float>()};
 		testPoint_[i] = f;
 	}
+
 }
 
 const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
@@ -151,23 +157,23 @@ const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)
 	}
 	else {
 		z = -1.0f;
-
 	}
 	if (tx <= px)
 	{
 		x = 1.0f;
-	}
+	} 
 	else {
 		x = -1.0f;
-
 	}
+
+
+
 
 	return VECTOR{x,-10.0f,z};
 }
 
 float SwingPoint::Magnitude(VECTOR pos) const
 {
-	 return sqrtf(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
-	
+	 return sqrtf(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);	
 }
 

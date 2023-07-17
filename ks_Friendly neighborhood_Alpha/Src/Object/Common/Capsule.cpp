@@ -33,28 +33,28 @@ void Capsule::Draw(void)
 	dir = transformParent_->GetRight();
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, COLOR);
+	//DrawLine3D(s, e, COLOR);
 
 	// 球体を繋ぐ線(X-)
 	dir = transformParent_->GetLeft();
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, COLOR);
+	//DrawLine3D(s, e, COLOR);
 
 	// 球体を繋ぐ線(Z+)
 	dir = transformParent_->GetForward();
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, COLOR);
+	//DrawLine3D(s, e, COLOR);
 
 	// 球体を繋ぐ線(Z-)
 	dir = transformParent_->GetBack();
 	s = VAdd(pos1, VScale(dir, radius_));
 	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, COLOR);
+	//DrawLine3D(s, e, COLOR);
 
 	// カプセルの中心
-	DrawSphere3D(GetCenter(), 5.0f, 10, COLOR, COLOR, true);
+	//DrawSphere3D(GetCenter(), 5.0f, 10, COLOR, COLOR, true);
 
 }
 

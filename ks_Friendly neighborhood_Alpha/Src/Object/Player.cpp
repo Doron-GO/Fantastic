@@ -38,7 +38,7 @@ void Player::Init(void)
 	//モデルの設定
 	//transform_.scl = { 0.5f,0.5f ,0.5f };
 	transform_.scl = { 1.0f,1.0f ,1.0f };
-	transform_.pos = { 120.0f, 120.0f, 100.0f };
+	transform_.pos = { 7028.0f, 220.0f, 5467.0f };
 	transform_.quaRot = Quaternion();
 	transform_.quaRotLocal =
 		Quaternion::Euler({ 0.0f, AsoUtility::Deg2RadF(0.0f), 0.0f });
@@ -64,14 +64,12 @@ void Player::Update(float delta, VECTOR dir,VECTOR gra,VECTOR endp)
 	endPos_2 = endp;
 	gravityNorm_ = Normalized(gravity_);		//重力の正規化ベクトル
 	//swingGravityNorm = Normalized(swingGravity);
-	dir_ = dir;
-	dir_=Normalized(dir_);
 	swingGravity_ = gra;
 	//controller_->Update();
 	(this->*phase_)(delta);
-	CalcGravityPow();
-	ProcessJump();
-	Collision();
+	//CalcGravityPow();
+	//ProcessJump();
+	//Collision();
 	transform_.Update();
 	//endPos_= swingPoint_.SetSwingPoint(transform_.pos, 1);
 	animationController_->Update();
@@ -83,19 +81,34 @@ void Player::UpdatePendulum(float delta)
 {
 	SwingDraw();
 	Swing(delta);
-
+	Collision();
 	//transform_.Update();
 }
 
 void Player::UpdateGround(float delta)
 {
 	ProcessMove();
+	CalcGravityPow();
+	ProcessJump();
+	Collision();
 	SetEndPpos(endPos_2);
 	//衝突判定
 	transform_.quaRot = Quaternion{ 1.0f,0.0f,0.0f,0.0f };
 	transform_.quaRot = transform_.quaRot.Mult(pendulumRotY_);
-
 }
+
+void Player::Flying(float delta)
+{
+	//isSwingJump_ = true;
+	auto speed = 4.0f;
+	CalcGravityPow();
+	ProcessJump();
+	Collision();
+	//auto movePow = VScale(dir_2, (40.0f));
+	//transform_.pos = VAdd(transform_.pos, movePow);
+	//phase_ = &Player::UpdateGround;
+}
+
 
 bool Player::Start(VECTOR pos ,VECTOR end)
 {
@@ -116,28 +129,29 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 	//transform_.pos = pos;
 	//元のやつ
 
-
 	//試しに変えている
 	auto jk = Normalized(stringV_);
 	VECTOR Fro;
-	if (0 < swingGravity_.x&&0>swingGravity_.z)
-	{
-		Fro = transform_.GetRight();
-	}
-	if (0 > swingGravity_.x&&0>swingGravity_.z)
-	{
-		Fro = transform_.GetLeft();
-	}
-	if (0 > swingGravity_.x&&0<swingGravity_.z)
-	{
-		Fro = transform_.GetForward();
-	}
-	if (0 < swingGravity_.x&&0<swingGravity_.z)
-	{
-		Fro = transform_.GetBack();
-	}
-	Fro.y = -1.0f;
-
+	//if (0 < swingGravity_.x&&0>swingGravity_.z)
+	//{
+	//	Fro = SceneManager::GetInstance().GetCamera()->GetDirvec(VECTOR{ 1.0f,0.0f,0.0f });
+	//}
+	//if (0 > swingGravity_.x&&0>swingGravity_.z)
+	//{
+	//	Fro = SceneManager::GetInstance().GetCamera()->GetDirvec(VECTOR{ -1.0f,0.0f,0.0f });
+	//}
+	//if (0 > swingGravity_.x&&0<swingGravity_.z)
+	//{
+	//	Fro = SceneManager::GetInstance().GetCamera()->GetDirvec(VECTOR{ 0.0f,0.0f,1.0f });
+	//}
+	//if (0 < swingGravity_.x&&0<swingGravity_.z)
+	//{
+	//	Fro = SceneManager::GetInstance().GetCamera()->GetDirvec(VECTOR{ 0.0f,0.0f,-1.0f });
+	//}
+	//Fro.y = -1.0f;
+	Fro= SceneManager::GetInstance().GetCamera()->GetDir();
+	Fro = VNorm(Fro);
+	Fro.y = 0.2f;
 	swingGravityNorm = Normalized(Fro);
 	//swingGravityNorm = VECTOR{ 1.0f,jk.y,0.2f };
 
@@ -193,14 +207,17 @@ void Player::Swing(float delta)
 	auto k4a = delta * coe * sin(theta_ + m3a);
 	auto m4a = delta * (omega_ + k3a);
 
-	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /6.0f;		//角速度の加算
-	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 6.0f;		//ｚ角度の加算
+	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /4.0f;		//角速度の加算
+	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 4.0f;		//ｚ角度の加算
 
 	auto stv = Normalized(stringV_);
 	
 	if (swingFlag_==true) 
 	{
-		transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
+		//transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
+		auto l = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
+		
+		movePow_ = VSub(l, transform_.pos);
 	}
 	//transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(gravity_) + length_ * sin(theta_) * yNorm_;
 
@@ -211,37 +228,13 @@ void Player::Swing(float delta)
 
 	//カメラ向いている方向に対しての前後左右の重力を傾ける
 	Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotOutX();
-	//重力方向の操作
-	if (CheckHitKey(KEY_INPUT_D))
-	{
-		swingGravity = VAdd(swingGravity, VScale(transform_.GetUp(), 0.02f));
-	}
-	if (CheckHitKey(KEY_INPUT_A))
-	{
-		swingGravity = VAdd(swingGravity, VScale(transform_.GetDown(), 0.02f));
-	}
 	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
 	{
-		
-		dir_2 = Normalized( dir_);
+		movePow_.y = 0.0f;
 		phase_ = &Player::Flying;
 	}
 
 }
-
-void Player::Flying(float delta)
-{
-	auto speed = 4.0f;
-	VECTOR dir = dir_2;
-	dir.y = 1.0f;
-
-
-	auto movePow = VScale(dir, (40.0f));
-	transform_.pos = VAdd(transform_.pos, movePow);
-	
-	phase_ = &Player::UpdateGround;
-}
-
 void Player::DrawDebug(void)
 {
 	//デバッグ表示
@@ -250,6 +243,7 @@ void Player::DrawDebug(void)
 
 	DrawFormatString(50, 530, 0xffffff, "mJumpPow=%f", jumpPow_.y);
 	DrawFormatString(50, 470, 0xffffff, "step:%f", stepJump_);
+	DrawFormatString(50, 500, 0xffffff, "stepswing:%f", stepSwingump_);
 	DrawFormatString(50, 200, 0xffffff, "%f,%f,%f", endPos_.x, endPos_.y, endPos_.z);
 	DrawFormatString(50, 220, 0xffffff, "%d", tttt);
 	DrawFormatString(50, 550, 0xffffff, "movePow_:%f,%f,%f", movePow_.x, movePow_.y, movePow_.z);
@@ -282,7 +276,7 @@ void Player::Draw(void)
 	DrawLine3D(endPos_, transform_.pos, 0xff00ff);
 
 	//デバッグ表示
-	//DrawDebug();
+	DrawDebug();
 }
 
 void Player::SwingDraw(void)
@@ -338,7 +332,7 @@ void Player::AnimationInit(void)
 	std::string path = Application::PATH_MODEL + "Player/";
 
 	animationController_ = new AnimationController(transform_.modelId);
-	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle1.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run1.mv1", 30.0f);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Gwen_Jump.mv1", 24.0f);
 	animationController_->Add((int)ANIM_TYPE::SWING, path + "Swing1.mv1", 20.0f);
@@ -354,7 +348,7 @@ void Player::ProcessMove()
 	Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotOutX();
 
 	float rotRad = 0;
-	float speed = 20.0f;
+	float speed = 40.0f;
 
 	//移動方向
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
@@ -423,12 +417,13 @@ void Player::ProcessJump()
 		if (!isJump_)
 		{
 			animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), true, 2.0f, 17.0f);
-
 			animationController_->SetEndLoop(12.0f, 17.0f, 3.0f);
 		}
 		if (swingFlag_)
 		{
 			isSwingJump_ = true;
+			swingFlag_ = false;
+			stepJump_ = 0.0f;
 		}
 		else {
 			isJump_ = true;
@@ -438,46 +433,45 @@ void Player::ProcessJump()
 	{
 		//stepJump_ = TIME_JUMP_IN;
 	}
-
-	if (isJump_)
+	if (isSwingJump_)
 	{
-
-		stepJump_ += SceneManager::GetInstance().GetDeltaTime();
-		if (stepJump_ < TIME_JUMP_IN)
+		stepSwingump_ += SceneManager::GetInstance().GetDeltaTime();
+		if (stepSwingump_ < TIME_JUMP_IN)
 		{
 			jumpPow_ = VScale(VECTOR{ 0.0f,1.0f,0.0f }, POW_JUMP);
 		}
 	}
-	if (isSwingJump_)
-	{
 
+	if (isJump_)
+	{
 		stepJump_ += SceneManager::GetInstance().GetDeltaTime();
 		if (stepJump_ < TIME_JUMP_IN)
-		{
+		{			
 			jumpPow_ = VScale(VECTOR{ 0.0f,1.0f,0.0f }, POW_JUMP);
+
 		}
 	}
 	if (!isHit)
 	{
 		stepJump_ = TIME_JUMP_IN;
 	}
-
+	if (stepSwingump_ > TIME_JUMP_IN) 
+	{
+		stepSwingump_ = 0.0f;
+		isSwingJump_ = false;
+	}
 }
 
 void Player::CalcGravityPow()
 {
 	//重力方向
 	VECTOR dirGravity = gravityNorm_;
-
 	//重力の強さ
 	float gravityPow = 25.0f;
-
 	//重力				方向×力
 	VECTOR gravity = VScale(dirGravity, gravityPow);
-
 	//上下の移動量に重力を加える
 	jumpPow_ = VAdd(jumpPow_, gravity);
-
 	//dotは内積
 	float dot = VDot(dirGravity, jumpPow_);
 	if (dot >= 0.0f)
@@ -485,7 +479,6 @@ void Player::CalcGravityPow()
 		//重力方向と反対方向でなければ，ジャンプ食を打ちける
 		jumpPow_ = gravity;
 	}
-
 }
 
 void Player::Collision()
@@ -535,10 +528,10 @@ void Player::CollisionCupsule(void)
 					hit.Position[1],
 					hit.Position[2]
 				);
-
 				if (pHit)
 				{
 					swingFlag_ = false;
+					movePow_ = { 0.0f,0.0f,0.0f };
 					//衝突している
 					float pow = 4.0f; //ちょっとだけ動かす
 					hit.Normal;		  //衝突したポリゴンの法線
@@ -548,6 +541,7 @@ void Player::CollisionCupsule(void)
 					trans.pos = movedPos_;
 					trans.Update();
 					cap = capsule_->Copy(&trans);
+					phase_ = &Player::UpdateGround;
 					continue;
 				}
 				//衝突していないのでループ中断
@@ -630,6 +624,7 @@ void Player::CollisionGravity(void)
 			isJump_ = false;
 			isSwingJump_ = false;
 			stepJump_ = 0.0f;
+			stepSwingump_ = 0.0f;
 		}
 
 	}
@@ -691,6 +686,11 @@ VECTOR Player::Normalized(VECTOR& v)
 VECTOR operator*(const VECTOR& v, float scale)
 {
 	return{ v.x * scale, v.y * scale ,v.z * scale };
+}
+
+VECTOR operator*=( VECTOR& v, float scale)
+{
+	return{v.x*= scale, v.y *= scale ,v.z *= scale };
 }
 
 VECTOR operator*(float scale, const VECTOR& v)

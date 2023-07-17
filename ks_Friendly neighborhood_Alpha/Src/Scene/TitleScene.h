@@ -5,6 +5,7 @@
 class SceneManager;
 class Grid;
 class SkyDome;
+class AnimationController;
 
 class TitleScene 
 	: public SceneBase
@@ -21,13 +22,14 @@ public:
 
 private:
 	int count_;
+	AnimationController* animationController_;	//プレイヤーのアニメーション制御
 
 	// 画像
 	int imgTitle_;
+	int imgTitle_2;
 	int imgPush_;
 	int p;
 	//グリッド線
-	std::unique_ptr<Grid> grid_;
 	Transform transform_;	//プレイヤーのモデル制御
 
 	// 背景

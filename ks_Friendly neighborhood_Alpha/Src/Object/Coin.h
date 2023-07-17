@@ -2,6 +2,7 @@
 #include "Common/Transform.h"
 
 class ResourceManager;
+class AnimationController;
 class Player;
 
 class Coin
@@ -47,6 +48,7 @@ private:
 
 	//衝突判定
 	bool isHit_;
+	AnimationController* animationController_;	//プレイヤーのアニメーション制御
 
 	//エフェクト関連
 	int coinSmoke_;

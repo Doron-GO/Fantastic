@@ -88,6 +88,7 @@ private:
 	bool isSwingJump_;
 
 	float stepJump_;
+	float stepSwingump_;
 	VECTOR movedPos_;	//移動後の座標
 	VECTOR jumpPow_;		//ジャンプ量
 	float jumpDot_;
@@ -102,7 +103,6 @@ private:
 	VECTOR swingYnorm_;
 	VECTOR gravity_;	//重力
 	VECTOR gravityNorm_;	//重力方向の正規化ベクトル
-	VECTOR swingGravity;	
 	VECTOR swingGravityNorm;	
 	VECTOR yNorm_;//軸から錘の正規化済み垂直ベクトル
 	VECTOR swingGravity_; //swing時の呪力方向
@@ -117,10 +117,6 @@ private:
 	SwingPoint swingPoint_;
 	float xVecX, xVecY;
 
-	VECTOR dir_;
-	VECTOR dir_2;
-
-
 	float gMag_;		//重力の大きさ
 	float omega_;			//角速度
 	float length_;			//紐の長さ
@@ -134,6 +130,7 @@ private:
 };
 
 VECTOR operator*(const VECTOR& v, float scale);
+VECTOR operator*=( VECTOR& v, float scale);
 VECTOR operator*(float scale, const VECTOR& v);
 VECTOR operator+(const VECTOR& va, const VECTOR vb);
 VECTOR operator-(const VECTOR& va, const VECTOR vb);

@@ -97,7 +97,7 @@ void GameScene::Update(void)
 
 	player_->CheckSection();
 	auto& ins = InputManager::GetInstance();
-	if (ins.IsNew(KEY_INPUT_SPACE))
+	if(isHitNum_==3)
 	{
 		lpSceneMng.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
@@ -121,11 +121,6 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
-	if (!isLoaded_) 
-	{
-		DrawFormatString(200, 200, 0xffffff, "Now Loading");
-		return;
-	}
 	// コイン
 	for (const auto c : coins_)
 	{
@@ -136,7 +131,7 @@ void GameScene::Draw(void)
 	stage_->Draw();
 	player_->Draw();
 	swi_->Draw();
-	grid_->Draw();
+	//grid_->Draw();
 	// デバッグ表示
 	//DrawDebug();
 
@@ -144,7 +139,6 @@ void GameScene::Draw(void)
 
 void GameScene::DrawDebug(void)
 {
-	DrawString(0, 0, "GameScene", 0xffffff);
 }
 
 void GameScene::Release(void)
@@ -193,7 +187,7 @@ void GameScene::MakeCoin(void)
 	Transform trans;
 	Coin* coin;
 
-	trans.pos = { 3000.0f, 200.0f, 2000.0f };
+	trans.pos = { 10167, 648, 25656 };
 	trans.scl = { 1.0f,1.0f, 1.0f };
 	trans.quaRot = Quaternion::Euler(
 		AsoUtility::Deg2RadF(-0.0f),
@@ -204,7 +198,7 @@ void GameScene::MakeCoin(void)
 	coin->Init();
 	coins_.push_back(coin);
 
-	trans.pos = { 2000.0f, 1200.0f, 200.0f };
+	trans.pos = { 20994, 401, 51931 };
 	trans.scl = { 1.0f,1.0f, 1.0f };
 	trans.quaRot = Quaternion::Euler(
 		AsoUtility::Deg2RadF(0.0f),
@@ -214,6 +208,18 @@ void GameScene::MakeCoin(void)
 	coin = new Coin(trans);
 	coin->Init();
 	coins_.push_back(coin);
+
+	trans.pos = { 28646, 1206, 42177 };
+	trans.scl = { 1.0f,1.0f, 1.0f };
+	trans.quaRot = Quaternion::Euler(
+		AsoUtility::Deg2RadF(0.0f),
+		AsoUtility::Deg2RadF(0.0f),
+		AsoUtility::Deg2RadF(0.0f)
+	);
+	coin = new Coin(trans);
+	coin->Init();
+	coins_.push_back(coin);
+
 }
 
 void GameScene::IsHitCoinPlayer(void)

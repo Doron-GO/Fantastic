@@ -24,8 +24,10 @@ void ResourceManager::Init(void)
 	Resource res;
 
 	// ƒ^ƒCƒgƒ‹‰æ‘œ
-	res = Resource(Resource::TYPE::IMG, Application::PATH_IMAGE + "Title.png");
+	res = Resource(Resource::TYPE::IMG, Application::PATH_IMAGE + "title.png");
 	resouceMap_.emplace(SRC::TITLE, res);
+	res = Resource(Resource::TYPE::IMG, Application::PATH_IMAGE + "START.png");
+	resouceMap_.emplace(SRC::START, res);
 
 	// PushSpace‰æ‘œ
 	res = Resource(Resource::TYPE::IMG, Application::PATH_IMAGE + "PushSpace.png");

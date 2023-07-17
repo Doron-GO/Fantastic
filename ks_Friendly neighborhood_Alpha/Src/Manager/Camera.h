@@ -19,10 +19,10 @@ public:
 	static constexpr VECTOR DEFAULT_CAMERA_POS = { 0.0f, 100.0f, -500.0f };
 
 	// FOLLOW : カメラ位置(追従対象との相対座標)
-	static constexpr VECTOR RELATIVE_CAMERA_POS_FOLLOW = { 0.0f, 70.0f, -800.0f };
+	static constexpr VECTOR RELATIVE_CAMERA_POS_FOLLOW = { 0.0f, 200.0f, -800.0f };
 
 	// FOLLOW : 注視点(追従対象との相対座標)
-	static constexpr VECTOR RELATIVE_TARGET_POS = { 0.0f, 0.0f, 500.0f };
+	static constexpr VECTOR RELATIVE_TARGET_POS = { 0.0f, 200.0f, 500.0f };
 
 	// カメラのX回転上限度角
 	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);

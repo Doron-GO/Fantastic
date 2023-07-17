@@ -99,11 +99,11 @@ void Camera::Draw()
 
 	char p = '0' + 1;
 	char pp = '0' + 2;
-	DrawFormatString(300, 300, 0xffffff, "B"+1);
+	//DrawFormatString(300, 300, 0xffffff, "B"+1);
 
 
 	//í«è]éãì_
-	DrawSphere3D(targetPos_, 20.0f, 10, 0x00ff00, 0x00ff00, true);
+	//DrawSphere3D(targetPos_, 20.0f, 10, 0x00ff00, 0x00ff00, true);
 
 }
 
@@ -216,7 +216,7 @@ void Camera::SetDefault(void)
 	pos_ = DEFAULT_CAMERA_POS;
 	targetPos_ = AsoUtility::VECTOR_ZERO;
 
-	angles_.x = AsoUtility::Deg2RadF(30.0f);
+	angles_.x = AsoUtility::Deg2RadF(10.0f);
 	angles_.y = AsoUtility::Deg2RadF(90.0f);
 	angles_.z = 0.0f;
 

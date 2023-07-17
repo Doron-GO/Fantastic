@@ -18,7 +18,8 @@ public:
 		STAGE,
 		PLAYER,
 		PLAYER_SHADOW,
-		COIN
+		COIN,
+		START
 	};
 
 
