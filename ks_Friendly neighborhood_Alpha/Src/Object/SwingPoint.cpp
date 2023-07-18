@@ -166,10 +166,7 @@ const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)
 		x = -1.0f;
 	}
 
-
-
-
-	return VECTOR{x,-10.0f,z};
+	return VECTOR{-0.219f,0.5f,-0.975f};
 }
 
 float SwingPoint::Magnitude(VECTOR pos) const

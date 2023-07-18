@@ -46,7 +46,9 @@ private:
 	int total;
 	float min;
 	int minNum;
-	std::map<int, VECTOR> testPoint_;
+	std::map<int, VECTOR> testPoint_;//支点番号を渡すと支点の座標が戻ってくる
+	std::map<int, std::pair<VECTOR,VECTOR>> testPoint2_;//支点番号を渡すとpairが戻ってくる　重力方向・座標
+
 	std::vector<float> distance_;
 
 };

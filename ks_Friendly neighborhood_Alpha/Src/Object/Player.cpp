@@ -152,8 +152,8 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 	Fro= SceneManager::GetInstance().GetCamera()->GetDir();
 	Fro = VNorm(Fro);
 	Fro.y = 0.2f;
-	swingGravityNorm = Normalized(Fro);
-	//swingGravityNorm = VECTOR{ 1.0f,jk.y,0.2f };
+	//swingGravityNorm = Normalized(Fro);
+	swingGravityNorm = VNorm(swingGravity_);
 
 	auto x2 = Dot(swingGravityNorm, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
 	swingYnorm_ = stringV_ - swingGravityNorm * x2;//錘から重力軸までのベクトル
@@ -207,8 +207,8 @@ void Player::Swing(float delta)
 	auto k4a = delta * coe * sin(theta_ + m3a);
 	auto m4a = delta * (omega_ + k3a);
 
-	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /4.0f;		//角速度の加算
-	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 4.0f;		//ｚ角度の加算
+	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /6.0f;		//角速度の加算
+	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 6.0f;		//ｚ角度の加算
 
 	auto stv = Normalized(stringV_);
 	
@@ -228,7 +228,8 @@ void Player::Swing(float delta)
 
 	//カメラ向いている方向に対しての前後左右の重力を傾ける
 	Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotOutX();
-	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN))
+	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN)||
+		CheckHitKey(KEY_INPUT_SPACE))
 	{
 		movePow_.y = 0.0f;
 		phase_ = &Player::Flying;
@@ -395,7 +396,8 @@ void Player::ProcessMove()
 		}
 	}
 
-	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT))
+	if (ins.IsPadBtnNew(InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::RIGHT)||
+		CheckHitKey(KEY_INPUT_F))
 	{
 		isJump_ = false;
 		transform_.pos.y += 200.0f;
