@@ -5,12 +5,10 @@
 #include<string>
 
 
-
 SwingPoint::SwingPoint()
 {
 	norm_ = VECTOR{ 0.0f,0.0f,0.0f };
 	min = 9999999.0f;
-
 }
 
 SwingPoint::~SwingPoint()
@@ -21,7 +19,6 @@ void SwingPoint::Draw(void)
 {
 	//DrawFormatString(50, 400, 0xffffff, " min %f", min);
 	//DrawFormatString(50, 440, 0xffffff, "testpoint %f,%f,%f", testPoint_[minNum].x, testPoint_[minNum].y, testPoint_[minNum].z);
-
 	for (auto point : testPoint_)
 	{
 		DrawSphere3D(point.second, 50.0f, 10.0f, 10.0f, 0xff0000, true);
@@ -36,9 +33,7 @@ void SwingPoint::Load(void)
 		auto l = 0.0f;
 	}
  	json_ = json::parse(f);
-
 	int TotalSectionNum = json_["TotalSectionNum"].get<int>();
-
 	for (int TSN = 1; TSN <= TotalSectionNum; TSN++)
 	{
 		std::string tsn = std::to_string(TSN);
@@ -54,9 +49,7 @@ void SwingPoint::Load(void)
 			//int VecNum = Bldg["VECTORTotalNum"].get<int>();
 			int PointTotalNum = Bldg["PointTotalNum"];
 			std::string PointTotalNumSt = std::to_string(PointTotalNum);
-
 			auto SideNum = Bldg["SideNum"].get<int>();
-
 			for (int idx2 = 1; idx2 <= SideNum; idx2++)
 			{
 				std::string num = std::to_string(idx2);
@@ -65,15 +58,12 @@ void SwingPoint::Load(void)
 				int VecNum = sideObj["VECTORTotalNum"].get<int>();
 
 				auto norm = sideObj["Norm"];
-
 				norm_ = { norm["x"].get<float>(),norm["y"].get<float>() ,norm["z"].get<float>() };
-
 				std::vector<VECTOR> p;
 
 				for (int Ptl = 1; Ptl <= VecNum; Ptl++)
 				{
 					std::string num2 = std::to_string(Ptl);
-
 					auto pos = Bldg[Side][num2]["VECTOR"];
 					p.push_back(
 						VECTOR{ pos["x"].get<float>(),
@@ -96,8 +86,8 @@ void SwingPoint::Load(void)
 
 	for (int i = 1; i <= total; i++)
 	{
-		std::string num = std::to_string(i);
-		VECTOR f = { BillPoint[num]["VECTOR"]["x"].get<float>(),BillPoint[num]["VECTOR"]["y"].get<float>(),BillPoint[num]["VECTOR"]["z"].get<float>()};
+		std::string num3 = std::to_string(i);
+		VECTOR f = { BillPoint[num3]["VECTOR"]["x"].get<float>(),BillPoint[num3]["VECTOR"]["y"].get<float>(),BillPoint[num3]["VECTOR"]["z"].get<float>()};
 		testPoint_[i] = f;
 	}
 
@@ -111,16 +101,17 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 	distance_.clear();
 	for (int i = 1; i <= total; i++)
 	{
-		auto p =VSub(pop, testPoint_[i]);
-		float pp = abs(p.x + p.z);
+		auto tesP = testPoint_[i];
+		tesP.y = 0.0f;
+		auto p =VSub(pop, tesP);
+		float pp = abs(p.x) +abs( p.z);
 		distance_.push_back(pp);
 	}
 	for (int f =0;f<  distance_.size();f++)
 	{
 		//if (distance_[f] <= min&& distance_[f]<300.0f)
 		if (distance_[f] <= min)
-		{
-			
+		{		
 			min = distance_[f];
 			minNum = f+1;		
 		}
@@ -138,7 +129,6 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
 	auto swingSide = BuildingList[2];
 	auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
-
 	VECTOR swingPoint = swingPointOptions[2];
 	return 	testPoint_[minNum];
 }
@@ -165,7 +155,6 @@ const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)
 	else {
 		x = -1.0f;
 	}
-
 	return VECTOR{-0.219f,0.5f,-0.975f};
 }
 
