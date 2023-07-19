@@ -50,6 +50,12 @@ private:
 	std::map<int, std::pair<VECTOR,VECTOR>> testPoint2_;//支点番号を渡すとpairが戻ってくる　重力方向・座標
 
 	std::vector<float> distance_;
+	float distans_2;
+
+	std::pair<float, VECTOR>fainal_;//firstはdistance,secondは支点座標
+
+	std::vector<std::pair<float, VECTOR>> comparison_;//fainal_が入っている
+
 
 };
 

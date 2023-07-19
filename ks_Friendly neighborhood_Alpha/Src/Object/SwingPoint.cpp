@@ -19,10 +19,26 @@ void SwingPoint::Draw(void)
 {
 	//DrawFormatString(50, 400, 0xffffff, " min %f", min);
 	//DrawFormatString(50, 440, 0xffffff, "testpoint %f,%f,%f", testPoint_[minNum].x, testPoint_[minNum].y, testPoint_[minNum].z);
-	for (auto point : testPoint_)
+	
+	//for (auto point : testPoint_)
+	//{
+	//	DrawSphere3D(point.second, 50.0f, 10.0f, 10.0f, 0xff0000, true);
+	//}
+
+	for (auto section : sectionList_[static_cast<Stage::STAGE_NUM>(0)])
 	{
-		DrawSphere3D(point.second, 50.0f, 10.0f, 10.0f, 0xff0000, true);
+		for (auto bulidings : section.second)
+		{
+			for (auto swingPoint : bulidings.second)
+			{
+				
+				DrawSphere3D(swingPoint, 70.0f, 10.0f, 10.0f, 0xff0000, true);
+			
+			}
+		}
+
 	}
+
 }
 
 void SwingPoint::Load(void)
@@ -97,23 +113,45 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 {
 	min = 9999999.0f;
 	auto pop = pos;
-	pop.y = 0.0f;
+	//pop.y = 0.0f;
 	distance_.clear();
-	for (int i = 1; i <= total; i++)
+	comparison_.clear();
+	VECTOR tesP;
+	//for (int i = 1; i <= total; i++)
+	//{
+	//	auto tesP = testPoint_[i];
+	//	tesP.y = 0.0f;
+	//	auto p =VSub(pop, tesP);
+	//	float pp = abs(p.x) +abs( p.z);
+	//	distance_.push_back(pp);
+	//}
+
+	for (auto section : sectionList_[static_cast<Stage::STAGE_NUM>(0)])
 	{
-		auto tesP = testPoint_[i];
-		tesP.y = 0.0f;
-		auto p =VSub(pop, tesP);
-		float pp = abs(p.x) +abs( p.z);
-		distance_.push_back(pp);
+		for (auto bulidings : section.second)
+		{
+			for (auto swingPoint : bulidings.second)
+			{
+				 tesP = swingPoint;
+				//tesP.y = 0.0f;
+				auto p = VSub(pop, tesP);
+				float pp = abs(p.x) + abs(p.z) +abs(p.y);
+				distans_2 = abs(p.x) + abs(p.z) +abs(p.y);
+				distance_.push_back(pp);
+				fainal_.first = distans_2;
+				fainal_.second = tesP;
+				comparison_.push_back(fainal_);
+			}
+		}
 	}
-	for (int f =0;f<  distance_.size();f++)
+
+	for (int f =0;f< comparison_.size();f++)
 	{
 		//if (distance_[f] <= min&& distance_[f]<300.0f)
-		if (distance_[f] <= min)
+		if (comparison_[f].first <= min)
 		{		
-			min = distance_[f];
-			minNum = f+1;		
+			min = comparison_[f].first;
+			minNum = f;		
 		}
 	}
 	//for (int i = 0; i < 2; i++)
@@ -130,7 +168,7 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 	auto swingSide = BuildingList[2];
 	auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
 	VECTOR swingPoint = swingPointOptions[2];
-	return 	testPoint_[minNum];
+	return 	comparison_[minNum].second;
 }
 
 const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)

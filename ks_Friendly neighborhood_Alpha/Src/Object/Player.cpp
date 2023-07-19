@@ -207,8 +207,8 @@ void Player::Swing(float delta)
 	auto k4a = delta * coe * sin(theta_ + m3a);
 	auto m4a = delta * (omega_ + k3a);
 
-	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /6.0f;		//Šp‘¬“x‚Ì‰ÁŽZ
-	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 6.0f;		//‚šŠp“x‚Ì‰ÁŽZ
+	omega_ += (k1a + 2.0f * k2a + 2.0f * k3a + k4a) /3.0f;		//Šp‘¬“x‚Ì‰ÁŽZ
+	theta_ += (m1a + 2.0f * m2a + 2.0f * m3a + m4a) / 3.0f;		//‚šŠp“x‚Ì‰ÁŽZ
 
 	auto stv = Normalized(stringV_);
 	
