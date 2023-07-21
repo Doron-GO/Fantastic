@@ -31,7 +31,6 @@ void Player::Init(void)
 {
 		//controller_ = std::make_unique<Keybord>();
 	tttt = 0;
-
 	//モデル情報を格納
 	transform_.SetModel(
 		resourceManager_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
@@ -49,8 +48,8 @@ void Player::Init(void)
 	capsule_->SetRelativePosDown({ 0.0f,40.0f,0.0f });
 	capsule_->SetRadius(20.0f);
 
-	endPos_ = { 4200.0f,2200.0f,1200.0f };
 
+	endPos_ = { 4200.0f,2200.0f,1200.0f };
 	sectionPos[0] = 25600.0f;
 	sectionPos[1] = 51071.0f;
 	swingFlag_ = false;
@@ -153,14 +152,14 @@ bool Player::Start(VECTOR pos ,VECTOR end)
 	Fro = VNorm(Fro);
 	Fro.y = 0.2f;
 	//swingGravityNorm = Normalized(Fro);
-	swingGravityNorm = VNorm(swingGravity_);
+	swingGravityNorm_ = VNorm(swingGravity_);
 
-	auto x2 = Dot(swingGravityNorm, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
-	swingYnorm_ = stringV_ - swingGravityNorm * x2;//錘から重力軸までのベクトル
+	auto x2 = Dot(swingGravityNorm_, stringV_);//重力ベクトルと錘から重力軸までのベクトルが交わる点と支点の大きさ
+	swingYnorm_ = stringV_ - swingGravityNorm_ * x2;//錘から重力軸までのベクトル
 	auto y2 = Magnitude(swingYnorm_);				//錘から重力軸までの正規化済みベクトル
 	swingYnorm_=Normalized(swingYnorm_);
 	theta_ = atan2f(y2, x2);				//支点の近接二辺のそれぞれの大きさを使用して角度を出す
-	auto gravity_ = VScale(swingGravityNorm, 3500.0f);
+	auto gravity_ = VScale(swingGravityNorm_, 3500.0f);
 	
 	gMag_ = Magnitude(gravity_);
 	omega_ = 0.0f;									//角速度は0で初期化
@@ -181,7 +180,7 @@ void Player::SetFollowTarget(Camera* target)
 
 void Player::AddCollider(Collider* collider)
 {
-	mColliders.emplace_back(collider);
+	colliders_.emplace_back(collider);
 }
 
 void Player::Swing(float delta)
@@ -215,7 +214,7 @@ void Player::Swing(float delta)
 	if (swingFlag_==true) 
 	{
 		//transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
-		auto l = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
+		auto l = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm_) + length_ * sin(theta_) * swingYnorm_;
 		
 		movePow_ = VSub(l, transform_.pos);
 	}
@@ -257,8 +256,8 @@ void Player::DrawDebug(void)
 	auto  lol = VECTOR{ 1.0f,1400.0f,0.2f };
 	//swingGravity = VECTOR{lol.x,-0.4f,lol.z };
 
-	auto kj = VAdd(endPos_, VScale(swingGravityNorm, 600.0f));
-	auto kj2 = VAdd(transform_.pos, VScale(swingGravityNorm, 600.0f));
+	auto kj = VAdd(endPos_, VScale(swingGravityNorm_, 600.0f));
+	auto kj2 = VAdd(transform_.pos, VScale(swingGravityNorm_, 600.0f));
 	DrawLine3D(endPos_, kj, 0x00ff00);
 	DrawLine3D(transform_.pos, kj2, 0x00ff00);
 	VECTOR klk = { 4200.0f,2200.0f,1200.0f };
@@ -501,7 +500,7 @@ void Player::CollisionCupsule(void)
 	trans.Update();
 	Capsule cap = capsule_->Copy(&trans);
 
-	for (auto c : mColliders)
+	for (auto c : colliders_)
 	{
 		auto hits = MV1CollCheck_Capsule(c->modelId_,-1,
 			cap.GetPosTop(),
@@ -556,7 +555,7 @@ void Player::CollisionCupsule(void)
 
 void Player::CollisionSphere(void)
 {
-	for (auto c : mColliders)
+	for (auto c : colliders_)
 	{
 		//地面(ステージモデル)との衝突				　
 		auto hits = MV1CollCheck_Sphere(c->modelId_, -1, transform_.pos, 50.0f);
@@ -591,7 +590,7 @@ void Player::CollisionGravity(void)
 	auto gravHitDown = VAdd(movedPos_, VScale(dirGravity, CheckPow));
 
 
-	for (auto c : mColliders)
+	for (auto c : colliders_)
 	{
 
 		//地面(ステージモデル)との衝突				　↓始点		↓終点

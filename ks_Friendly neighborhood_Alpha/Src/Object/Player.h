@@ -103,7 +103,7 @@ private:
 	VECTOR swingYnorm_;
 	VECTOR gravity_;	//重力
 	VECTOR gravityNorm_;	//重力方向の正規化ベクトル
-	VECTOR swingGravityNorm;	
+	VECTOR swingGravityNorm_;	
 	VECTOR yNorm_;//軸から錘の正規化済み垂直ベクトル
 	VECTOR swingGravity_; //swing時の呪力方向
 	VECTOR swingGravity_2; //swing時の呪力方向
@@ -111,7 +111,7 @@ private:
 	Quaternion goalQuaRot_; //最終的に向きたい方向
 	Quaternion pendulumRotY_;	//y軸回転
 
-	std::vector<Collider*>mColliders;
+	std::vector<Collider*>colliders_;
 	std::unique_ptr<Capsule>capsule_;
 
 	SwingPoint swingPoint_;

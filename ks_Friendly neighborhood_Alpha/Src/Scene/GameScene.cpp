@@ -23,6 +23,7 @@ GameScene::GameScene(void)
 
 void GameScene::Init(void)
 {
+	//SetUseASyncLoadFlag(TRUE);
 	isLoaded = false;
 	//ステージ
 	stage_ = std::make_unique<Stage>();
@@ -36,7 +37,6 @@ void GameScene::Init(void)
 
 	stage_->Init();
 	swi_->Load();
-
 	player_->Init();
 
 	//コイン
@@ -66,10 +66,7 @@ void GameScene::Init(void)
 		player_->AddCollider(oo->GetTransform()->collider);
 	}
 
-
-
 	skyDome_->Init();
-
 	grid_->Init();
 	//カメラの設定
 	lpSceneMng.GetCamera()->ChangeMode(Camera::MODE::FOLLOW);
@@ -79,6 +76,8 @@ void GameScene::Init(void)
 
 	//loadThread_ = std::thread(&GameScene::Load, this);
 	//Load();
+	//SetUseASyncLoadFlag(FALSE);
+
 }
 
 void GameScene::Update(void)
@@ -89,11 +88,6 @@ void GameScene::Update(void)
 	//auto contData = controller_->GetInputData();
 	//if (contData[NowFlame][static_cast<int>(InputID::Btn3)] &&
 	//	!contData[OldFlame][static_cast<int>(InputID::Btn3)])
-
-	if (!isLoaded_)
-	{ return; 
-
-	}
 
 	player_->CheckSection();
 	auto& ins = InputManager::GetInstance();
@@ -121,6 +115,7 @@ void GameScene::Update(void)
 
 void GameScene::Draw(void)
 {
+
 	// コイン
 	for (const auto c : coins_)
 	{
@@ -224,6 +219,7 @@ void GameScene::MakeCoin(void)
 
 void GameScene::IsHitCoinPlayer(void)
 {
+
 	// コインとプレイヤーの衝突判定
 	auto p = player_->GetTransform();
 

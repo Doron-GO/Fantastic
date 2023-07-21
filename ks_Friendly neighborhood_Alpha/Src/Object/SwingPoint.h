@@ -32,15 +32,13 @@ private:
 
 	json json_;
 
-	//std::map < Stage::STAGE_NUM, std::vector < std::pair <VECTOR, VECTOR>>> swingPoint_;
-	std::vector<VECTOR> pos_;
-	std::map<SIDE, std::vector<VECTOR>> swingPoint_; // 40(配列)   360
+	std::vector<VECTOR> pos_;//支点の座標
+	std::map<SIDE, std::vector<VECTOR>> swingPoint_; //支点情報がたくさん入っている
 
 	std::map<int , std::map<SIDE, std::vector<VECTOR>>>BuildingList_;//20個
 	
 	std::map<Stage::STAGE_NUM, std::map<int, std::map<SIDE, std::vector<VECTOR>>>> sectionList_;
 	
-	//std::map < std::string, std::list < std::pair <VECTOR,VECTOR>>> swingPoint_;
 	VECTOR norm_;
 
 	int total;
@@ -49,11 +47,10 @@ private:
 	std::map<int, VECTOR> testPoint_;//支点番号を渡すと支点の座標が戻ってくる
 	std::map<int, std::pair<VECTOR,VECTOR>> testPoint2_;//支点番号を渡すとpairが戻ってくる　重力方向・座標
 
-	std::vector<float> distance_;
+
+	std::vector<float> distance_;//プレイヤーから支点までの距離を格納する
 	float distans_2;
-
 	std::pair<float, VECTOR>fainal_;//firstはdistance,secondは支点座標
-
 	std::vector<std::pair<float, VECTOR>> comparison_;//fainal_が入っている
 
 

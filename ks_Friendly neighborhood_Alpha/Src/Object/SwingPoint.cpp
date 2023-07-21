@@ -24,21 +24,17 @@ void SwingPoint::Draw(void)
 	//{
 	//	DrawSphere3D(point.second, 50.0f, 10.0f, 10.0f, 0xff0000, true);
 	//}
-
 	for (auto section : sectionList_[static_cast<Stage::STAGE_NUM>(0)])
 	{
 		for (auto bulidings : section.second)
 		{
 			for (auto swingPoint : bulidings.second)
-			{
-				
+			{			
 				DrawSphere3D(swingPoint, 70.0f, 10.0f, 10.0f, 0xff0000, true);
 			
 			}
 		}
-
 	}
-
 }
 
 void SwingPoint::Load(void)
@@ -72,7 +68,6 @@ void SwingPoint::Load(void)
 				std::string Side = "Side" + num;
 				auto sideObj = Bldg[Side];
 				int VecNum = sideObj["VECTORTotalNum"].get<int>();
-
 				auto norm = sideObj["Norm"];
 				norm_ = { norm["x"].get<float>(),norm["y"].get<float>() ,norm["z"].get<float>() };
 				std::vector<VECTOR> p;
@@ -99,14 +94,12 @@ void SwingPoint::Load(void)
 
 	auto BillPoint = json_["BillPoint"];
 	 total = BillPoint["Total"].get<int>();
-
 	for (int i = 1; i <= total; i++)
 	{
 		std::string num3 = std::to_string(i);
 		VECTOR f = { BillPoint[num3]["VECTOR"]["x"].get<float>(),BillPoint[num3]["VECTOR"]["y"].get<float>(),BillPoint[num3]["VECTOR"]["z"].get<float>()};
 		testPoint_[i] = f;
 	}
-
 }
 
 const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
@@ -147,7 +140,6 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 
 	for (int f =0;f< comparison_.size();f++)
 	{
-		//if (distance_[f] <= min&& distance_[f]<300.0f)
 		if (comparison_[f].first <= min)
 		{		
 			min = comparison_[f].first;
