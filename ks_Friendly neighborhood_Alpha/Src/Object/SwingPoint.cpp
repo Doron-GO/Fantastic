@@ -92,14 +92,42 @@ void SwingPoint::Load(void)
 			sectionList_[static_cast<Stage::STAGE_NUM>(TSN-1)]= BuildingList_;
 	}
 
-	auto BillPoint = json_["BillPoint"];
-	 total = BillPoint["Total"].get<int>();
-	for (int i = 1; i <= total; i++)
+	auto SwingPoint = json_["SwingPoint"];
+	 totalSwingPoint_ = SwingPoint["Total"].get<int>();
+	for (int i = 1; i <= totalSwingPoint_; i++)
 	{
 		std::string num3 = std::to_string(i);
-		VECTOR f = { BillPoint[num3]["VECTOR"]["x"].get<float>(),BillPoint[num3]["VECTOR"]["y"].get<float>(),BillPoint[num3]["VECTOR"]["z"].get<float>()};
-		testPoint_[i] = f;
+		VECTOR f = { SwingPoint[num3]["VECTOR"]["x"].get<float>(),SwingPoint[num3]["VECTOR"]["y"].get<float>(),SwingPoint[num3]["VECTOR"]["z"].get<float>()};
+		swingPoint2_[i] = f;
 	}
+
+	//ビルリストの中に支点情報を入れる
+	auto SwingPoint2 = json_["SwingPoint2"];
+	auto totalBNum = SwingPoint2["TotalBNum"].get<int>();
+	for (int i = 1; i <= totalBNum; i++)
+	{
+		swingPoint3_.clear();
+		std::string num3 = std::to_string(i);
+		auto pointList = SwingPoint2[num3];
+		auto total = SwingPoint2[num3]["Total"];
+		for (int d = 1; d <= total;d++) 
+		{
+			std::string num = std::to_string(d);
+			VECTOR f = { pointList[num]["VECTOR"]["x"].get<float>(),pointList[num]["VECTOR"]["y"].get<float>(),pointList[num]["VECTOR"]["z"].get<float>()};
+			swingPoint3_.push_back(f);
+		}
+		swingList3_.push_back(swingPoint3_);
+	}
+
+	auto BillPoint = json_["BillPoint"];
+	auto BillTotalNum = BillPoint["Total"].get<int>();
+	for (int idx = 0; idx < BillTotalNum;idx++)
+	{
+		std::string num3 = std::to_string(idx);
+		VECTOR f = { SwingPoint[num3]["VECTOR"]["x"].get<float>(),SwingPoint[num3]["VECTOR"]["y"].get<float>(),SwingPoint[num3]["VECTOR"]["z"].get<float>() };
+		BillPpoint_.push_back(f);	
+	}
+
 }
 
 const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
@@ -119,23 +147,33 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 	//	distance_.push_back(pp);
 	//}
 
-	for (auto section : sectionList_[static_cast<Stage::STAGE_NUM>(0)])
+	//for (auto section : sectionList_[static_cast<Stage::STAGE_NUM>(0)])
+	//{
+	//	for (auto bulidings : section.second)
+	//	{
+	//		for (auto swingPoint : bulidings.second)
+	//		{
+	//			 tesP = swingPoint;
+	//			//tesP.y = 0.0f;
+	//			auto p = VSub(pop, tesP);
+	//			float pp = abs(p.x) + abs(p.z) +abs(p.y);
+	//			distans_2 = abs(p.x) + abs(p.z) +abs(p.y);
+	//			distance_.push_back(pp);
+	//			fainal_.first = distans_2;
+	//			fainal_.second = tesP;
+	//			comparison_.push_back(fainal_);
+	//		}
+	//	}
+	//}
+
+	for (int idx =0; idx< BillPpoint_.size();idx++)
 	{
-		for (auto bulidings : section.second)
-		{
-			for (auto swingPoint : bulidings.second)
-			{
-				 tesP = swingPoint;
-				//tesP.y = 0.0f;
-				auto p = VSub(pop, tesP);
-				float pp = abs(p.x) + abs(p.z) +abs(p.y);
-				distans_2 = abs(p.x) + abs(p.z) +abs(p.y);
-				distance_.push_back(pp);
-				fainal_.first = distans_2;
-				fainal_.second = tesP;
-				comparison_.push_back(fainal_);
-			}
-		}
+		auto tesP = BillPpoint_[idx];
+		tesP.y = 0.0f;
+		auto p =VSub(pop, tesP);
+		float pp = abs(p.x) +abs( p.z);
+		distance_.push_back(pp);
+
 	}
 
 	for (int f =0;f< comparison_.size();f++)
@@ -143,32 +181,22 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 		if (comparison_[f].first <= min)
 		{		
 			min = comparison_[f].first;
-			minNum = f;		
+			minSwingPointNum_ = f;		
 		}
 	}
-	//for (int i = 0; i < 2; i++)
-	//{
-	//	for ( auto list:sectionList_[static_cast<Stage::STAGE_NUM>(i)])
-	//	{
-	//		for (int m = 0; m < 4; m++)
-	//		{
-	//			list.second[static_cast<SIDE>(0)];
-	//		}
-	//	}
-	//}
 	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
 	auto swingSide = BuildingList[2];
 	auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
 	VECTOR swingPoint = swingPointOptions[2];
-	return 	comparison_[minNum].second;
+	return 	comparison_[minSwingPointNum_].second;
 }
 
 const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)
 {
 	float z;
 	float x;
-	auto tz = abs(testPoint_[minNum].z);
-	auto tx = abs(testPoint_[minNum].x);
+	auto tz = abs(swingPoint2_[minSwingPointNum_].z);
+	auto tx = abs(swingPoint2_[minSwingPointNum_].x);
 	auto px = abs(PlayerPos.x);
 	auto pz = abs(PlayerPos.z);
 	if (tz <= pz)
