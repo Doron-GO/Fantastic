@@ -27,21 +27,7 @@ void Stage::Init(void)
 		auto l = 0.0f;
 	}
 	json_ = json::parse(f);
-
 	json_ = json_["StageModel1"];
-
-
-	//transform_.SetModel();
-	//モデルのロード
-	//モデルの設定
-	//transform_.scl = { 1.0f, 1.0f, 1.0f };
-	//transform_.pos = { 0.0f, 0.0f, 0.0f };
-	//transform_.localPos = { -0.0f,-1500.0f,0.0f };
-	//transform_.pos = VAdd(transform_.pos, transform_.localPos);
-	//transform_.quaRot = Quaternion();
-	//transform_.Update();
-	////当たり判定の生成
-	//MakeStageCol();
 	Load();
 }
 
@@ -96,7 +82,7 @@ VECTOR Stage::GetSwinPoint(void)
 void Stage::Load(void)
 {
 	auto max = json_["StageTotalNum"].get<int>();
-	for (int model = 1; model <= max; model++)
+	for (int model = 1; model <= 1; model++)
 	{
 		std::string st = std::to_string(model);
 		const char* i = st.c_str();

@@ -59,7 +59,7 @@ void GameScene::Init(void)
 	//	player_->AddCollider(oo->GetTransform()->collider);
 	//}
 
-	for (int i = 1; i <= 4; i++)
+	for (int i = 1; i <= 1; i++)
 	{
 		auto p = stage_->GetPiece();
 		auto oo = p[static_cast<Stage::STAGE_NUM>(i - 1)];
@@ -98,7 +98,8 @@ void GameScene::Update(void)
 	auto p= swi_->SetSwingPoint(player_->GetTransform()->pos,player_->CheckSection()); 
 
 	auto gra= swi_->SetGravity(player_->GetTransform()->pos);
-	player_->Update(SceneManager::GetInstance().GetDeltaTime(), SceneManager::GetInstance().GetCamera()->GetDir(), gra,p);
+	auto bill= swi_->GetBillPoint();
+	player_->Update(SceneManager::GetInstance().GetDeltaTime(), SceneManager::GetInstance().GetCamera()->GetDir(), gra,p, bill);
 
 	stage_->Update();
 	// ƒRƒCƒ“

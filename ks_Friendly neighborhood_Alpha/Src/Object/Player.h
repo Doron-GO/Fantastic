@@ -46,7 +46,7 @@ public:
 	~Player(void);
 
 	void Init(void);
-	void Update(float delta,VECTOR pos, VECTOR gra, VECTOR end);
+	void Update(float delta,VECTOR pos, VECTOR gra, VECTOR end,VECTOR Billpos);
 	void SetFollowTarget(Camera* target);
 	void AddCollider(Collider* collider);
 	void Draw(void);
@@ -61,7 +61,8 @@ private:
 	void DrawDebug(void);	//デバッグ表示
 	void UpdatePendulum(float delta);
 	void UpdateGround(float delta);
-	bool Start(VECTOR pos,VECTOR end);
+	bool SetSwingParam(VECTOR pos,VECTOR end);
+	void SwingStart();
 	void Swing(float delta);	//振り子の計算を行う
 	void Flying(float delta);
 	void ProcessMove(void);
@@ -97,18 +98,19 @@ private:
 	float sectionPos[2];
 	int tttt;
 	VECTOR movePow_;
-	VECTOR endPos_;	//支点の座標
+	VECTOR endPos_;		//支点の座標
 	VECTOR endPos_2;	//支点の座標2
-	VECTOR stringV_;//支点からプレイヤーへのベクトル
+	VECTOR billPos_;	//ビルの座標
+	VECTOR stringV_;		//支点からプレイヤーへのベクトル
 	VECTOR swingYnorm_;
-	VECTOR gravity_;	//重力
+	VECTOR gravity_;		//重力
 	VECTOR gravityNorm_;	//重力方向の正規化ベクトル
 	VECTOR swingGravityNorm_;	
-	VECTOR yNorm_;//軸から錘の正規化済み垂直ベクトル
-	VECTOR swingGravity_; //swing時の呪力方向
-	VECTOR swingGravity_2; //swing時の呪力方向
+	VECTOR yNorm_;			//軸から錘の正規化済み垂直ベクトル
+	VECTOR swingGravity_;	//swing時の呪力方向
+	VECTOR swingGravity_2;	 //swing時の呪力方向
 
-	Quaternion goalQuaRot_; //最終的に向きたい方向
+	Quaternion goalQuaRot_;		//最終的に向きたい方向
 	Quaternion pendulumRotY_;	//y軸回転
 
 	std::vector<Collider*>colliders_;

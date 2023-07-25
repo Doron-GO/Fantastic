@@ -35,6 +35,15 @@ void SwingPoint::Draw(void)
 			}
 		}
 	}
+	for (auto bill : BillPpoint_)
+	{
+		VECTOR b = { bill.x,500.0f,bill.z };
+		DrawSphere3D(b, 70.0f, 10.0f, 10.0f, 0x000000, true);
+
+	}
+
+	DrawFormatString(50, 300, 0xffffff, "ˆê”Ô‹ß‚¢ƒrƒ‹:%d", BillNum_+1);
+	DrawFormatString(50, 330, 0xffffff, "ˆê”Ô‹ß‚¢ƒrƒ‹‚ÌŽx“_%d", swingNum_+1);
 }
 
 void SwingPoint::Load(void)
@@ -123,8 +132,8 @@ void SwingPoint::Load(void)
 	auto BillTotalNum = BillPoint["Total"].get<int>();
 	for (int idx = 0; idx < BillTotalNum;idx++)
 	{
-		std::string num3 = std::to_string(idx);
-		VECTOR f = { SwingPoint[num3]["VECTOR"]["x"].get<float>(),SwingPoint[num3]["VECTOR"]["y"].get<float>(),SwingPoint[num3]["VECTOR"]["z"].get<float>() };
+		std::string num3 = std::to_string(idx+1);
+		VECTOR f = { BillPoint[num3]["VECTOR"]["x"].get<float>(),BillPoint[num3]["VECTOR"]["y"].get<float>(),BillPoint[num3]["VECTOR"]["z"].get<float>() };
 		BillPpoint_.push_back(f);	
 	}
 
@@ -166,6 +175,16 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 	//	}
 	//}
 
+	//for (int f = 0; f < comparison_.size(); f++)
+	//{
+	//	if (comparison_[f].first <= min)
+	//	{
+	//		min = comparison_[f].first;
+	//		minSwingPointNum_ = f;
+	//	}
+	//}
+
+
 	for (int idx =0; idx< BillPpoint_.size();idx++)
 	{
 		auto tesP = BillPpoint_[idx];
@@ -173,22 +192,49 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 		auto p =VSub(pop, tesP);
 		float pp = abs(p.x) +abs( p.z);
 		distance_.push_back(pp);
-
 	}
-
-	for (int f =0;f< comparison_.size();f++)
+	BillNum_ =0;
+	for (int idx = 0; idx < distance_.size(); idx++)
 	{
-		if (comparison_[f].first <= min)
-		{		
-			min = comparison_[f].first;
-			minSwingPointNum_ = f;		
+		if (distance_[idx] <= min)
+		{
+			min = distance_[idx];
+			BillNum_ = idx;
 		}
 	}
-	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
-	auto swingSide = BuildingList[2];
-	auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
-	VECTOR swingPoint = swingPointOptions[2];
-	return 	comparison_[minSwingPointNum_].second;
+
+	distance_.clear();
+	min = 9999999.0f;
+	for (int idx = 0; idx < swingList3_[BillNum_].size(); idx++)
+	{
+		auto Point = swingList3_[BillNum_];
+		auto p = VSub(pop, Point[idx]);
+		float pp = abs(p.x) + abs(p.z);
+		distance_.push_back(pp);
+	}
+	swingNum_ = 0;
+	for (int idx = 0; idx < distance_.size(); idx++)
+	{
+		if (distance_[idx] <= min)
+		{
+			min = distance_[idx];
+			swingNum_ = idx;
+		}
+	}
+	return swingList3_[BillNum_][swingNum_];
+
+
+	//auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
+	//auto swingSide = BuildingList[2];
+	//auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
+	//VECTOR swingPoint = swingPointOptions[2];
+	
+
+}
+
+const VECTOR SwingPoint::GetBillPoint()
+{
+	return BillPpoint_[BillNum_];
 }
 
 const VECTOR SwingPoint::SetGravity(VECTOR PlayerPos)

@@ -25,6 +25,7 @@ public:
 	void Load(void);
 
 	const VECTOR SetSwingPoint(VECTOR PlayerPos,int section);
+	const VECTOR GetBillPoint();
 	const VECTOR SetGravity(VECTOR PlayerPos);
 private:
 	float Magnitude(VECTOR pos)const;
@@ -52,7 +53,10 @@ private:
 	std::vector<std::pair<float, VECTOR>> comparison_;	//fainal_が入っている
 //--------------------------------------------------------------------------------------------------------------
 	std::vector<VECTOR> BillPpoint_;					//ビルの座標が入っている 一番近いビルを特定するのに使う
-	std::vector<VECTOR> swingPoint3_;					//BillPpoint_の中に入っている座標(支点の座標)
-	std::vector<std::vector<VECTOR>> swingList3_;		//ビル一個についている支点の座標が入っている
+	std::vector<VECTOR> swingPoint3_;					//支点の座標が入っている
+	std::vector<std::vector<VECTOR>> swingList3_;		//ビルに対する支点のリスト　ビルが決定したらそのビルについている支点で検索する
+	int swingNum_;
+	int BillNum_;
+
 };
 
