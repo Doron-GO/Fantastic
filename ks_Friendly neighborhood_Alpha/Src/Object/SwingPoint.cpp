@@ -3,6 +3,7 @@
 #include<DxLib.h>
 #include <stdlib.h>
 #include<string>
+#include"../Utility/AsoUtility.h"
 
 
 SwingPoint::SwingPoint()
@@ -58,15 +59,15 @@ void SwingPoint::Load(void)
 	for (int TSN = 1; TSN <= TotalSectionNum; TSN++)
 	{
 		std::string tsn = std::to_string(TSN);
-		std::string Buildings = "Buildings" + tsn;
-		auto Buildings_ = json_[Buildings];
-		int totalBldgNum = Buildings_["TotalBldgNum"].get<int>();
+		std::string Section = "Section" + tsn;
+		auto Section_ = json_[Section];
+		int totalBldgNum = Section_["TotalBldgNum"].get<int>();
 		BuildingList_.clear();
 		for (int idx = 1; idx <= totalBldgNum; idx++)
 		{
 			std::string st = std::to_string(idx);
 			std::string BldgNum = "Bldg" + st;
-			auto Bldg = Buildings_[BldgNum];
+			auto Bldg = Section_[BldgNum];
 			//int VecNum = Bldg["VECTORTotalNum"].get<int>();
 			int PointTotalNum = Bldg["PointTotalNum"];
 			std::string PointTotalNumSt = std::to_string(PointTotalNum);
@@ -98,7 +99,7 @@ void SwingPoint::Load(void)
 			}
 			BuildingList_[idx] = swingPoint_;
 		}
-			sectionList_[static_cast<Stage::STAGE_NUM>(TSN-1)]= BuildingList_;
+		sectionList_[static_cast<Stage::STAGE_NUM>(TSN-1)]= BuildingList_;
 	}
 
 	auto SwingPoint = json_["SwingPoint"];
@@ -139,10 +140,11 @@ void SwingPoint::Load(void)
 
 }
 
-const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
+const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section, VECTOR Angle)
 {
 	min = 9999999.0f;
 	auto pop = pos;
+	auto angle= Angle;
 	//pop.y = 0.0f;
 	distance_.clear();
 	comparison_.clear();
@@ -185,46 +187,70 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section)
 	//}
 
 
-	for (int idx =0; idx< BillPpoint_.size();idx++)
+	//for (int idx =0; idx< BillPpoint_.size();idx++)
+	//{
+	//	auto tesP = BillPpoint_[idx];
+	//	tesP.y = 0.0f;
+	//	auto p =VSub(pop, tesP);
+	//	float pp = abs(p.x) +abs( p.z);
+	//	distance_.push_back(pp);
+	//}
+	//BillNum_ =0;
+	//for (int idx = 0; idx < distance_.size(); idx++)
+	//{
+	//	if (distance_[idx] <= min)
+	//	{
+	//		min = distance_[idx];
+	//		BillNum_ = idx;
+	//	}
+	//}
+
+	//distance_.clear();
+	//min = 9999999.0f;
+	//for (int idx = 0; idx < swingList3_[BillNum_].size(); idx++)
+	//{
+	//	auto Point = swingList3_[BillNum_];
+	//	auto p = VSub(pop, Point[idx]);
+	//	float pp = abs(p.x) + abs(p.z);
+	//	distance_.push_back(pp);
+	//}
+	//swingNum_ = 0;
+	//for (int idx = 0; idx < distance_.size(); idx++)
+	//{
+	//	if (distance_[idx] <= min)
+	//	{
+	//		min = distance_[idx];
+	//		swingNum_ = idx;
+	//	}
+	//}
+	//return swingList3_[BillNum_][swingNum_];
+
+	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(0)];
+
+
+	for (auto bldg : BuildingList)
 	{
-		auto tesP = BillPpoint_[idx];
-		tesP.y = 0.0f;
-		auto p =VSub(pop, tesP);
-		float pp = abs(p.x) +abs( p.z);
-		distance_.push_back(pp);
-	}
-	BillNum_ =0;
-	for (int idx = 0; idx < distance_.size(); idx++)
-	{
-		if (distance_[idx] <= min)
+		for(auto side : bldg.second)
 		{
-			min = distance_[idx];
-			BillNum_ = idx;
+			for (auto fulcrum :side.second)
+			{
+				auto diffX = pop.x - fulcrum.x;
+				auto diffZ = pop.z - fulcrum.z;
+				auto  distanceB = hypotf(diffX, diffZ);
+				if (distanceB <= 5000)
+				{
+					float  rad = atan2(diffX, diffZ);
+					float pp = AsoUtility::Rad2DegF(rad - angle.y);
+					if (abs(pp) <= 200.0f)
+					{
+						// ŒŸ’m‚µ‚½‚ 
+						return fulcrum;
+					}
+				}
+			}
 		}
 	}
 
-	distance_.clear();
-	min = 9999999.0f;
-	for (int idx = 0; idx < swingList3_[BillNum_].size(); idx++)
-	{
-		auto Point = swingList3_[BillNum_];
-		auto p = VSub(pop, Point[idx]);
-		float pp = abs(p.x) + abs(p.z);
-		distance_.push_back(pp);
-	}
-	swingNum_ = 0;
-	for (int idx = 0; idx < distance_.size(); idx++)
-	{
-		if (distance_[idx] <= min)
-		{
-			min = distance_[idx];
-			swingNum_ = idx;
-		}
-	}
-	return swingList3_[BillNum_][swingNum_];
-
-
-	//auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(section-1)];
 	//auto swingSide = BuildingList[2];
 	//auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];
 	//VECTOR swingPoint = swingPointOptions[2];

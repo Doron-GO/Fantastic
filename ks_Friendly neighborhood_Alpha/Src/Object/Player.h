@@ -53,6 +53,7 @@ public:
 	void SwingDraw(void);
 	int CheckSection(void);
 	void SetEndPpos(VECTOR pos);
+	VECTOR GetCameraAngles(void);
 	Transform* GetTransform(void);
 	Quaternion quaPaddir;
 private:
@@ -93,6 +94,7 @@ private:
 	VECTOR movedPos_;	//ˆÚ“®Œã‚ÌÀ•W
 	VECTOR jumpPow_;		//ƒWƒƒƒ“ƒv—Ê
 	float jumpDot_;
+
 	Camera* camera_;
 
 	float sectionPos[2];

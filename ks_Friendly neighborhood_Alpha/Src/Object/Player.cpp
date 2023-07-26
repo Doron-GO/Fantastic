@@ -56,6 +56,7 @@ void Player::Init(void)
 	// アニメーションの設定
 	AnimationInit();
 	isSwingJump_ = false;
+	camera_ =  SceneManager::GetInstance().GetCamera();
 }
 
 void Player::Update(float delta, VECTOR dir,VECTOR gra,VECTOR endp, VECTOR Billpos)
@@ -318,6 +319,12 @@ void Player::SetEndPpos(VECTOR pos)
 	endPos_ = pos;
 }
 
+VECTOR Player::GetCameraAngles(void)
+{
+	return camera_->GetDir();
+}
+
+
 
 Transform* Player::GetTransform(void)
 {
@@ -345,7 +352,7 @@ void Player::ProcessMove()
 		movePow_ = VECTOR{ 0.0f,0.0f,0.0f };
 	}
 
-	Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotOutX();
+	Quaternion cameraRot = camera_->GetQuaRotOutX();
 
 	float rotRad = 0;
 	float speed = 40.0f;
@@ -370,10 +377,10 @@ void Player::ProcessMove()
 	float  rad = atan2f(padX,padY );
 	// 正規化
 	padDir = AsoUtility::VNormalize(padDir);
-	cameraRot =cameraRot.Normalized();
+	cameraRot = cameraRot.Normalized();
 
 	//アナログスティックの倒している方向のQuaternion
-	Quaternion quaPadDir = Quaternion::AngleAxis(rad,cameraRot.GetUp());
+	Quaternion quaPadDir = Quaternion::AngleAxis(rad, cameraRot.GetUp());
 	//カメラの回転と合成したクォータニオン
 	Quaternion goal2 = Quaternion::Mult(cameraRot, quaPadDir);
 

@@ -15,7 +15,7 @@ StagePiece::~StagePiece(void)
 
 void StagePiece::Draw(void)
 {
-	MV1SetOpacityRate(transform_.modelId, 0.5f);
+	//MV1SetOpacityRate(transform_.modelId, 0.3f);
 	MV1DrawModel(transform_.modelId);
 
 }

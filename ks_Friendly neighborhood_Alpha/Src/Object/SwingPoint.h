@@ -24,7 +24,7 @@ public:
 	void Draw(void);
 	void Load(void);
 
-	const VECTOR SetSwingPoint(VECTOR PlayerPos,int section);
+	const VECTOR SetSwingPoint(VECTOR PlayerPos,int section,VECTOR Angle);
 	const VECTOR GetBillPoint();
 	const VECTOR SetGravity(VECTOR PlayerPos);
 private:

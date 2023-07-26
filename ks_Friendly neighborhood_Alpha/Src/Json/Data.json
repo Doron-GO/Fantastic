@@ -1,6 +1,6 @@
 {
 	"TotalSectionNum": 2,
-	"Buildings1": {
+	"Section1": {
 		"TotalBldgNum": 5,
 		"Bldg1": {
 			"PointTotalNum": 12,
@@ -1510,7 +1510,7 @@
 
 	},
 
-	"Buildings2": {
+	"Section2": {
 		"TotalBldgNum": 2,
 		"Bldg1": {
 			"PointTotalNum": 13,
@@ -2607,42 +2607,42 @@
 	},
 
 
-		"StageModel": {
-			"StageTotalNum": 20,
-			"StageMV1": {
-				"1": "Stage/B00.mv1",
-				"2": "Stage/B01.mv1",
-				"3": "Stage/B02.mv1",
-				"4": "Stage/B03.mv1",
-				"5": "Stage/B04.mv1",
-				"6": "Stage/B10.mv1",
-				"7": "Stage/B11.mv1",
-				"8": "Stage/B12.mv1",
-				"9": "Stage/B13.mv1",
-				"10": "Stage/B14.mv1",
-				"11": "Stage/B20.mv1",
-				"12": "Stage/B21.mv1",
-				"13": "Stage/B22.mv1",
-				"14": "Stage/B23.mv1",
-				"15": "Stage/B24.mv1",
-				"16": "Stage/B30.mv1",
-				"17": "Stage/B31.mv1",
-				"18": "Stage/B32.mv1",
-				"19": "Stage/B33.mv1",
-				"20": "Stage/B34.mv1"
+	"StageModel": {
+		"StageTotalNum": 20,
+		"StageMV1": {
+			"1": "Stage/B00.mv1",
+			"2": "Stage/B01.mv1",
+			"3": "Stage/B02.mv1",
+			"4": "Stage/B03.mv1",
+			"5": "Stage/B04.mv1",
+			"6": "Stage/B10.mv1",
+			"7": "Stage/B11.mv1",
+			"8": "Stage/B12.mv1",
+			"9": "Stage/B13.mv1",
+			"10": "Stage/B14.mv1",
+			"11": "Stage/B20.mv1",
+			"12": "Stage/B21.mv1",
+			"13": "Stage/B22.mv1",
+			"14": "Stage/B23.mv1",
+			"15": "Stage/B24.mv1",
+			"16": "Stage/B30.mv1",
+			"17": "Stage/B31.mv1",
+			"18": "Stage/B32.mv1",
+			"19": "Stage/B33.mv1",
+			"20": "Stage/B34.mv1"
 
-			}
-		},
-
-		"StageModel1": {
-			"StageTotalNum": 4,
-			"StageMV1": {
-				"1": "Stage/B34.mv1",
-				"2": "Stage/B33.mv1",
-				"3": "Stage/B24.mv1",
-				"4": "Stage/B23.mv1"
-			}
 		}
+	},
 
-
+	"StageModel1": {
+		"StageTotalNum": 4,
+		"StageMV1": {
+			"1": "Stage/B34.mv1",
+			"2": "Stage/B33.mv1",
+			"3": "Stage/B24.mv1",
+			"4": "Stage/B23.mv1"
+		}
 	}
+
+
+}

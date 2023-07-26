@@ -95,11 +95,11 @@ void GameScene::Update(void)
 	{
 		lpSceneMng.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-	auto p= swi_->SetSwingPoint(player_->GetTransform()->pos,player_->CheckSection()); 
+	auto section= swi_->SetSwingPoint(player_->GetTransform()->pos,player_->CheckSection(),player_->GetCameraAngles());
 
-	auto gra= swi_->SetGravity(player_->GetTransform()->pos);
+	auto gravity= swi_->SetGravity(player_->GetTransform()->pos);
 	auto bill= swi_->GetBillPoint();
-	player_->Update(SceneManager::GetInstance().GetDeltaTime(), SceneManager::GetInstance().GetCamera()->GetDir(), gra,p, bill);
+	player_->Update(lpSceneMng.GetDeltaTime(), lpSceneMng.GetCamera()->GetDir(), gravity, section, bill);
 
 	stage_->Update();
 	// ƒRƒCƒ“
