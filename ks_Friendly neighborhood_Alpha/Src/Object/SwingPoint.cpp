@@ -43,8 +43,8 @@ void SwingPoint::Draw(void)
 
 	}
 
-	DrawFormatString(50, 300, 0xffffff, "一番近いビル:%d", BillNum_+1);
-	DrawFormatString(50, 330, 0xffffff, "一番近いビルの支点%d", swingNum_+1);
+	//DrawFormatString(50, 300, 0xffffff, "一番近いビル:%d", BillNum_+1);
+	//DrawFormatString(50, 330, 0xffffff, "一番近いビルの支点%d", swingNum_+1);
 }
 
 void SwingPoint::Load(void)
@@ -176,7 +176,6 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section, VECTOR Angle)
 	//		}
 	//	}
 	//}
-
 	//for (int f = 0; f < comparison_.size(); f++)
 	//{
 	//	if (comparison_[f].first <= min)
@@ -187,69 +186,70 @@ const VECTOR SwingPoint::SetSwingPoint(VECTOR pos, int section, VECTOR Angle)
 	//}
 
 
-	//for (int idx =0; idx< BillPpoint_.size();idx++)
-	//{
-	//	auto tesP = BillPpoint_[idx];
-	//	tesP.y = 0.0f;
-	//	auto p =VSub(pop, tesP);
-	//	float pp = abs(p.x) +abs( p.z);
-	//	distance_.push_back(pp);
-	//}
-	//BillNum_ =0;
-	//for (int idx = 0; idx < distance_.size(); idx++)
-	//{
-	//	if (distance_[idx] <= min)
-	//	{
-	//		min = distance_[idx];
-	//		BillNum_ = idx;
-	//	}
-	//}
-
-	//distance_.clear();
-	//min = 9999999.0f;
-	//for (int idx = 0; idx < swingList3_[BillNum_].size(); idx++)
-	//{
-	//	auto Point = swingList3_[BillNum_];
-	//	auto p = VSub(pop, Point[idx]);
-	//	float pp = abs(p.x) + abs(p.z);
-	//	distance_.push_back(pp);
-	//}
-	//swingNum_ = 0;
-	//for (int idx = 0; idx < distance_.size(); idx++)
-	//{
-	//	if (distance_[idx] <= min)
-	//	{
-	//		min = distance_[idx];
-	//		swingNum_ = idx;
-	//	}
-	//}
-	//return swingList3_[BillNum_][swingNum_];
-
-	auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(0)];
-
-
-	for (auto bldg : BuildingList)
+	//自分から近いビルから
+	for (int idx =0; idx< BillPpoint_.size();idx++)
 	{
-		for(auto side : bldg.second)
+		auto tesP = BillPpoint_[idx];
+		tesP.y = 0.0f;
+		auto p =VSub(pop, tesP);
+		float pp = abs(p.x) +abs( p.z);
+		distance_.push_back(pp);
+	}
+	BillNum_ =0;
+	for (int idx = 0; idx < distance_.size(); idx++)
+	{
+		if (distance_[idx] <= min)
 		{
-			for (auto fulcrum :side.second)
-			{
-				auto diffX = pop.x - fulcrum.x;
-				auto diffZ = pop.z - fulcrum.z;
-				auto  distanceB = hypotf(diffX, diffZ);
-				if (distanceB <= 5000)
-				{
-					float  rad = atan2(diffX, diffZ);
-					float pp = AsoUtility::Rad2DegF(rad - angle.y);
-					if (abs(pp) <= 200.0f)
-					{
-						// 検知したあ
-						return fulcrum;
-					}
-				}
-			}
+			min = distance_[idx];
+			BillNum_ = idx;
 		}
 	}
+
+	distance_.clear();
+	min = 9999999.0f;
+	for (int idx = 0; idx < swingList3_[BillNum_].size(); idx++)
+	{
+		auto Point = swingList3_[BillNum_];
+		auto p = VSub(pop, Point[idx]);
+		float pp = abs(p.x) + abs(p.z);
+		distance_.push_back(pp);
+	}
+	swingNum_ = 0;
+	for (int idx = 0; idx < distance_.size(); idx++)
+	{
+		if (distance_[idx] <= min)
+		{
+			min = distance_[idx];
+			swingNum_ = idx;
+		}
+	}
+	return swingList3_[BillNum_][swingNum_];
+
+
+	//視野
+	//auto BuildingList = sectionList_[static_cast<Stage::STAGE_NUM>(0)];
+	//for (auto bldg : BuildingList)
+	//{
+	//	for(auto side : bldg.second)
+	//	{
+	//		for (auto fulcrum :side.second)
+	//		{
+	//			auto diffX = pop.x - fulcrum.x;
+	//			auto diffZ = pop.z - fulcrum.z;
+	//			auto  distanceB = hypotf(diffX, diffZ);
+	//			if (distanceB <= 5000)
+	//			{
+	//				float  rad = atan2(diffX, diffZ);
+	//				float pp = AsoUtility::Rad2DegF(rad - angle.y);
+	//				if (abs(pp) <= 90.0f)
+	//				{
+	//					// 検知したあ
+	//					return fulcrum;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
 	//auto swingSide = BuildingList[2];
 	//auto swingPointOptions = swingSide[static_cast<SIDE>(section+1)];

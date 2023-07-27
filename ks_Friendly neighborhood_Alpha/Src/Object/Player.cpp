@@ -100,6 +100,9 @@ void Player::UpdateGround(float delta)
 
 void Player::Flying(float delta)
 {
+	SetEndPpos(endPos_2);
+	animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), true, 2.0f, 17.0f);
+	animationController_->SetEndLoop(12.0f, 17.0f, 3.0f);
 	auto speed = 4.0f;
 	CalcGravityPow();
 	ProcessJump();
@@ -262,6 +265,8 @@ void Player::DrawDebug(void)
 	DrawLine3D(endPos_, transform_.pos, 0xff00ff);//自分から支点までのラインを引く
 
 	DrawSphere3D(klk, 60.0f, 20.0f, 0xff0000, 0xffffff, true);
+	VECTOR bill{ billPos_.x,500.0f,billPos_.z };
+	DrawLine3D(bill, transform_.pos, 0x0000ff);
 
 }
 
@@ -270,11 +275,16 @@ void Player::Draw(void)
 {
 	// モデルの描画
 	MV1DrawModel(transform_.modelId);
-	capsule_->Draw();
-	VECTOR bill{ billPos_.x,500.0f,billPos_.z };
-	DrawLine3D(bill, transform_.pos, 0x0000ff);
+	//capsule_->Draw();
 	//デバッグ表示
-	DrawDebug();
+	//DrawLine3D(endPos_, transform_.pos, 0xff00ff);//自分から支点までのラインを引く
+	if (swingFlag_)
+	{
+		auto hand =MV1SearchFrame(transform_.modelId, "mixamorig:LeftHandIndex4");
+		auto pos= MV1GetFramePosition(transform_.modelId, hand);
+	   DrawLine3D(endPos_, pos, 0xffffff);//自分から支点までのラインを引く
+	}
+	//DrawDebug();
 }
 
 void Player::SwingDraw(void)
@@ -339,7 +349,7 @@ void Player::AnimationInit(void)
 	animationController_->Add((int)ANIM_TYPE::IDLE, path + "Idle1.mv1", 20.0f);
 	animationController_->Add((int)ANIM_TYPE::RUN, path + "Run1.mv1", 30.0f);
 	animationController_->Add((int)ANIM_TYPE::JUMP, path + "Gwen_Jump.mv1", 24.0f);
-	animationController_->Add((int)ANIM_TYPE::SWING, path + "Swing1.mv1", 20.0f);
+	animationController_->Add((int)ANIM_TYPE::SWING, path + "swing_PF.mv1", 20.0f);
 	animationController_->Play((int)ANIM_TYPE::IDLE);
 
 }
@@ -606,7 +616,7 @@ void Player::CollisionGravity(void)
 			//mHitPos = hit.HitPosition;
 
 			//衝突している
-			float dis = 2.0f;
+			float dis = 3.0f;
 			phase_ = &Player::UpdateGround;
 
 			swingFlag_ = false;

@@ -91,12 +91,11 @@ void GameScene::Update(void)
 
 	player_->CheckSection();
 	auto& ins = InputManager::GetInstance();
-	if(isHitNum_==3)
+	if(isHitNum_==coins_.size())
 	{
 		lpSceneMng.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 	auto section= swi_->SetSwingPoint(player_->GetTransform()->pos,player_->CheckSection(),player_->GetCameraAngles());
-
 	auto gravity= swi_->SetGravity(player_->GetTransform()->pos);
 	auto bill= swi_->GetBillPoint();
 	player_->Update(lpSceneMng.GetDeltaTime(), lpSceneMng.GetCamera()->GetDir(), gravity, section, bill);
@@ -194,7 +193,7 @@ void GameScene::MakeCoin(void)
 	coin->Init();
 	coins_.push_back(coin);
 
-	trans.pos = { 20994, 401, 51931 };
+	trans.pos = { 12065, 4094, 20288 };
 	trans.scl = { 1.0f,1.0f, 1.0f };
 	trans.quaRot = Quaternion::Euler(
 		AsoUtility::Deg2RadF(0.0f),
@@ -205,16 +204,16 @@ void GameScene::MakeCoin(void)
 	coin->Init();
 	coins_.push_back(coin);
 
-	trans.pos = { 28646, 1206, 42177 };
-	trans.scl = { 1.0f,1.0f, 1.0f };
-	trans.quaRot = Quaternion::Euler(
-		AsoUtility::Deg2RadF(0.0f),
-		AsoUtility::Deg2RadF(0.0f),
-		AsoUtility::Deg2RadF(0.0f)
-	);
-	coin = new Coin(trans);
-	coin->Init();
-	coins_.push_back(coin);
+	//trans.pos = { 28646, 1206, 42177 };
+	//trans.scl = { 1.0f,1.0f, 1.0f };
+	//trans.quaRot = Quaternion::Euler(
+	//	AsoUtility::Deg2RadF(0.0f),
+	//	AsoUtility::Deg2RadF(0.0f),
+	//	AsoUtility::Deg2RadF(0.0f)
+	//);
+	//coin = new Coin(trans);
+	//coin->Init();
+	//coins_.push_back(coin);
 
 }
 
