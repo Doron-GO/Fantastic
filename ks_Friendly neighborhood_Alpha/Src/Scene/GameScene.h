@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 class SceneManager;
+class AnimationController;
 class Controller;
 class Stage;
 class SkyDome;
@@ -25,6 +26,7 @@ public:
 private:
 	//ステージ
 	std::unique_ptr<Stage> stage_;
+	AnimationController* animationController_;	//プレイヤーのアニメーション制御
 
 	//グリッド線
 	std::unique_ptr<Grid> grid_;

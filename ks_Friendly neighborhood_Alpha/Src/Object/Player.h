@@ -39,7 +39,8 @@ public:
 		IDLE,
 		RUN,
 		JUMP,
-		SWING
+		SWING,
+		ODO
 	};
 
 	Player(void);
@@ -83,11 +84,14 @@ private:
 	VECTOR Normalized(VECTOR& v);
 
 	void (Player::* phase_)(float delta);//新たな分岐の仕方
-	bool swingFlag_;
 
+	//フラグ
 	int stepGrav;
 	bool isJump_;
-	bool isSwingJump_;
+	bool isSwingJump_;//スウィング状態からジャンプする
+	bool isSwingFlag_;//スウィング状態に移行する
+	bool isFall_;
+
 
 	float stepJump_;
 	float stepSwingump_;
@@ -124,7 +128,6 @@ private:
 	float gMag_;		//重力の大きさ
 	float omega_;			//角速度
 	float length_;			//紐の長さ
-	bool isStarted_;		//開始済みか
 	float theta_;
 
 	AnimationController* animationController_;	//プレイヤーのアニメーション制御

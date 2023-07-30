@@ -186,7 +186,7 @@ void GameScene::MakeCoin(void)
 	trans.scl = { 1.0f,1.0f, 1.0f };
 	trans.quaRot = Quaternion::Euler(
 		AsoUtility::Deg2RadF(-0.0f),
-		AsoUtility::Deg2RadF(0.0f),
+		AsoUtility::Deg2RadF(180.0f),
 		AsoUtility::Deg2RadF(0.0f)
 	);
 	coin = new Coin(trans);
@@ -197,7 +197,7 @@ void GameScene::MakeCoin(void)
 	trans.scl = { 1.0f,1.0f, 1.0f };
 	trans.quaRot = Quaternion::Euler(
 		AsoUtility::Deg2RadF(0.0f),
-		AsoUtility::Deg2RadF(0.0f),
+		AsoUtility::Deg2RadF(180.0f),
 		AsoUtility::Deg2RadF(0.0f)
 	);
 	coin = new Coin(trans);

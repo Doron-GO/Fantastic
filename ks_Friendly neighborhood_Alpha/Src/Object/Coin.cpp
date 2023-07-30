@@ -33,6 +33,9 @@ void Coin::Init(void)
 
 	animationController_ = new AnimationController(transform_.modelId);
 	animationController_->Add(0, path + "Idle1.mv1", 20.0f);
+	animationController_->Add(4, path + "odo.mv1", 30.0f);
+	animationController_->Play(static_cast<int>(4),true);
+	//animationController_->SetEndLoop(0.0f, 188.0f, 30.0f);
 
 	//狼煙のエフェクト
 	//coinSmoke_ = ResourceManager::GetInstance().Load(
@@ -45,7 +48,7 @@ void Coin::Update(void)
 	ProcessRot();
 
 	transform_.Update();
-	animationController_->Play(0);
+	animationController_->Update();
 
 	//エフェクト
 	PlayEffectCoinSmoke();

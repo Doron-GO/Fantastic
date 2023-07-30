@@ -45,18 +45,19 @@ void Player::Init(void)
 	
 	capsule_ = std::make_unique<Capsule>(&transform_);
 	capsule_->SetRelativePosTop({ 0.0f,65.0f,0.0f });
-	capsule_->SetRelativePosDown({ 0.0f,40.0f,0.0f });
+	capsule_->SetRelativePosDown({ 0.0f,28.0f,0.0f });
 	capsule_->SetRadius(20.0f);
 
 
 	endPos_ = { 4200.0f,2200.0f,1200.0f };
 	sectionPos[0] = 25600.0f;
 	sectionPos[1] = 51071.0f;
-	swingFlag_ = false;
+	isSwingFlag_ = false;
 	// アニメーションの設定
 	AnimationInit();
 	isSwingJump_ = false;
 	camera_ =  SceneManager::GetInstance().GetCamera();
+	isFall_ = false;
 }
 
 void Player::Update(float delta, VECTOR dir,VECTOR gra,VECTOR endp, VECTOR Billpos)
@@ -155,9 +156,8 @@ bool Player::SetSwingParam(VECTOR pos ,VECTOR end)
 	gMag_ = Magnitude(gravity_);
 	omega_ = -0.5f;									//角速度は0で初期化
 
-	isStarted_ = true;
 	transform_.Update();
-	swingFlag_ = true;
+	isSwingFlag_ = true;
 	phase_ = &Player::UpdatePendulum;
 	return true;
 
@@ -209,7 +209,7 @@ void Player::Swing(float delta)
 
 	auto stv = Normalized(stringV_);
 	
-	if (swingFlag_==true) 
+	if (isSwingFlag_==true) 
 	{
 		//transform_.pos = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm) + length_ * sin(theta_) * swingYnorm_;
 		auto l = endPos_ + length_ * cos(theta_) * Normalized(swingGravityNorm_) + length_ * sin(theta_) * swingYnorm_;
@@ -275,16 +275,16 @@ void Player::Draw(void)
 {
 	// モデルの描画
 	MV1DrawModel(transform_.modelId);
-	//capsule_->Draw();
+	capsule_->Draw();
 	//デバッグ表示
 	//DrawLine3D(endPos_, transform_.pos, 0xff00ff);//自分から支点までのラインを引く
-	if (swingFlag_)
+	if (isSwingFlag_)
 	{
 		auto hand =MV1SearchFrame(transform_.modelId, "mixamorig:LeftHandIndex4");
 		auto pos= MV1GetFramePosition(transform_.modelId, hand);
 	   DrawLine3D(endPos_, pos, 0xffffff);//自分から支点までのラインを引く
 	}
-	//DrawDebug();
+	DrawDebug();
 }
 
 void Player::SwingDraw(void)
@@ -397,8 +397,9 @@ void Player::ProcessMove()
 
 	if (!AsoUtility::EqualsVZero(padDir))
 	{
-		if (!isJump_)//ジャンプ状態じゃなくスティック入力があれば
+		if (!isJump_&&!isFall_)//ジャンプ状態じゃなくスティック入力があれば
 		{	//アニメーションをRUNに
+			
 			animationController_->Play(static_cast<int>(ANIM_TYPE::RUN));
 		}
 		movePow_ = VScale(goal2.GetForward(), speed);	//移動量　= 方向　×　スピード
@@ -406,7 +407,7 @@ void Player::ProcessMove()
 	}
 	else
 	{
-		if (!isJump_)
+		if (!isJump_ && !isFall_)
 		{
 			animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE));
 		}
@@ -432,10 +433,10 @@ void Player::ProcessJump()
 			animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP), true, 2.0f, 17.0f);
 			animationController_->SetEndLoop(12.0f, 17.0f, 3.0f);
 		}
-		if (swingFlag_)
+		if (isSwingFlag_)
 		{
 			isSwingJump_ = true;
-			swingFlag_ = false;
+			isSwingFlag_ = false;
 			stepJump_ = 0.0f;
 		}
 		else {
@@ -541,7 +542,7 @@ void Player::CollisionCupsule(void)
 				);
 				if (pHit)
 				{
-					swingFlag_ = false;
+					isSwingFlag_ = false;
 					movePow_ = { 0.0f,0.0f,0.0f };
 					//衝突している
 					float pow = 4.0f; //ちょっとだけ動かす
@@ -584,9 +585,9 @@ void Player::CollisionGravity(void)
 {
 	movedPos_ = VAdd(movedPos_, jumpPow_);
 
-	VECTOR dirGravity = gravityNorm_;
+	VECTOR dirGravity = VNorm(gravity_);
 
-	VECTOR dirUpGravity = -gravityNorm_;
+	VECTOR dirUpGravity = -VNorm(gravity_);
 
 	//足元　movePow
 	float CheckPow = 10.0f;
@@ -616,10 +617,10 @@ void Player::CollisionGravity(void)
 			//mHitPos = hit.HitPosition;
 
 			//衝突している
-			float dis = 3.0f;
+			float dis = 4.0f;
 			phase_ = &Player::UpdateGround;
 
-			swingFlag_ = false;
+			isSwingFlag_ = false;
 			movedPos_ = VAdd(hit.HitPosition, VScale(dirUpGravity, dis));
 			//抵抗力の代わりに
 			jumpPow_ = AsoUtility::VECTOR_ZERO;
@@ -635,7 +636,17 @@ void Player::CollisionGravity(void)
 			isJump_ = false;
 			isSwingJump_ = false;
 			stepJump_ = 0.0f;
+			isFall_ = false;
 			stepSwingump_ = 0.0f;
+		}
+		else if(!isSwingFlag_&&!isJump_&&! isSwingJump_)
+		{
+			if (!isFall_)
+			{
+				isFall_ = true;
+				animationController_->Play(static_cast<int>(ANIM_TYPE::JUMP),true, 19.0f);
+				animationController_->SetEndLoop(12.0f,18.0f , 3.0f);
+			}
 		}
 
 	}
