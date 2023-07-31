@@ -24,7 +24,7 @@ void SkyDome::Init(void)
 	transform_.SetModel(
 		lpResourceMng.LoadModelDuplicate(ResourceManager::SRC::SKYDOME));
 	transform_.scl = SCALES;
-	transform_.pos = AsoUtility::VECTOR_ZERO;
+	transform_.pos = { 15123.0f,0.0f,14557.0f };
 	transform_.quaRot = Quaternion::Euler(
 		0.0f, 
 		AsoUtility::Deg2RadF(180.0f),
@@ -34,8 +34,8 @@ void SkyDome::Init(void)
 	transform_.Update();
 
 	// Zバッファ無効(突き抜け対策)
-	MV1SetUseZBuffer(transform_.modelId, false);
-	MV1SetWriteZBuffer(transform_.modelId, false);
+	//MV1SetUseZBuffer(transform_.modelId, false);
+	//MV1SetWriteZBuffer(transform_.modelId, false);
 
 	// 状態遷移
 	if (syncTransform_ == nullptr)

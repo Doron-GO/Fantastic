@@ -49,7 +49,7 @@ void Camera::SetBeforeDraw(void)
 {
 
 	// クリップ距離を設定する(SetDrawScreenでリセットされる)
-	SetCameraNearFar(10.0f, 30000.0f);
+	SetCameraNearFar(50.0f, 60000.0f);
 
 	switch (mode_)
 	{

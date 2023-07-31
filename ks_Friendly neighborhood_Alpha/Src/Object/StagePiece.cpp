@@ -6,6 +6,8 @@ StagePiece::StagePiece(Stage::STAGE_NUM num, Transform transform)
 {
 	num_ = num;
 	transform_ = transform;
+	//MV1SetUseZBuffer(transform_.modelId, false);
+	//MV1SetWriteZBuffer(transform_.modelId, true);
 
 }
 

@@ -58,6 +58,9 @@ void Player::Init(void)
 	isSwingJump_ = false;
 	camera_ =  SceneManager::GetInstance().GetCamera();
 	isFall_ = false;
+	MV1SetUseZBuffer(transform_.modelId, true);
+	MV1SetWriteZBuffer(transform_.modelId, true);
+
 }
 
 void Player::Update(float delta, VECTOR dir,VECTOR gra,VECTOR endp, VECTOR Billpos)
@@ -265,8 +268,8 @@ void Player::DrawDebug(void)
 	DrawLine3D(endPos_, transform_.pos, 0xff00ff);//自分から支点までのラインを引く
 
 	DrawSphere3D(klk, 60.0f, 20.0f, 0xff0000, 0xffffff, true);
-	VECTOR bill{ billPos_.x,500.0f,billPos_.z };
-	DrawLine3D(bill, transform_.pos, 0x0000ff);
+	//VECTOR bill{ billPos_.x,500.0f,billPos_.z };
+	//DrawLine3D(bill, transform_.pos, 0x0000ff);//自分から一番近いビルへのlineを引く
 
 }
 
@@ -275,16 +278,16 @@ void Player::Draw(void)
 {
 	// モデルの描画
 	MV1DrawModel(transform_.modelId);
-	capsule_->Draw();
+	//capsule_->Draw();
 	//デバッグ表示
-	//DrawLine3D(endPos_, transform_.pos, 0xff00ff);//自分から支点までのラインを引く
+	DrawLine3D(endPos_, transform_.pos, 0xff00ff);//自分から支点までのラインを引く
 	if (isSwingFlag_)
 	{
 		auto hand =MV1SearchFrame(transform_.modelId, "mixamorig:LeftHandIndex4");
 		auto pos= MV1GetFramePosition(transform_.modelId, hand);
 	   DrawLine3D(endPos_, pos, 0xffffff);//自分から支点までのラインを引く
 	}
-	DrawDebug();
+	//DrawDebug();
 }
 
 void Player::SwingDraw(void)

@@ -93,12 +93,17 @@ void GameScene::Update(void)
 	auto& ins = InputManager::GetInstance();
 	if(isHitNum_==coins_.size())
 	{
+		for (int cnt = 0; cnt < 100; cnt++)
+		{
+			continue;
+		}
 		lpSceneMng.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 	auto section= swi_->SetSwingPoint(player_->GetTransform()->pos,player_->CheckSection(),player_->GetCameraAngles());
 	auto gravity= swi_->SetGravity(player_->GetTransform()->pos);
 	auto bill= swi_->GetBillPoint();
 	player_->Update(lpSceneMng.GetDeltaTime(), lpSceneMng.GetCamera()->GetDir(), gravity, section, bill);
+	skyDome_->Update();
 
 	stage_->Update();
 	// コイン
@@ -108,9 +113,6 @@ void GameScene::Update(void)
 	}
 
 	IsHitCoinPlayer();
-
-	skyDome_->Update();
-
 }
 
 void GameScene::Draw(void)
@@ -122,7 +124,7 @@ void GameScene::Draw(void)
 		c->Draw();
 	}
 
-	//skyDome_->Draw();
+	skyDome_->Draw();
 	stage_->Draw();
 	player_->Draw();
 	swi_->Draw();
@@ -223,25 +225,21 @@ void GameScene::IsHitCoinPlayer(void)
 	// コインとプレイヤーの衝突判定
 	auto p = player_->GetTransform();
 
-	auto coin = coins_;
-	for (const auto c : coin)
+	for (const auto c : coins_)
 	{
 		//表示されているとき
 		if (c->GetHit())
 		{
 			//衝突判定
 			auto hit = MV1CollCheck_Sphere(p->modelId, -1, c->GetPos(), c->COL_RADIUS);
+			MV1CollResultPolyDimTerminate(hit);
 
 			//ひとつでも衝突していたら
 			if (hit.HitNum > 0)
 			{
-				//衝突していたら
-				if (hit.Dim->HitFlag > 0)
-				{
-					c->SetHit(false);
-					isHitNum_++;
-					break;
-				}
+				c->Hit();
+				isHitNum_++;
+				break;
 			}
 		}
 	}

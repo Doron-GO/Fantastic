@@ -5,7 +5,7 @@ class SkyDome
 {
 public:
 
-	static constexpr float SCALE = 100.0f;
+	static constexpr float SCALE = 280.0f;
 	static constexpr VECTOR SCALES = { SCALE, SCALE, SCALE };
 
 	// èÛë‘

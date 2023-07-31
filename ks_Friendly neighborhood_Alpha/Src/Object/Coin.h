@@ -24,7 +24,7 @@ public:
 	bool GetHit(void);
 
 	//情報格納
-	void SetHit(bool flag);
+	void Hit(void);
 
 private:
 	//デバッグ表示

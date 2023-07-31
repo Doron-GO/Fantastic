@@ -34,6 +34,7 @@ void Coin::Init(void)
 	animationController_ = new AnimationController(transform_.modelId);
 	animationController_->Add(0, path + "Idle1.mv1", 20.0f);
 	animationController_->Add(4, path + "odo.mv1", 30.0f);
+	animationController_->Add(5, path + "joy.mv1", 30.0f);
 	animationController_->Play(static_cast<int>(4),true);
 	//animationController_->SetEndLoop(0.0f, 188.0f, 30.0f);
 
@@ -56,10 +57,8 @@ void Coin::Update(void)
 
 void Coin::Draw(void)
 {
-	if (isHit_) {
-		// モデルの描画
-		MV1DrawModel(transform_.modelId);
-	}
+	// モデルの描画
+	MV1DrawModel(transform_.modelId);
 
 	//デバッグ表示
 	//DrawDebug();
@@ -82,9 +81,11 @@ bool Coin::GetHit(void)
 	return isHit_;
 }
 
-void Coin::SetHit(bool flag)
+void Coin::Hit(void)
 {
-	isHit_ = flag;
+	animationController_->Play(static_cast<int>(5), true);
+	isHit_ = false;
+
 }
 
 void Coin::DrawDebug(void)

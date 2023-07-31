@@ -25,6 +25,7 @@ void SwingPoint::Draw(void)
 	//{
 	//	DrawSphere3D(point.second, 50.0f, 10.0f, 10.0f, 0xff0000, true);
 	//}
+
 	for (auto section : sectionList_[static_cast<Stage::STAGE_NUM>(0)])
 	{
 		for (auto bulidings : section.second)
