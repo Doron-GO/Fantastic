@@ -4,6 +4,12 @@
 #include"../Vector2D.h"
 class Input;
 
+enum class DIR_LR
+{
+	LIGHT,
+	LEFT
+};
+
 class Player
 {
 public:
@@ -16,6 +22,7 @@ private:
 
 	//左右移動
 	void Move(Input& input);
+	void Jump(Input& input);
 
 	std::map<std::string, int> imgkey_;
 	
@@ -24,7 +31,13 @@ private:
 	//ラン画像要のカウント用
 	int runFrame_;
 
-	Vector2DFloat pos_;//プレイヤーの座標
 
+	DIR_LR dir_LR_;//キャラクターの向き
+
+	Vector2DFloat pos_another_way;//キャラの座標
+
+	VECTOR pos_;
+	VECTOR movePow_;
+	VECTOR moveVec_;
 };
 
