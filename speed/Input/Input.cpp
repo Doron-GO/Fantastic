@@ -17,6 +17,9 @@ Input::Input()
 	inputTable_["left"] = {
 							{InputType::keybord, KEY_INPUT_LEFT},
 							{ InputType::gamepad,PAD_INPUT_B } };
+	inputTable_["down"] = {
+							{InputType::keybord, KEY_INPUT_B},
+							{ InputType::gamepad,PAD_INPUT_B } };
 	
 
 }

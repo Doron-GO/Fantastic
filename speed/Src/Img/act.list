@@ -1,0 +1,22 @@
+ <?xml version= "1.0" encoding= "UTF-8"?>
+ <actionList name ="Player" virsion = "1.0">
+	<action name = "Run" source = "Src/Img/Run.png" divSizeX ="49" divSizeY ="37" divCntX = "1" divCntY = "6">
+		<anime loop ="-1" encoding = "csv">
+			0,5,0,0,49,37,
+			1,5,0,0,49,37,
+			2,5,0,0,49,37,
+			3,5,0,0,49,37,
+			4,5,0,0,49,37,
+			5,5,0,0,49,37
+
+		</anime>
+	</action>
+	<action name = "Idle" source = "Src/Img/Idle.png" divSizeX ="50" divSizeY ="37" divCntX = "4" divCntY = "1">
+		<anime loop ="-1" encoding = "csv">
+			0,4,0,0,50,37,
+			1,4,0,0,50,37,
+			2,4,0,0,50,37,
+			3,4,0,0,50,37
+		</anime>
+	</action>
+</actionList>

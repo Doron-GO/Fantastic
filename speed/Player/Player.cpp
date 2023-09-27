@@ -14,51 +14,89 @@ Player::~Player()
 
 void Player::Init()
 {
-	pos_another_way = { 100.0f,100.0f };
-	runFrame_ = 0;
-	LoadDivGraphF("./Src/Img/Run.png",
-		6, 1, 6, 49, 37.0f, runImg_,true);
+	pos_ = { 100.0f,100.0f };
+
+	lpAnimMng.LoadAnime("Src/Img/act.list");
+
+	animeStr_.objID_ = "Player";
+
+	lpAnimMng.SetAnime(animeStr_, "Idle");
+
 
 	moveVec_ = { 1.0f,0.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
+	_phase = &Player::MovePhase;
+	_draw = &Player::MoveDraw;
 }
 
 void Player::Update(Input& input)
 {
-	Move(input);
-	
+	lpAnimMng.UpdateAnime(animeStr_);
+
+	(this->*_phase)(input);
+	pos_.x += movePow_.x;
+	pos_.y += movePow_.y;
+
+
 }
 
 void Player::Draw()
 {
-
-	
- 	//DrawRotaGraph2F(pos_.x, pos_.y,
-		//24.0f, 35.0f,
-		//1.5, 0.0,
-		//runImg_[runFrame_ / 5],
-		//true, static_cast<int>(dir_LR_),0);
- 	DrawRotaGraph2F(pos_another_way.x, pos_another_way.y,
-		24.0f, 35.0f,
-		1.5, 0.0,
-		runImg_[runFrame_ / 5],
-		true, static_cast<int>(dir_LR_),0);
-	
-	//DrawGraphF(pos_.x, pos_.y, runImg_[runFrame_/5], true);
-	//DrawBoxAA(pos_.x, pos_.y, pos_.x+20.0f, pos_.y+20.0f, 0xffffff, true);
-	if (runFrame_++ >= 29)
-	{
-		runFrame_ = 0;
-	}
+	(this->*_draw)();
 
 	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-	//DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
-	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_another_way.x, pos_another_way.y);
+	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
 
-	//DrawLine(pos_.x, pos_.y, (moveVec_.x*100)+ pos_.x, moveVec_.y+ pos_.y, 0x00ffff);
-	DrawLine(pos_another_way.x, pos_another_way.y,
-		(moveVec_.x*100)+ pos_another_way.x, moveVec_.y+ pos_another_way.y, 0x00ffff);
+	DrawLine(pos_.x, pos_.y,
+		(moveVec_.x*100)+ pos_.x, moveVec_.y+ pos_.y, 0x00ffff);
+}
+
+void Player::IdlePhase(Input& input)
+{
+
+}
+
+void Player::MovePhase(Input& input)
+{
+	Move(input);
+	Jump(input);
+}
+
+void Player::JumpPhese(Input& input)
+{
+
+
+
+
+}
+
+void Player::FallPhase(Input& input)
+{
+
+
+}
+
+void Player::IdleDraw()
+{
+
+}
+
+void Player::JumpDraw()
+{
+
+}
+
+void Player::MoveDraw()
+{
+
+
+	DrawRotaGraph2F(pos_.x, pos_.y,
+		24.0f, 35.0f,
+		1.5, 0.0,
+		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+		true, static_cast<int>(dir_LR_), 0);
+
 }
 
 void Player::Move(Input& input)
@@ -74,6 +112,11 @@ void Player::Move(Input& input)
 		{
 			movePow_.x += speed;
 		}
+		lpAnimMng.SetAnime(animeStr_, "Idle");
+	}
+	else 
+	{
+		lpAnimMng.SetAnime(animeStr_, "Run");
 	}
 
 	if (input.IsTrigger("right")) 
@@ -97,15 +140,29 @@ void Player::Move(Input& input)
 	}
 
 
-	auto move= VScale(moveVec_, movePow_.x);
+
+
+
 	//pos_.x += move.x;
 	//pos_.y += move.y;
-	pos_another_way.x += move.x;
-	pos_another_way.y += move.y;
-
 
 }
 
 void Player::Jump(Input& input)
 {
+
+	if (input.IsTrigger("down"))
+	{
+		if (movePow_.y >= -6.0f)
+		{
+			movePow_.y -= 0.2f;
+		}
+	}
+	else if(movePow_.y>=0.0f)
+	{
+		movePow_.y += 0.2f;
+
+	}
+
+
 }
