@@ -5,7 +5,7 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 {
 	player_ = std::make_unique<Player>();
 	tmxObj_.LoadTMX("./tmx/stage.tmx");
-
+	player_->Init(tmxObj_.GetColList());
 }
 
 void GameScene::Update(Input& input)

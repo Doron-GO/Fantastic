@@ -3,6 +3,8 @@
 #include<string>
 #include"../Vector2D.h"
 #include"../Obj/AnimMng.h"
+#include"../Common/Collision.h"
+#include"../Common/Raycast.h"
 
 class Input;
 
@@ -17,7 +19,7 @@ class Player
 public:
 	 Player();
 	 ~Player();
-	 void Init();
+	 void Init(ColList colList);
 	 void Update(Input& input);
 	 void Draw();
 private:
@@ -29,6 +31,8 @@ private:
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
 	void FallPhase(Input& input);//落下中
+
+	bool Collision();
 
 	void IdleDraw();
 	void JumpDraw();
@@ -48,8 +52,14 @@ private:
 	DIR_LR dir_LR_;//キャラクターの向き
 
 	Vector2DFloat pos_;//キャラの座標
+	Vector2DFloat center_;//キャラの中心座標
+	ColList colList_;
+	Raycast rayCast_;
 
-	VECTOR movePow_;
-	VECTOR moveVec_;
+	Vector2DFloat movePow_;
+	Vector2DFloat moveVec_;
+
+	//VECTOR movePow_;
+	//VECTOR moveVec_;
 };
 

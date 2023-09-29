@@ -5,16 +5,17 @@
 
 Player::Player()
 {
-	Init();
 }
 
 Player::~Player()
 {
 }
 
-void Player::Init()
+void Player::Init(ColList colList)
 {
 	pos_ = { 100.0f,100.0f };
+
+	colList_ = colList;
 
 	lpAnimMng.LoadAnime("Src/Img/act.list");
 
@@ -35,6 +36,7 @@ void Player::Update(Input& input)
 	lpAnimMng.UpdateAnime(animeStr_);
 
 	(this->*_phase)(input);
+	Collision();
 	pos_.x += movePow_.x;
 	pos_.y += movePow_.y;
 
@@ -74,6 +76,24 @@ void Player::JumpPhese(Input& input)
 void Player::FallPhase(Input& input)
 {
 
+
+}
+
+bool Player::Collision()
+{
+	Vector2DFloat rayCenter = { pos_ + center_ };
+
+	for (const auto& col : colList_)
+	{
+		Raycast::Ray ray = { rayCenter,moveVec_ };
+
+		if (rayCast_.CheckCollision(ray, col))
+		{
+			return false;
+		}
+		return true;
+
+	}
 
 }
 
@@ -139,13 +159,8 @@ void Player::Move(Input& input)
 		}
 	}
 
-
-
-
-
 	//pos_.x += move.x;
 	//pos_.y += move.y;
-
 }
 
 void Player::Jump(Input& input)
