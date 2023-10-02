@@ -159,8 +159,10 @@
     <ClCompile Include="Obj\TmxObj.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
+    <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneMng.cpp" />
+    <ClCompile Include="Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common\Collision.h" />
@@ -177,8 +179,10 @@
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="Scene\GameScene.h" />
+    <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneMng.h" />
+    <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Src\Json\json.hpp" />
     <ClInclude Include="Vector2D.h" />
   </ItemGroup>

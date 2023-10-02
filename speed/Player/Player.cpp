@@ -13,8 +13,9 @@ Player::~Player()
 
 void Player::Init(ColList colList)
 {
-	pos_ = { 100.0f,100.0f };
+	pos_ = { 300.0f,100.0f };
 
+	center_ = { 34.0f,34.0f };
 	colList_ = colList;
 
 	lpAnimMng.LoadAnime("Src/Img/act.list");
@@ -24,7 +25,7 @@ void Player::Init(ColList colList)
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
 
-	moveVec_ = { 1.0f,0.0f };
+	moveVec_ = { 0.0f,34.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
 	_phase = &Player::MovePhase;
@@ -36,7 +37,6 @@ void Player::Update(Input& input)
 	lpAnimMng.UpdateAnime(animeStr_);
 
 	(this->*_phase)(input);
-	Collision();
 	pos_.x += movePow_.x;
 	pos_.y += movePow_.y;
 
@@ -49,6 +49,10 @@ void Player::Draw()
 
 	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+	if (!Collision())
+	{
+		DrawString(0, 40, "“–‚½‚Á‚½", 0xffffff);
+	}
 
 	DrawLine(pos_.x, pos_.y,
 		(moveVec_.x*100)+ pos_.x, moveVec_.y+ pos_.y, 0x00ffff);
