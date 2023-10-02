@@ -13,7 +13,7 @@ Player::~Player()
 
 void Player::Init(ColList colList)
 {
-	pos_ = { 300.0f,100.0f };
+	pos_ = { 800.0f,100.0f };
 
 	center_ = { 34.0f,34.0f };
 	colList_ = colList;
@@ -38,7 +38,6 @@ void Player::Update(Input& input)
 
 	(this->*_phase)(input);
 	pos_.x += movePow_.x;
-	pos_.y += movePow_.y;
 
 
 }
@@ -66,6 +65,12 @@ void Player::IdlePhase(Input& input)
 void Player::MovePhase(Input& input)
 {
 	Move(input);
+	if (!Collision())
+	{
+		pos_.y += movePow_.y;
+
+	}
+
 	Jump(input);
 }
 

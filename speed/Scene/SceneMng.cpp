@@ -1,5 +1,7 @@
 #include "SceneMng.h"
 #include"Scene.h"
+#include"../_debug/_DebugConOut.h"
+#include"../_debug/_DebugDispOut.h"
 
 void SceneMng::ChangeScene(std::shared_ptr<Scene> scene)
 {
@@ -30,6 +32,8 @@ void SceneMng::PushScene(std::shared_ptr<Scene>scene)
 
 void SceneMng::Update(Input& input)
 {
+	_dbgStartDraw();
+
 	if (!scenes_.empty())
 	{
 		scenes_.front()->Update(input);

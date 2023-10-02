@@ -1,5 +1,6 @@
 #include "Raycast.h"
-
+#include"../_debug/_DebugDispOut.h"
+#include<DxLib.h>
 bool Raycast::CheckCollision(Ray ray, Collision collision)
 {// «ã‰º¶‰E‚Ìˆê•Ó
 
@@ -28,6 +29,15 @@ bool Raycast::CheckCollision(Ray ray, Collision collision)
 
 bool Raycast::CheckRay(Ray ray, Line line)
 {
+    
+        _dbgDrawLine(
+            static_cast<int>(line.p.x),
+            static_cast<int>(line.p.y),
+            static_cast<int>(line.end.x),
+            static_cast<int>(line.end.y),
+            0xff0000
+
+        );
 
     auto checkCross = [](Vector2DFloat vec1, Vector2DFloat& vec2)
     {
