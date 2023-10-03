@@ -19,4 +19,22 @@
 			3,4,0,0,50,37
 		</anime>
 	</action>
+	<action name = "Jump" source = "Src/Img/jump.png" divSizeX ="50" divSizeY ="37" divCntX = "4" divCntY = "1">
+		<anime loop ="0" encoding = "csv">
+			0,2,0,0,50,37,
+			1,2,0,0,50,37,
+			2,2,0,0,50,37,
+			3,2,0,0,50,37
+		</anime>
+	</action>
+		<action name = "Fall" source = "Src/Img/fall.png" divSizeX ="50" divSizeY ="37" divCntX = "6" divCntY = "1">
+		<anime loop ="0" encoding = "csv">
+			0,2,0,0,50,37,
+			1,2,0,0,50,37,
+			2,2,0,0,50,37,
+			3,2,0,0,50,37,
+			4,2,0,0,50,37,
+			5,2,0,0,50,37
+		</anime>
+	</action>
 </actionList>

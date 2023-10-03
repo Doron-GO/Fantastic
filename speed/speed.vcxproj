@@ -155,6 +155,7 @@
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Obj\AnimMng.cpp" />
+    <ClCompile Include="Obj\Camera.cpp" />
     <ClCompile Include="Obj\ImageMng.cpp" />
     <ClCompile Include="Obj\TmxObj.cpp" />
     <ClCompile Include="Player\Player.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="details\Vector2D.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Obj\AnimMng.h" />
+    <ClInclude Include="Obj\Camera.h" />
     <ClInclude Include="Obj\GetAtr.h" />
     <ClInclude Include="Obj\ImageMng.h" />
     <ClInclude Include="Obj\TmxObj.h" />

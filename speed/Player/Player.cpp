@@ -15,7 +15,7 @@ void Player::Init(ColList colList)
 {
 	pos_ = { 800.0f,10.0f };
 
-	center_ = { 34.0f,18.0f };
+	center_ = { 34.0f,14.0f };
 	colList_ = colList;
 
 	lpAnimMng.LoadAnime("Src/Img/act.list");
@@ -60,9 +60,16 @@ void Player::Draw()
 	{
 		DrawString(0, 40, "当たった", 0xffffff);
 	}
-	DrawCircle(pos_.x, pos_.y, 15, 0xffffff);
-	DrawLine(pos_.x, pos_.y,
-		(moveVec_.x)+ pos_.x, moveVec_.y+ pos_.y, 0x00ffff);
+	//DrawCircle(pos_.x, pos_.y, 15, 0xffffff);
+	Vector2DFloat rayCenter = { pos_ - center_ };
+
+	DrawLine(pos_.x, rayCenter.y,
+		(moveVec_.x)+ pos_.x, moveVec_.y+ rayCenter.y, 0x00ffff);
+}
+
+const Vector2DFloat Player::GetPos()
+{
+	return pos_;
 }
 
 void Player::IdlePhase(Input& input)
@@ -83,6 +90,7 @@ void Player::MovePhase(Input& input)
 
 void Player::JumpPhese(Input& input)
 {
+	lpAnimMng.SetAnime(animeStr_, "Jump");
 
 	movePow_.y += -0.2f;
 	
@@ -96,6 +104,8 @@ void Player::JumpPhese(Input& input)
 
 void Player::FallPhase(Input& input)
 {
+	lpAnimMng.SetAnime(animeStr_, "Fall");
+
 	movePow_.y += 0.2f;
 
 	if (movePow_.y >= 6.0f)
@@ -111,7 +121,7 @@ void Player::FallPhase(Input& input)
 
 bool Player::Collision()
 {
-	Vector2DFloat rayCenter = { pos_ };
+	Vector2DFloat rayCenter = { pos_ - center_ };
 
 	for (const auto& col : colList_)
 	{
@@ -129,11 +139,13 @@ bool Player::Collision()
 
 void Player::IdleDraw()
 {
+	lpAnimMng.SetAnime(animeStr_, "Idle");
 
 }
 
 void Player::JumpDraw()
 {
+	lpAnimMng.SetAnime(animeStr_, "Jump");
 
 }
 
@@ -162,11 +174,20 @@ void Player::Move(Input& input)
 		{
 			movePow_.x += speed;
 		}
-		lpAnimMng.SetAnime(animeStr_, "Idle");
+
+		//ジャンプアニメーション中じゃなかったら
+		if (_phase == &Player::MovePhase)
+		{
+			lpAnimMng.SetAnime(animeStr_, "Idle");
+		}
 	}
 	else 
 	{
-		lpAnimMng.SetAnime(animeStr_, "Run");
+		//ジャンプアニメーション中じゃなかったら
+		if (_phase == &Player::MovePhase)
+		{
+			lpAnimMng.SetAnime(animeStr_, "Run");
+		}
 	}
 
 	if (input.IsTrigger("right")) 
@@ -197,6 +218,8 @@ void Player::Jump(Input& input)
 {
 	if (input.IsTrigger("up"))
 	{
+		lpAnimMng.SetAnime(animeStr_, "Jump");
 		_phase = &Player::JumpPhese;
+
 	}
 }

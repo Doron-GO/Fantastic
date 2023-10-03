@@ -22,6 +22,7 @@ public:
 	 void Init(ColList colList);
 	 void Update(Input& input);
 	 void Draw();
+	 const Vector2DFloat GetPos();
 private:
 
 	void (Player::* _phase)(Input& input);
