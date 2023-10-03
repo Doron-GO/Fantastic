@@ -13,9 +13,9 @@ Player::~Player()
 
 void Player::Init(ColList colList)
 {
-	pos_ = { 800.0f,100.0f };
+	pos_ = { 800.0f,10.0f };
 
-	center_ = { 34.0f,34.0f };
+	center_ = { 34.0f,18.0f };
 	colList_ = colList;
 
 	lpAnimMng.LoadAnime("Src/Img/act.list");
@@ -25,10 +25,10 @@ void Player::Init(ColList colList)
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
 
-	moveVec_ = { 0.0f,34.0f };
+	moveVec_ = { 0.0f,17.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
-	_phase = &Player::MovePhase;
+	_phase = &Player::FallPhase;
 	_draw = &Player::MoveDraw;
 }
 
@@ -37,7 +37,15 @@ void Player::Update(Input& input)
 	lpAnimMng.UpdateAnime(animeStr_);
 
 	(this->*_phase)(input);
+	Move(input);
 	pos_.x += movePow_.x;
+	pos_.y += movePow_.y;
+
+	//if (Collision())
+	//{
+	//	pos_.y += movePow_.y;
+
+	//}
 
 
 }
@@ -52,9 +60,9 @@ void Player::Draw()
 	{
 		DrawString(0, 40, "“–‚½‚Á‚½", 0xffffff);
 	}
-
+	DrawCircle(pos_.x, pos_.y, 15, 0xffffff);
 	DrawLine(pos_.x, pos_.y,
-		(moveVec_.x*100)+ pos_.x, moveVec_.y+ pos_.y, 0x00ffff);
+		(moveVec_.x)+ pos_.x, moveVec_.y+ pos_.y, 0x00ffff);
 }
 
 void Player::IdlePhase(Input& input)
@@ -64,37 +72,50 @@ void Player::IdlePhase(Input& input)
 
 void Player::MovePhase(Input& input)
 {
-	Move(input);
-	if (!Collision())
+	//Move(input);
+	if (Collision())
 	{
-		pos_.y += movePow_.y;
+		_phase = &Player::FallPhase;
 
 	}
-
 	Jump(input);
 }
 
 void Player::JumpPhese(Input& input)
 {
 
-
-
+	movePow_.y += -0.2f;
+	
+	if(movePow_.y<=-6.0f)
+	{
+		movePow_.y = 0.0f;
+		_phase = &Player::FallPhase;
+	}
 
 }
 
 void Player::FallPhase(Input& input)
 {
+	movePow_.y += 0.2f;
 
-
+	if (movePow_.y >= 6.0f)
+	{
+		movePow_.y = 6.0f;
+	}
+	if (!Collision())
+	{
+		movePow_.y = 0.0f;
+		_phase = &Player::MovePhase;
+	}
 }
 
 bool Player::Collision()
 {
-	Vector2DFloat rayCenter = { pos_ + center_ };
+	Vector2DFloat rayCenter = { pos_ };
 
 	for (const auto& col : colList_)
 	{
-		Raycast::Ray ray = { rayCenter,moveVec_ };
+		Raycast::Ray ray = { rayCenter,moveVec_};
 
 		if (rayCast_.CheckCollision(ray, col))
 		{
@@ -174,19 +195,8 @@ void Player::Move(Input& input)
 
 void Player::Jump(Input& input)
 {
-
-	if (input.IsTrigger("down"))
+	if (input.IsTrigger("up"))
 	{
-		if (movePow_.y >= -6.0f)
-		{
-			movePow_.y -= 0.2f;
-		}
+		_phase = &Player::JumpPhese;
 	}
-	else if(movePow_.y>=0.0f)
-	{
-		movePow_.y += 0.2f;
-
-	}
-
-
 }
