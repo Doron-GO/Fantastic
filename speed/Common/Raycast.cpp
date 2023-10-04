@@ -1,23 +1,24 @@
 #include "Raycast.h"
 #include"../_debug/_DebugDispOut.h"
 #include<DxLib.h>
-bool Raycast::CheckCollision(Ray ray, Collision collision)
+bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat offset)
 {// Å´è„â∫ç∂âEÇÃàÍï”
-
+    Vector2DFloat view = { 800.0f, 600.0f };
+    auto offset_ = (view / 3.0f) - offset;
     Raycast::Line lines[4] = {  
 
     //è„ÇÃï”   
-    {collision.first,
-        collision.first + Vector2DFloat{collision.second.x,0}},
+    {collision.first+ offset_,
+        (collision.first + offset_)+ Vector2DFloat{collision.second.x,0} },
     //âEï”
-    {collision.first + Vector2DFloat{collision.second.x,0},
-            collision.first + collision.second},
+    {(collision.first+ offset_) + Vector2DFloat{collision.second.x,0} ,
+            collision.first + collision.second + offset_},
     //â∫ÇÃï”
-    { collision.first + collision.second ,
-    collision.first + Vector2DFloat{0,collision.second.y}},
+    { collision.first + collision.second + offset_,
+    collision.first + Vector2DFloat{0,collision.second.y } + offset_},
     //ç∂ï”
-    { collision.first + Vector2DFloat{0,collision.second.y},
-    collision.first}
+    { collision.first + Vector2DFloat{0,collision.second.y} + offset_,
+    collision.first + offset_}
     };
     bool reslut = false;
     for (auto line : lines)

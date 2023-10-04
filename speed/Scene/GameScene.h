@@ -16,7 +16,6 @@ public:
     virtual void Draw() override;
      void DrawOwnScreen() ;
 private:
-    int screenID_;
     std::shared_ptr<Player> player_;
     std::unique_ptr<Camera> camera_;
     TmxObj tmxObj_;

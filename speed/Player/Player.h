@@ -53,6 +53,7 @@ private:
 	DIR_LR dir_LR_;//キャラクターの向き
 
 	Vector2DFloat pos_;//キャラの座標
+	Vector2DFloat oldPos_;//前のキャラ座標
 	Vector2DFloat center_;//キャラの中心座標
 	ColList colList_;
 	Raycast rayCast_;

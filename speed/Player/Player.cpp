@@ -2,6 +2,8 @@
 #include "Player.h"
 #include"../Input/Input.h"
 #include"../Obj/ImageMng.h"
+#include"../_debug/_DebugConOut.h"
+#include"../_debug/_DebugDispOut.h"
 
 Player::Player()
 {
@@ -13,9 +15,9 @@ Player::~Player()
 
 void Player::Init(ColList colList)
 {
-	pos_ = { 800.0f,10.0f };
+	pos_ = { 300.0f,10.0f };
 
-	center_ = { 34.0f,14.0f };
+	center_ = { 0.0f,13.0f };
 	colList_ = colList;
 
 	lpAnimMng.LoadAnime("Src/Img/act.list");
@@ -25,7 +27,7 @@ void Player::Init(ColList colList)
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
 
-	moveVec_ = { 0.0f,17.0f };
+	moveVec_ = { 0.0f,20.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
 	_phase = &Player::FallPhase;
@@ -36,10 +38,13 @@ void Player::Update(Input& input)
 {
 	lpAnimMng.UpdateAnime(animeStr_);
 
+
 	(this->*_phase)(input);
 	Move(input);
-	pos_.x += movePow_.x;
-	pos_.y += movePow_.y;
+	Vector2DFloat view = { 800.0f, 600.0f };
+	
+	auto offset = (view / 4.0f) - pos_;
+	
 
 	//if (Collision())
 	//{
@@ -64,7 +69,8 @@ void Player::Draw()
 	Vector2DFloat rayCenter = { pos_ - center_ };
 
 	DrawLine(pos_.x, rayCenter.y,
-		(moveVec_.x)+ pos_.x, moveVec_.y+ rayCenter.y, 0x00ffff);
+		moveVec_.x+ pos_.x, moveVec_.y+ rayCenter.y, 0x00ffff);
+
 }
 
 const Vector2DFloat Player::GetPos()
@@ -106,11 +112,14 @@ void Player::FallPhase(Input& input)
 {
 	lpAnimMng.SetAnime(animeStr_, "Fall");
 
-	movePow_.y += 0.2f;
-
-	if (movePow_.y >= 6.0f)
+	if (Collision())
 	{
-		movePow_.y = 6.0f;
+		movePow_.y += 0.2f;
+	}
+
+	if (movePow_.y >= 5.8f)
+	{
+		movePow_.y = 5.8f;
 	}
 	if (!Collision())
 	{
@@ -121,13 +130,14 @@ void Player::FallPhase(Input& input)
 
 bool Player::Collision()
 {
-	Vector2DFloat rayCenter = { pos_ - center_ };
+
+	Vector2DFloat rayCenter = { pos_-center_};
 
 	for (const auto& col : colList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec_};
 
-		if (rayCast_.CheckCollision(ray, col))
+		if (rayCast_.CheckCollision(ray, col, pos_))
 		{
 			return false;
 		}
@@ -151,7 +161,6 @@ void Player::JumpDraw()
 
 void Player::MoveDraw()
 {
-
 
 	DrawRotaGraph2F(pos_.x, pos_.y,
 		24.0f, 35.0f,
@@ -209,6 +218,7 @@ void Player::Move(Input& input)
 
 		}
 	}
+	pos_ += movePow_;
 
 	//pos_.x += move.x;
 	//pos_.y += move.y;
@@ -219,6 +229,7 @@ void Player::Jump(Input& input)
 	if (input.IsTrigger("up"))
 	{
 		lpAnimMng.SetAnime(animeStr_, "Jump");
+		movePow_.y = -2.0f;
 		_phase = &Player::JumpPhese;
 
 	}

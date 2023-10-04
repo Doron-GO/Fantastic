@@ -19,20 +19,20 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 
 void GameScene::Update(Input& input)
 {
-	player_->Update(input);
 	camera_->Update();
-
+	player_->Update(input);
+	DrawOwnScreen();
 }
 
 void GameScene::Draw()
 {
-
-	DrawOwnScreen();
+	
 
 }
 
 void GameScene::DrawOwnScreen()
 {
+
 
 	auto worldArea = tmxObj_.GetWorldArea();
 	const auto tileSize = tmxObj_.GetTileSize();
@@ -41,6 +41,7 @@ void GameScene::DrawOwnScreen()
 	DrawString(50, 50, "GameScene", 0xffffff);
 
 	Vector2DFloat view = { 800.0f, 600.0f };
+
 
 	auto offset = (view / 3.0f) - camera_->GetPos();
 
@@ -52,20 +53,16 @@ void GameScene::DrawOwnScreen()
 		{
 			for (int x = 0; x < worldArea.x; x++)
 			{
-
-
 				if (x + y * worldArea.x < layer.second.size())
 				{
-
-
 					auto gid = layer.second[x + y * worldArea.x];
 
 					if (gid >= 0)
 					{
 						auto a = tmxObj_.GetMapKey();
 
-						DrawGraph((x * tileSize.x+offset.x),
-							(y * tileSize.y),
+						DrawGraph(x  * tileSize.x+offset.x,
+							(y * tileSize.y + offset.y),
 							lpImageMng.GetID(tmxObj_.GetMapKey())
 							[gid], true);
 					}
@@ -77,6 +74,6 @@ void GameScene::DrawOwnScreen()
 
 	player_->Draw();
 
-
+	DrawFormatStringF(0, 80, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 
 }

@@ -1,5 +1,5 @@
 #pragma once
-
+#include"../Vector2D.h"
 class Input;
 class SceneMng;
 /// <summary>
@@ -14,6 +14,11 @@ protected:
 public:
 	Scene(SceneMng& scene);
 	virtual void Update(Input& input) = 0;
-	virtual void Draw() = 0;
+	virtual void DrawOwnScreen(void) = 0;
+	virtual void Draw() ;
+protected:
+	int screenID_;
+	Vector2DFloat drawOffset_;
+
 };
 

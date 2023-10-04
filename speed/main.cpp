@@ -27,10 +27,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	while (ProcessMessage() != -1)
 	{
+
 		ClearDrawScreen();
 		input.Update();
 		sceneManager.Update(input);
 		sceneManager.Draw();
+		_dbgDraw();
+
 		ScreenFlip();
 	}
 	DxLib_End();
