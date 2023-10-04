@@ -38,26 +38,28 @@ void Player::Update(Input& input)
 {
 	lpAnimMng.UpdateAnime(animeStr_);
 
-
 	(this->*_phase)(input);
 	Move(input);
-	Vector2DFloat view = { 800.0f, 600.0f };
 	
-	auto offset = (view / 4.0f) - pos_;
-	
-
-	//if (Collision())
-	//{
-	//	pos_.y += movePow_.y;
-
-	//}
-
+	pos_ += movePow_;
 
 }
 
 void Player::Draw()
 {
-	(this->*_draw)();
+	//(this->*_draw)();
+
+	Vector2DFloat view = { 800.0f, 600.0f };
+
+	auto offset = (view / 3.0f) - pos_;
+
+
+	DrawRotaGraph2F(pos_.x+ offset.x, pos_.y + offset.y,
+		24.0f, 35.0f,
+		1.5, 0.0,
+		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+		true, static_cast<int>(dir_LR_), 0);
+
 
 	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
@@ -130,6 +132,9 @@ void Player::FallPhase(Input& input)
 
 bool Player::Collision()
 {
+	Vector2DFloat view = { 800.0f, 600.0f };
+
+	auto offset = (view / 3.0f) - pos_;
 
 	Vector2DFloat rayCenter = { pos_-center_};
 
@@ -137,8 +142,9 @@ bool Player::Collision()
 	{
 		Raycast::Ray ray = { rayCenter,moveVec_};
 
-		if (rayCast_.CheckCollision(ray, col, pos_))
+		if (rayCast_.CheckCollision(ray, col, pos_+offset))
 		{
+
 			return false;
 		}
 		return true;
@@ -162,11 +168,11 @@ void Player::JumpDraw()
 void Player::MoveDraw()
 {
 
-	DrawRotaGraph2F(pos_.x, pos_.y,
-		24.0f, 35.0f,
-		1.5, 0.0,
-		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-		true, static_cast<int>(dir_LR_), 0);
+	//DrawRotaGraph2F(pos_.x, pos_.y,
+	//	24.0f, 35.0f,
+	//	1.5, 0.0,
+	//	lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+	//	true, static_cast<int>(dir_LR_), 0);
 
 }
 
@@ -218,7 +224,6 @@ void Player::Move(Input& input)
 
 		}
 	}
-	pos_ += movePow_;
 
 	//pos_.x += move.x;
 	//pos_.y += move.y;

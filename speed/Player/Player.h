@@ -58,6 +58,10 @@ private:
 	ColList colList_;
 	Raycast rayCast_;
 
+	Vector2DFloat cameraPos_;//ƒJƒƒ‰‚ÌÀ•W
+
+	
+
 	Vector2DFloat movePow_;
 	Vector2DFloat moveVec_;
 

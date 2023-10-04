@@ -44,6 +44,7 @@ void GameScene::DrawOwnScreen()
 
 
 	auto offset = (view / 3.0f) - camera_->GetPos();
+	auto camera =  camera_->GetPos();
 
 
 	for (const auto& layer : tmxObj_.GetMapData()) {
@@ -61,7 +62,7 @@ void GameScene::DrawOwnScreen()
 					{
 						auto a = tmxObj_.GetMapKey();
 
-						DrawGraph(x  * tileSize.x+offset.x,
+						DrawGraph(x  * tileSize.x+ offset.x,
 							(y * tileSize.y + offset.y),
 							lpImageMng.GetID(tmxObj_.GetMapKey())
 							[gid], true);
