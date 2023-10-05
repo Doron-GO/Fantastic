@@ -23,6 +23,9 @@ Input::Input()
 	inputTable_["up"] = {
 							{InputType::keybord, KEY_INPUT_UP},
 							{ InputType::gamepad,PAD_INPUT_B } };
+	inputTable_["slide"] = {
+							{InputType::keybord, KEY_INPUT_C},
+							{ InputType::gamepad,PAD_INPUT_B } };
 	
 
 }

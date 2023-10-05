@@ -88,10 +88,10 @@ void Player::IdlePhase(Input& input)
 void Player::MovePhase(Input& input)
 {
 	//Move(input);
+	//もし床がなかったらフォールにする
 	if (Collision())
 	{
 		_phase = &Player::FallPhase;
-
 	}
 	Jump(input);
 }
@@ -99,9 +99,7 @@ void Player::MovePhase(Input& input)
 void Player::JumpPhese(Input& input)
 {
 	lpAnimMng.SetAnime(animeStr_, "Jump");
-
 	movePow_.y += -0.2f;
-	
 	if(movePow_.y<=-6.0f)
 	{
 		movePow_.y = 0.0f;
@@ -114,15 +112,18 @@ void Player::FallPhase(Input& input)
 {
 	lpAnimMng.SetAnime(animeStr_, "Fall");
 
+	//床と当たっていなかったら
 	if (Collision())
 	{
 		movePow_.y += 0.2f;
 	}
 
+	//落下速度が一定を超えたら決まった値にする
 	if (movePow_.y >= 5.8f)
 	{
 		movePow_.y = 5.8f;
 	}
+	//接地したら地上移動モードにする
 	if (!Collision())
 	{
 		movePow_.y = 0.0f;
@@ -148,7 +149,6 @@ bool Player::Collision()
 			return false;
 		}
 		return true;
-
 	}
 
 }
@@ -179,17 +179,19 @@ void Player::MoveDraw()
 void Player::Move(Input& input)
 {
 	float speed = 0.2f;
+	//右もしくは左キーが押されていないとき
 	if (!input.IsTrigger("right")&&!input.IsTrigger("left"))
 	{
+		//移動量が0.1より大きかったら
 		if (movePow_.x >= 0.1f) 
 		{
 			movePow_.x -= speed;
 		}
+		//移動量が-0.1より小さかったら
 		if (movePow_.x <= -0.1f)
 		{
 			movePow_.x += speed;
 		}
-
 		//ジャンプアニメーション中じゃなかったら
 		if (_phase == &Player::MovePhase)
 		{
@@ -205,32 +207,55 @@ void Player::Move(Input& input)
 		}
 	}
 
-	if (input.IsTrigger("right")) 
+	//スライディングボダンが押されていない時
+	if (!input.IsTrigger("slide"))
 	{
-		dir_LR_ = DIR_LR::LIGHT;
-		movePow_.x += 0.2f;
-		if (movePow_.x >= 6.0f)
+		//右キー
+		if (input.IsTrigger("right")) 
 		{
-			movePow_.x = 6.0f;
+			dir_LR_ = DIR_LR::LIGHT;
+			movePow_.x += 0.2f;
+			if (movePow_.x >= 8.0f)
+			{
+				movePow_.x = 8.0f;
+			}
+		}
+		//左キー
+		if (input.IsTrigger("left")) 
+		{
+			dir_LR_ = DIR_LR::LEFT;
+			movePow_.x -= 0.2f;
+			if (movePow_.x <= -8.0f)
+			{
+				movePow_.x = -8.0f;
+			}
 		}
 	}
-	if (input.IsTrigger("left")) 
-	{
-		dir_LR_ = DIR_LR::LEFT;
-		movePow_.x -= 0.2f;
-		if (movePow_.x <= -6.0f)
-		{
-			movePow_.x = -6.0f;
 
+	//落下中じゃないとき
+	if (!(_phase == &Player::FallPhase)&&!(_phase == &Player::JumpPhese))
+	{
+		//スライディングボタンが押されていたら
+		if (input.IsTrigger("slide"))
+		{
+			lpAnimMng.SetAnime(animeStr_, "Slide");
+			//スライディング中は減速する
+			if (movePow_.x >= 0.05f)
+			{
+				movePow_.x -= 0.1f;
+			}
+			if (movePow_.x <= -0.05f)
+			{
+				movePow_.x += 0.1f;
+			}
 		}
 	}
 
-	//pos_.x += move.x;
-	//pos_.y += move.y;
 }
 
 void Player::Jump(Input& input)
 {
+	//上キーを押したとき
 	if (input.IsTrigger("up"))
 	{
 		lpAnimMng.SetAnime(animeStr_, "Jump");
