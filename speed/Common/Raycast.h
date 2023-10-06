@@ -13,8 +13,7 @@ struct Raycast
 		Vector2DFloat end;//èIì_
 
 	};
-	bool CheckCollision(Ray ray, Collision collision ,Vector2DFloat offset);
-	bool CheckRay(Ray ray, Line line);
-
+	bool CheckCollision(Ray ray, Collision collision ,Vector2DFloat playerPos);
+	bool CheckRay(Ray ray, Line line, Vector2DFloat offset);
 };
 

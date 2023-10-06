@@ -26,7 +26,7 @@ void Player::Init(ColList colList)
 
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
-
+	offset_ = (view / 3.0f) - pos_;
 	moveVec_ = { 0.0f,20.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
@@ -36,6 +36,8 @@ void Player::Init(ColList colList)
 
 void Player::Update(Input& input)
 {
+	offset_ = (view / 3.0f) - pos_;
+
 	lpAnimMng.UpdateAnime(animeStr_);
 
 	(this->*_phase)(input);
@@ -51,10 +53,9 @@ void Player::Draw()
 
 	Vector2DFloat view = { 800.0f, 600.0f };
 
-	auto offset = (view / 3.0f) - pos_;
 
 
-	DrawRotaGraph2F(pos_.x+ offset.x, pos_.y + offset.y,
+	DrawRotaGraph2F(pos_.x+ offset_.x, pos_.y + offset_.y,
 		24.0f, 35.0f,
 		1.5, 0.0,
 		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
@@ -70,8 +71,8 @@ void Player::Draw()
 	//DrawCircle(pos_.x, pos_.y, 15, 0xffffff);
 	Vector2DFloat rayCenter = { pos_ - center_ };
 
-	DrawLine(pos_.x, rayCenter.y,
-		moveVec_.x+ pos_.x, moveVec_.y+ rayCenter.y, 0x00ffff);
+	DrawLine(pos_.x+ offset_.x, rayCenter.y + offset_.y,
+		moveVec_.x+ pos_.x + offset_.x, moveVec_.y+ rayCenter.y + offset_.y, 0x00ffff);
 
 }
 
@@ -100,11 +101,12 @@ void Player::JumpPhese(Input& input)
 {
 	lpAnimMng.SetAnime(animeStr_, "Jump");
 	movePow_.y += -0.2f;
-	if(movePow_.y<=-6.0f)
+	if(movePow_.y<=-13.0f)
 	{
 		movePow_.y = 0.0f;
 		_phase = &Player::FallPhase;
 	}
+	movePow_.y += -0.3f;
 
 }
 
@@ -133,23 +135,19 @@ void Player::FallPhase(Input& input)
 
 bool Player::Collision()
 {
-	Vector2DFloat view = { 800.0f, 600.0f };
-
-	auto offset = (view / 3.0f) - pos_;
-
 	Vector2DFloat rayCenter = { pos_-center_};
 
 	for (const auto& col : colList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec_};
 
-		if (rayCast_.CheckCollision(ray, col, pos_+offset))
+		if (rayCast_.CheckCollision(ray, col,pos_+offset_))
 		{
 
 			return false;
 		}
-		return true;
 	}
+	return true;
 
 }
 
@@ -259,7 +257,7 @@ void Player::Jump(Input& input)
 	if (input.IsTrigger("up"))
 	{
 		lpAnimMng.SetAnime(animeStr_, "Jump");
-		movePow_.y = -2.0f;
+		movePow_.y = 0.0f;
 		_phase = &Player::JumpPhese;
 
 	}
