@@ -27,7 +27,7 @@ void Player::Init(ColList colList)
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
 	offset_ = (view / 3.0f) - pos_;
-	moveVec_ = { 0.0f,20.0f };
+	moveVec_ = { 0.0f,0.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
 	_phase = &Player::FallPhase;
@@ -42,8 +42,14 @@ void Player::Update(Input& input)
 
 	(this->*_phase)(input);
 	Move(input);
-	
-	pos_ += movePow_;
+
+
+	//壁に当たっていたら横移動させない
+	if (Collision(moveVec_))
+	{
+		pos_.x += movePow_.x;
+	}
+	pos_.y += movePow_.y;
 
 }
 
@@ -64,15 +70,15 @@ void Player::Draw()
 
 	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
-	if (!Collision())
+	if (!Collision(moveVec_))
 	{
 		DrawString(0, 40, "当たった", 0xffffff);
 	}
 	//DrawCircle(pos_.x, pos_.y, 15, 0xffffff);
 	Vector2DFloat rayCenter = { pos_ - center_ };
 
-	DrawLine(pos_.x+ offset_.x, rayCenter.y + offset_.y,
-		moveVec_.x+ pos_.x + offset_.x, moveVec_.y+ rayCenter.y + offset_.y, 0x00ffff);
+	DrawLine(pos_.x+ offset_.x, pos_.y + offset_.y,
+		moveVec_.x+ pos_.x + offset_.x, moveVec_.y+ pos_.y + offset_.y, 0x00ffff);
 
 }
 
@@ -100,13 +106,20 @@ void Player::MovePhase(Input& input)
 void Player::JumpPhese(Input& input)
 {
 	lpAnimMng.SetAnime(animeStr_, "Jump");
-	movePow_.y += -0.2f;
-	if(movePow_.y<=-13.0f)
+	
+	Vector2DFloat movevec={ 0.0f,-40.0f };
+
+	if((movePow_.y<=-13.0f)||!(Collision(movevec)))
 	{
 		movePow_.y = 0.0f;
 		_phase = &Player::FallPhase;
 	}
-	movePow_.y += -0.3f;
+	else
+	{
+		movePow_.y += -0.2f;
+		movePow_.y += -0.3f;
+	}
+	
 
 }
 
@@ -136,10 +149,10 @@ void Player::FallPhase(Input& input)
 bool Player::Collision()
 {
 	Vector2DFloat rayCenter = { pos_-center_};
-
+	Vector2DFloat moveVec = { 0.0f,20.0f };
 	for (const auto& col : colList_)
 	{
-		Raycast::Ray ray = { rayCenter,moveVec_};
+		Raycast::Ray ray = { rayCenter,moveVec};
 
 		if (rayCast_.CheckCollision(ray, col,pos_+offset_))
 		{
@@ -149,6 +162,28 @@ bool Player::Collision()
 	}
 	return true;
 
+}
+
+bool Player::Collision(Vector2DFloat movevec)
+{
+	Vector2DFloat rayCenter = { pos_  };
+	_dbgDrawLine(
+		rayCenter.x, rayCenter.y,
+		rayCenter.x + movevec.x, rayCenter.y + movevec.y,
+		0x00ff00
+	);
+
+	for (const auto& col : colList_)
+	{
+		Raycast::Ray ray = { rayCenter,movevec };
+
+		if (rayCast_.CheckCollision(ray, col, pos_ + offset_))
+		{
+
+			return false;
+		}
+	}
+	return true;
 }
 
 void Player::IdleDraw()
@@ -208,26 +243,37 @@ void Player::Move(Input& input)
 	//スライディングボダンが押されていない時
 	if (!input.IsTrigger("slide"))
 	{
+
 		//右キー
-		if (input.IsTrigger("right")) 
+		if (input.IsTrigger("right"))
 		{
 			dir_LR_ = DIR_LR::LIGHT;
 			movePow_.x += 0.2f;
-			if (movePow_.x >= 8.0f)
-			{
-				movePow_.x = 8.0f;
-			}
+			moveVec_ = { 20.0f,-30.0f };
+
 		}
-		//左キー
-		if (input.IsTrigger("left")) 
+		
+		if (input.IsTrigger("left"))
 		{
 			dir_LR_ = DIR_LR::LEFT;
 			movePow_.x -= 0.2f;
-			if (movePow_.x <= -8.0f)
-			{
-				movePow_.x = -8.0f;
-			}
+			moveVec_ = { -20.0f,-30.0f };
+
 		}
+		//左キー
+		if (movePow_.x <= -8.0f)
+		{
+			movePow_.x = -8.0f;
+		}
+		else if (movePow_.x >= 8.0f)
+		{
+			movePow_.x = 8.0f;
+		}
+	}
+	//壁に当たったら加速度を０にする
+	if (!Collision(moveVec_))
+	{
+		movePow_.x = 0.0f;
 	}
 
 	//落下中じゃないとき

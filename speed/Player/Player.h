@@ -34,6 +34,7 @@ private:
 	void FallPhase(Input& input);//—Ž‰º’†
 
 	bool Collision();
+	bool Collision(Vector2DFloat movevec);
 
 	void IdleDraw();
 	void JumpDraw();
