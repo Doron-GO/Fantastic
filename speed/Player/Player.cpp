@@ -57,16 +57,11 @@ void Player::Draw()
 {
 	//(this->*_draw)();
 
-	Vector2DFloat view = { 800.0f, 600.0f };
-
-
-
 	DrawRotaGraph2F(pos_.x+ offset_.x, pos_.y + offset_.y,
 		24.0f, 35.0f,
 		1.5, 0.0,
 		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
 		true, static_cast<int>(dir_LR_), 0);
-
 
 	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
@@ -105,22 +100,23 @@ void Player::MovePhase(Input& input)
 
 void Player::JumpPhese(Input& input)
 {
-	lpAnimMng.SetAnime(animeStr_, "Jump");
-	
+	lpAnimMng.SetAnime(animeStr_, "Jump");	
 	Vector2DFloat movevec={ 0.0f,-40.0f };
 
+	//ジャンプ高度が最大に達したもしくは、地面に接地したら
 	if((movePow_.y<=-13.0f)||!(Collision(movevec)))
 	{
+		//ｙの移動量0にしてフォールを呼ぶ
 		movePow_.y = 0.0f;
 		_phase = &Player::FallPhase;
 	}
+	//でなければyの移動量を加算する
 	else
 	{
 		movePow_.y += -0.2f;
 		movePow_.y += -0.3f;
 	}
 	
-
 }
 
 void Player::FallPhase(Input& input)
@@ -134,12 +130,13 @@ void Player::FallPhase(Input& input)
 	}
 
 	//落下速度が一定を超えたら決まった値にする
-	if (movePow_.y >= 5.8f)
+	if (movePow_.y >= 8.8f)
 	{
-		movePow_.y = 5.8f;
+		movePow_.y = 8.8f;
 	}
 	//接地したら地上移動モードにする
-	if (!Collision())
+	Vector2DFloat movecec = { 0.0f,8.8f };
+	if (!Collision(movecec))
 	{
 		movePow_.y = 0.0f;
 		_phase = &Player::MovePhase;
@@ -156,7 +153,7 @@ bool Player::Collision()
 
 		if (rayCast_.CheckCollision(ray, col,pos_+offset_))
 		{
-
+			//TRACE("当たった\n");
 			return false;
 		}
 	}
@@ -249,18 +246,18 @@ void Player::Move(Input& input)
 		{
 			dir_LR_ = DIR_LR::LIGHT;
 			movePow_.x += 0.2f;
-			moveVec_ = { 20.0f,-30.0f };
+			moveVec_ = { 22.0f,0.0f };
 
 		}
-		
+		//左キー
 		if (input.IsTrigger("left"))
 		{
 			dir_LR_ = DIR_LR::LEFT;
 			movePow_.x -= 0.2f;
-			moveVec_ = { -20.0f,-30.0f };
+			moveVec_ = { -22.0f,0.0f };
 
 		}
-		//左キー
+		//移動速度が一定を超えると最大速度に固定する
 		if (movePow_.x <= -8.0f)
 		{
 			movePow_.x = -8.0f;
@@ -270,11 +267,19 @@ void Player::Move(Input& input)
 			movePow_.x = 8.0f;
 		}
 	}
-	//壁に当たったら加速度を０にする
-	if (!Collision(moveVec_))
+	//壁に当たったら加速度を０にする 1:自分の前方 2:上斜め前 
+	Vector2DFloat diagonallyVec = { moveVec_.x,-30.0f };
+	if (!Collision(moveVec_)|| !Collision(diagonallyVec))
 	{
 		movePow_.x = 0.0f;
 	}
+	//背中から壁に当たったら
+	Vector2DFloat backVec = { -(moveVec_.x/2.0f),0.0f };
+	if (!Collision(backVec))
+	{
+		movePow_.x = -(backVec.x/11.0f);
+	}
+
 
 	//落下中じゃないとき
 	if (!(_phase == &Player::FallPhase)&&!(_phase == &Player::JumpPhese))

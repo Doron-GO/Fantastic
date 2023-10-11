@@ -61,7 +61,7 @@ private:
 
 	Vector2DFloat cameraPos_;//ƒJƒƒ‰‚ÌÀ•W
 
-	Vector2DFloat view = { 800.0f, 600.0f };
+	Vector2DFloat view = { 1200.0f, 800.0f };
 
 	Vector2DFloat offset_;
 

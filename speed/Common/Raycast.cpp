@@ -3,7 +3,7 @@
 #include<DxLib.h>
 bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerPos)
 {// Å´è„â∫ç∂âEÇÃàÍï”
-    Vector2DFloat view = { 800.0f, 600.0f };
+    Vector2DFloat view = { 1200.0f, 800.0f };
     auto offset = (view / 3.0f) - playerPos;
     Raycast::Line lines[4] = {  
 
@@ -20,7 +20,7 @@ bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerP
     { collision.first + Vector2DFloat{0,collision.second.y} ,
     collision.first }
     };
-    ////è„ÇÃï”   
+    //è„ÇÃï”   
     //{collision.first+ offset,
     //    (collision.first + offset)+ Vector2DFloat{collision.second.x,0} },
     ////âEï”
@@ -36,9 +36,7 @@ bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerP
     bool reslut = false;
     for (auto line : lines)
     {
-
         reslut |=   CheckRay(ray,line, offset);
-
     }
 
     return reslut;
@@ -46,7 +44,7 @@ bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerP
 
 bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
 {
-        _dbgDrawLine(
+    _dbgDrawLine(
         static_cast<int>(line.p.x ),
         static_cast<int>(line.p.y ),
         static_cast<int>(line.end.x ),

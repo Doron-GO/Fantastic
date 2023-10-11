@@ -16,7 +16,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		return -1;
 	}
-	_dbgSetup(800, 600, 256);
+	_dbgSetup(1200, 800, 256);
 
 	SetDrawScreen(DX_SCREEN_BACK);
 	SceneMng sceneManager;
