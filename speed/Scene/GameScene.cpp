@@ -6,13 +6,19 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	screenID_ = MakeScreen(1000, 800, true);
-
-	player_ = std::make_shared<Player>();
+	
 	camera_ = std::make_unique<Camera>();
 	tmxObj_.LoadTMX("./tmx/stage.tmx");
-	player_->Init(tmxObj_.GetColList());
+	//player_->Init(tmxObj_.GetColList());
+	for (int i = 0; i <= 1; i++)
+	{
+		std::shared_ptr<Player> player;
+		player = std::make_shared<Player>();
+		player->Init(tmxObj_.GetColList());
+		playerList_.push_back(player);
+	}
 
-	camera_->ReConnect(player_);
+	camera_->ReConnect(playerList_[0]);
 	camera_->Init(tmxObj_.GetWorldArea() * tmxObj_.GetTileSize());//ƒJƒƒ‰‚ð‰Šú‰»
 
 }
@@ -20,7 +26,12 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 void GameScene::Update(Input& input)
 {
 	camera_->Update();
-	player_->Update(input);
+	/*for (const auto& player : playerList_)
+	{
+		player->Update(input);
+	}*/
+	playerList_[0]->Update(input);
+	//player_->Update(input);
 	DrawOwnScreen();
 }
 
@@ -72,8 +83,12 @@ void GameScene::DrawOwnScreen()
 			}
 		}
 	}
+	for (const auto& player : playerList_)
+	{
+		player->Draw();
+	}
 
-	player_->Draw();
+	//player_->Draw();
 
 	DrawFormatStringF(0, 80, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 

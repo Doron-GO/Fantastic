@@ -36,8 +36,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		ScreenFlip();
 	}
+
 	DxLib_End();
-	return 0;
+	//return 0;
 }
 
 

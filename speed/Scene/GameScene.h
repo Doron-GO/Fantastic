@@ -16,7 +16,8 @@ public:
     virtual void Draw() override;
      void DrawOwnScreen() ;
 private:
-    std::shared_ptr<Player> player_;
+    //std::shared_ptr<Player> player_;
+    std::vector<std::shared_ptr<Player>> playerList_;
     std::unique_ptr<Camera> camera_;
     TmxObj tmxObj_;
     Vector2DFloat drawOffset_;

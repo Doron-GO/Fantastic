@@ -210,7 +210,7 @@ void Player::Move(Input& input)
 {
 	float speed = 0.2f;
 	//右もしくは左キーが押されていないとき
-	if (!input.IsTrigger("right")&&!input.IsTrigger("left"))
+	if (!input.IsPrassed("right")&&!input.IsPrassed("left"))
 	{
 		//移動量が0.1より大きかったら
 		if (movePow_.x >= 0.1f) 
@@ -238,11 +238,11 @@ void Player::Move(Input& input)
 	}
 
 	//スライディングボダンが押されていない時
-	if (!input.IsTrigger("slide"))
+	if (!input.IsPrassed("c"))
 	{
 
 		//右キー
-		if (input.IsTrigger("right"))
+		if (input.IsPrassed("right"))
 		{
 			dir_LR_ = DIR_LR::LIGHT;
 			movePow_.x += 0.2f;
@@ -250,7 +250,7 @@ void Player::Move(Input& input)
 
 		}
 		//左キー
-		if (input.IsTrigger("left"))
+		if (input.IsPrassed("left"))
 		{
 			dir_LR_ = DIR_LR::LEFT;
 			movePow_.x -= 0.2f;
@@ -285,7 +285,7 @@ void Player::Move(Input& input)
 	if (!(_phase == &Player::FallPhase)&&!(_phase == &Player::JumpPhese))
 	{
 		//スライディングボタンが押されていたら
-		if (input.IsTrigger("slide"))
+		if (input.IsPrassed("c"))
 		{
 			lpAnimMng.SetAnime(animeStr_, "Slide");
 			//スライディング中は減速する
@@ -305,7 +305,7 @@ void Player::Move(Input& input)
 void Player::Jump(Input& input)
 {
 	//上キーを押したとき
-	if (input.IsTrigger("up"))
+	if (input.IsPrassed("up"))
 	{
 		lpAnimMng.SetAnime(animeStr_, "Jump");
 		movePow_.y = 0.0f;
