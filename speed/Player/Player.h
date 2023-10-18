@@ -5,8 +5,7 @@
 #include"../Obj/AnimMng.h"
 #include"../Common/Collision.h"
 #include"../Common/Raycast.h"
-
-class Input;
+#include"../Input/Input.h"
 
 enum class DIR_LR
 {
@@ -17,7 +16,7 @@ enum class DIR_LR
 class Player
 {
 public:
-	 Player();
+	 Player(int playerNum);
 	 ~Player();
 	 void Init(ColList colList);
 	 void Update(Input& input);
@@ -47,12 +46,13 @@ private:
 
 	std::map<std::string, int> imgkey_;
 	
-
 	AnimStr animeStr_;
 
+	Input input_;
+
+	int padNum_;//自分が何番目のPADを使っているか
 
 	DIR_LR dir_LR_;//キャラクターの向き
-
 	Vector2DFloat pos_;//キャラの座標
 	Vector2DFloat oldPos_;//前のキャラ座標
 	Vector2DFloat center_;//キャラの中心座標

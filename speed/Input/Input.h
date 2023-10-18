@@ -70,7 +70,7 @@ public:
 	/// <summary>
 	/// キー入力情報を更新する(毎フレーム)
 	/// </summary>
-	void Update();
+	void Update(int padNum);
 	/// <summary>
 	/// 今押した瞬間かどうかを返す(押しっぱなしはfalse)
 	/// </summary>

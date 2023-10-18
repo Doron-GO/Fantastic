@@ -1,12 +1,13 @@
 #include<DxLib.h>
+#include<string>
 #include "Player.h"
-#include"../Input/Input.h"
 #include"../Obj/ImageMng.h"
 #include"../_debug/_DebugConOut.h"
 #include"../_debug/_DebugDispOut.h"
 
-Player::Player()
+Player::Player(int playerNum)
 {
+	padNum_ = playerNum;
 }
 
 Player::~Player()
@@ -20,9 +21,17 @@ void Player::Init(ColList colList)
 	center_ = { 0.0f,13.0f };
 	colList_ = colList;
 
-	lpAnimMng.LoadAnime("Src/Img/act.list");
+	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
+	 char num = '0'+padNum_;
+	 std::string act = "Src/Img/act";//string文字列を作る
+	 act += num;						 //	文字列を連結
+	 act +=".list";					 //	文字列を連結
 
-	animeStr_.objID_ = "Player";
+	lpAnimMng.LoadAnime(act.c_str());
+
+	std::string objID = "Player";
+	objID += num;
+	animeStr_.objID_ = objID.c_str();
 
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
@@ -32,16 +41,17 @@ void Player::Init(ColList colList)
 	dir_LR_ = DIR_LR::LIGHT;
 	_phase = &Player::FallPhase;
 	_draw = &Player::MoveDraw;
+	
+
 }
 
 void Player::Update(Input& input)
 {
 	offset_ = (view / 3.0f) - pos_;
-
 	lpAnimMng.UpdateAnime(animeStr_);
-
-	(this->*_phase)(input);
-	Move(input);
+	input_.Update(padNum_);
+	(this->*_phase)(input_);
+	Move(input_);
 
 
 	//壁に当たっていたら横移動させない
@@ -57,7 +67,12 @@ void Player::Draw()
 {
 	//(this->*_draw)();
 
-	DrawRotaGraph2F(pos_.x+ offset_.x, pos_.y + offset_.y,
+	//DrawRotaGraph2F(pos_.x+ offset_.x, pos_.y + offset_.y,
+	//	24.0f, 35.0f,
+	//	1.5, 0.0,
+	//	lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+	//	true, static_cast<int>(dir_LR_), 0);
+	DrawRotaGraph2F(pos_.x, pos_.y ,
 		24.0f, 35.0f,
 		1.5, 0.0,
 		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
@@ -135,7 +150,7 @@ void Player::FallPhase(Input& input)
 		movePow_.y = 8.8f;
 	}
 	//接地したら地上移動モードにする
-	Vector2DFloat movecec = { 0.0f,8.8f };
+	Vector2DFloat movecec = { 0.0f,8.0f };
 	if (!Collision(movecec))
 	{
 		movePow_.y = 0.0f;
@@ -305,7 +320,7 @@ void Player::Move(Input& input)
 void Player::Jump(Input& input)
 {
 	//上キーを押したとき
-	if (input.IsPrassed("up"))
+	if (input.IsPrassed("jump"))
 	{
 		lpAnimMng.SetAnime(animeStr_, "Jump");
 		movePow_.y = 0.0f;

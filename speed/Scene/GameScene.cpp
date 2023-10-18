@@ -9,16 +9,14 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	
 	camera_ = std::make_unique<Camera>();
 	tmxObj_.LoadTMX("./tmx/stage.tmx");
-	//player_->Init(tmxObj_.GetColList());
-	for (int i = 0; i <= 1; i++)
+	for (int i = 1; i <= 2; i++)
 	{
 		std::shared_ptr<Player> player;
-		player = std::make_shared<Player>();
+		player = std::make_shared<Player>(i);
 		player->Init(tmxObj_.GetColList());
-		playerList_.push_back(player);
+		players_.push_back(player);
 	}
-
-	camera_->ReConnect(playerList_[0]);
+	camera_->ReConnect(players_[0]);
 	camera_->Init(tmxObj_.GetWorldArea() * tmxObj_.GetTileSize());//ƒJƒƒ‰‚ð‰Šú‰»
 
 }
@@ -26,12 +24,11 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 void GameScene::Update(Input& input)
 {
 	camera_->Update();
-	/*for (const auto& player : playerList_)
+	
+	for (const auto& player : players_)
 	{
 		player->Update(input);
-	}*/
-	playerList_[0]->Update(input);
-	//player_->Update(input);
+	}
 	DrawOwnScreen();
 }
 
@@ -73,8 +70,12 @@ void GameScene::DrawOwnScreen()
 					{
 						auto a = tmxObj_.GetMapKey();
 
-						DrawGraph(x  * tileSize.x+ offset.x,
-							(y * tileSize.y + offset.y),
+						//DrawGraph(x  * tileSize.x+ offset.x,
+						//	(y * tileSize.y + offset.y),
+						//	lpImageMng.GetID(tmxObj_.GetMapKey())
+						//	[gid], true);
+						DrawGraph(x  * tileSize.x,
+							(y * tileSize.y ),
 							lpImageMng.GetID(tmxObj_.GetMapKey())
 							[gid], true);
 					}
@@ -83,7 +84,7 @@ void GameScene::DrawOwnScreen()
 			}
 		}
 	}
-	for (const auto& player : playerList_)
+	for (const auto& player : players_)
 	{
 		player->Draw();
 	}

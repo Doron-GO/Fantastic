@@ -5,6 +5,7 @@
 #include<memory>
 #include"../Obj/TmxObj.h"
 #include"../Obj/Camera.h"
+#include"../Input/Input.h"
 
 class GameScene :
     public Scene
@@ -17,10 +18,9 @@ public:
      void DrawOwnScreen() ;
 private:
     //std::shared_ptr<Player> player_;
-    std::vector<std::shared_ptr<Player>> playerList_;
+    std::vector<std::shared_ptr<Player>> players_;
     std::unique_ptr<Camera> camera_;
     TmxObj tmxObj_;
     Vector2DFloat drawOffset_;
-
+    
 };
-

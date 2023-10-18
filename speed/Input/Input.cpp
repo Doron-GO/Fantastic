@@ -105,12 +105,14 @@ Input::Input()
 
 }
 
-void Input::Update()
+void Input::Update(int padNum)
 {
+	
 	//ハードの入力自体はチェックします
 	char keycode[256];
 	GetHitKeyStateAll(keycode);//キーボード入力
-	int padInfo = GetJoypadInputState(DX_INPUT_PAD1);//パッド１番入力
+	auto a= 0x0000 + padNum;
+	int padInfo = GetJoypadInputState(a);//パッド１番入力
 	int mouseInfo = GetMouseInput();//マウス入力
 
 	lastState_ = currentState_;//更新前の情報を記録

@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 
 		ClearDrawScreen();
-		input.Update();
+		input.Update(0);
 		sceneManager.Update(input);
 		sceneManager.Draw();
 		_dbgDraw();
