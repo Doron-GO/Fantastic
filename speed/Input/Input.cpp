@@ -79,7 +79,9 @@ Input::Input()
 	};
 	//スライディング
 	inputTable_["c"] = {
-							{ InputType::keybord, KEY_INPUT_C} 
+							{ InputType::keybord, KEY_INPUT_C} ,
+							{InputType::gamepad,PAD_INPUT_X} //padのA
+
 	};
 	
 	//キーコンフィグ

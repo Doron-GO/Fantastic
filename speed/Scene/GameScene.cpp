@@ -13,9 +13,10 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	{
 		std::shared_ptr<Player> player;
 		player = std::make_shared<Player>(i);
-		player->Init(tmxObj_.GetColList());
+		player->Init(tmxObj_.GetColList(),i);
 		players_.push_back(player);
 	}
+
 	camera_->ReConnect(players_[0]);
 	camera_->Init(tmxObj_.GetWorldArea() * tmxObj_.GetTileSize());//ÉJÉÅÉâÇèâä˙âª
 
@@ -70,14 +71,14 @@ void GameScene::DrawOwnScreen()
 					{
 						auto a = tmxObj_.GetMapKey();
 
-						//DrawGraph(x  * tileSize.x+ offset.x,
-						//	(y * tileSize.y + offset.y),
-						//	lpImageMng.GetID(tmxObj_.GetMapKey())
-						//	[gid], true);
-						DrawGraph(x  * tileSize.x,
-							(y * tileSize.y ),
+						DrawGraph(x  * tileSize.x+ offset.x,
+							(y * tileSize.y + offset.y),
 							lpImageMng.GetID(tmxObj_.GetMapKey())
 							[gid], true);
+						//DrawGraph(x  * tileSize.x,
+						//	(y * tileSize.y ),
+						//	lpImageMng.GetID(tmxObj_.GetMapKey())
+						//	[gid], true);
 					}
 				}
 

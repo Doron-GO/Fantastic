@@ -6,7 +6,7 @@
 #include"../Common/Collision.h"
 #include"../Common/Raycast.h"
 #include"../Input/Input.h"
-
+#include"../Obj/Camera.h"
 enum class DIR_LR
 {
 	LIGHT,
@@ -18,10 +18,13 @@ class Player
 public:
 	 Player(int playerNum);
 	 ~Player();
-	 void Init(ColList colList);
+	 void Init(ColList colList,int headTest);
 	 void Update(Input& input);
 	 void Draw();
 	 const Vector2DFloat GetPos();
+
+	 int headFlag_;//©•ª‚ªæ“ª‚©‚Ç‚¤‚©
+
 private:
 
 	void (Player::* _phase)(Input& input);

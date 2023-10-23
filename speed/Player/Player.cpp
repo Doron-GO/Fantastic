@@ -14,7 +14,7 @@ Player::~Player()
 {
 }
 
-void Player::Init(ColList colList)
+void Player::Init(ColList colList, int headTest)
 {
 	pos_ = { 300.0f,10.0f };
 
@@ -35,6 +35,15 @@ void Player::Init(ColList colList)
 
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
+
+	if (headFlag_==1)
+	{
+		headFlag_ = true;
+	}
+	else
+	{
+		headFlag_ = false;
+	}
 	offset_ = (view / 3.0f) - pos_;
 	moveVec_ = { 0.0f,0.0f };
 	movePow_ = { 0.0f,0.0f };
@@ -48,6 +57,7 @@ void Player::Init(ColList colList)
 void Player::Update(Input& input)
 {
 	offset_ = (view / 3.0f) - pos_;
+
 	lpAnimMng.UpdateAnime(animeStr_);
 	input_.Update(padNum_);
 	(this->*_phase)(input_);
@@ -65,18 +75,24 @@ void Player::Update(Input& input)
 
 void Player::Draw()
 {
-	//(this->*_draw)();
 
-	//DrawRotaGraph2F(pos_.x+ offset_.x, pos_.y + offset_.y,
-	//	24.0f, 35.0f,
-	//	1.5, 0.0,
-	//	lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-	//	true, static_cast<int>(dir_LR_), 0);
-	DrawRotaGraph2F(pos_.x, pos_.y ,
-		24.0f, 35.0f,
-		1.5, 0.0,
-		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-		true, static_cast<int>(dir_LR_), 0);
+	//if (!headFlag_)
+	{
+		DrawRotaGraph2F(pos_.x, pos_.y ,
+			24.0f, 35.0f,
+			1.5, 0.0,
+			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+			true, static_cast<int>(dir_LR_), 0);
+	}
+//	else 
+	{
+		DrawRotaGraph2F(pos_.x + offset_.x, pos_.y + offset_.y,
+			24.0f, 35.0f,
+			1.5, 0.0,
+			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+			true, static_cast<int>(dir_LR_), 0);
+	}
+
 
 	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
@@ -150,7 +166,7 @@ void Player::FallPhase(Input& input)
 		movePow_.y = 8.8f;
 	}
 	//接地したら地上移動モードにする
-	Vector2DFloat movecec = { 0.0f,8.0f };
+	Vector2DFloat movecec = { 0.0f,7.4f };
 	if (!Collision(movecec))
 	{
 		movePow_.y = 0.0f;

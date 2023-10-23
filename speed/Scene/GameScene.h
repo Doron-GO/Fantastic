@@ -17,6 +17,12 @@ public:
     virtual void Draw() override;
      void DrawOwnScreen() ;
 private:
+
+    
+    //一番先頭のプレイヤーに追従させる
+    //ゲームシーンで先頭を決めて、カメラクラスに渡す
+
+
     //std::shared_ptr<Player> player_;
     std::vector<std::shared_ptr<Player>> players_;
     std::unique_ptr<Camera> camera_;

@@ -20,6 +20,7 @@ bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerP
     { collision.first + Vector2DFloat{0,collision.second.y} ,
     collision.first }
     };
+
     //上の辺   
     //{collision.first+ offset,
     //    (collision.first + offset)+ Vector2DFloat{collision.second.x,0} },
@@ -60,6 +61,7 @@ bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
    //auto veclLine= line.end - line.p;
    
     auto veclLine= (line.end+offset) - (line.p + offset);
+   // auto veclLine= (line.end) - (line.p );
 
     //ray.vec: 始点からの方向ベクトル
    auto crossRayLine= checkCross(ray.vec, veclLine);
