@@ -18,7 +18,7 @@ void Player::Init(ColList colList, int headTest)
 {
 	pos_ = { 300.0f,10.0f };
 
-	center_ = { 0.0f,13.0f };
+	center_ = { 0.0f,11.0f };
 	colList_ = colList;
 
 	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
@@ -56,56 +56,83 @@ void Player::Init(ColList colList, int headTest)
 
 void Player::Update(Input& input)
 {
-	offset_ = (view / 3.0f) - pos_;
-
 	lpAnimMng.UpdateAnime(animeStr_);
 	input_.Update(padNum_);
-	(this->*_phase)(input_);
 	Move(input_);
+	(this->*_phase)(input_);
 
-
+	pos_.y += movePow_.y;
 	//壁に当たっていたら横移動させない
 	if (Collision(moveVec_))
 	{
 		pos_.x += movePow_.x;
 	}
-	pos_.y += movePow_.y;
 
 }
 
-void Player::Draw()
+void Player::Draw(Vector2DFloat cameraPos)
 {
 
-	//if (!headFlag_)
-	{
-		DrawRotaGraph2F(pos_.x, pos_.y ,
-			24.0f, 35.0f,
-			1.5, 0.0,
-			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-			true, static_cast<int>(dir_LR_), 0);
-	}
-//	else 
-	{
-		DrawRotaGraph2F(pos_.x + offset_.x, pos_.y + offset_.y,
-			24.0f, 35.0f,
-			1.5, 0.0,
-			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-			true, static_cast<int>(dir_LR_), 0);
-	}
+	auto pos = pos_ + cameraPos;
 
+	//デバッグ用の実際のキャラの座標を表示
 
-	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-	DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+	//DrawRotaGraph2F(pos_.x, pos_.y ,
+		//	24.0f, 35.0f,
+		//	1.5, 0.0,
+		//	lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+		//	true, static_cast<int>(dir_LR_), 0);
+
+	//見せかけのキャラクター描画
+	DrawRotaGraph2F(pos.x, pos.y,
+		24.0f, 35.0f,
+		1.5, 0.0,
+		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+		true, static_cast<int>(dir_LR_), 0);
+	if (padNum_ == 1)
+	{
+		DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
+		DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+
+	}
 	if (!Collision(moveVec_))
 	{
-		DrawString(0, 40, "当たった", 0xffffff);
+		DrawString(0, 40, "壁に当たった", 0xffffff);
 	}
-	//DrawCircle(pos_.x, pos_.y, 15, 0xffffff);
-	Vector2DFloat rayCenter = { pos_ - center_ };
+	if (!Collision())
+	{
+		DrawString(0, 60, "床に当たった", 0xffffff);
+	}
 
-	DrawLine(pos_.x+ offset_.x, pos_.y + offset_.y,
-		moveVec_.x+ pos_.x + offset_.x, moveVec_.y+ pos_.y + offset_.y, 0x00ffff);
+	Vector2DFloat rayCenter = { pos - center_ };
+	Vector2DFloat diagonallyVec = { moveVec_.x,-30.0f };
 
+	if (_phase == &Player::MovePhase)
+	{
+		//足元から進行方向に出るレイ
+		DrawLine(pos.x, pos.y ,
+			moveVec_.x+ pos.x , moveVec_.y+ pos.y , 0xff0000);
+		//足元から前斜め前に伸びるレイ
+		DrawLine(pos.x, pos.y ,
+			diagonallyVec.x+ pos.x , diagonallyVec.y+ pos.y , 0xff0000);
+		//足元から下に伸ばすレイ
+		Vector2DFloat moveVec = { 0.0f,20.0f };
+		DrawLine(rayCenter.x, rayCenter.y,
+			moveVec.x + rayCenter.x, moveVec.y + rayCenter.y, 0xff0000);
+	}
+
+	if (_phase == &Player::JumpPhese)
+	{
+		Vector2DFloat movevec = { 0.0f,-40.0f };
+		DrawLine(rayCenter.x, rayCenter.y,
+			movevec.x + rayCenter.x, movevec.y + rayCenter.y, 0xff0000);
+	}
+	if (_phase == &Player::FallPhase)
+	{
+		Vector2DFloat movevec = { 0.0f,22.0f };
+		DrawLine(rayCenter.x, rayCenter.y,
+			movevec.x + rayCenter.x, movevec.y + rayCenter.y, 0xff0000);
+	}
 }
 
 const Vector2DFloat Player::GetPos()
@@ -122,7 +149,8 @@ void Player::MovePhase(Input& input)
 {
 	//Move(input);
 	//もし床がなかったらフォールにする
-	if (Collision())
+	Vector2DFloat movevec = { 0.0f,8.2f };
+	if ((Collision(movevec)))
 	{
 		_phase = &Player::FallPhase;
 	}
@@ -154,35 +182,38 @@ void Player::FallPhase(Input& input)
 {
 	lpAnimMng.SetAnime(animeStr_, "Fall");
 
+	//落下速度が一定を超えたら決まった値にする
+	if (movePow_.y >= 8.0f)
+	{
+		movePow_.y = 8.0f;
+	}	
+
+	Vector2DFloat movecec = { 0.0f,movePow_.y };
+
 	//床と当たっていなかったら
-	if (Collision())
+	if (Collision(movecec))
 	{
 		movePow_.y += 0.2f;
 	}
-
-	//落下速度が一定を超えたら決まった値にする
-	if (movePow_.y >= 8.8f)
-	{
-		movePow_.y = 8.8f;
-	}
+	movecec = { 0.0f,movePow_.y };
 	//接地したら地上移動モードにする
-	Vector2DFloat movecec = { 0.0f,7.4f };
 	if (!Collision(movecec))
-	{
+	{	
 		movePow_.y = 0.0f;
 		_phase = &Player::MovePhase;
 	}
+
 }
 
 bool Player::Collision()
 {
 	Vector2DFloat rayCenter = { pos_-center_};
-	Vector2DFloat moveVec = { 0.0f,20.0f };
+	Vector2DFloat moveVec = { 0.0f,16.0f };
 	for (const auto& col : colList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec};
 
-		if (rayCast_.CheckCollision(ray, col,pos_+offset_))
+		if (rayCast_.CheckCollision(ray, col,pos_))
 		{
 			//TRACE("当たった\n");
 			return false;
@@ -194,20 +225,21 @@ bool Player::Collision()
 
 bool Player::Collision(Vector2DFloat movevec)
 {
-	Vector2DFloat rayCenter = { pos_  };
-	_dbgDrawLine(
-		rayCenter.x, rayCenter.y,
-		rayCenter.x + movevec.x, rayCenter.y + movevec.y,
-		0x00ff00
-	);
+	Vector2DFloat rayCenter = { pos_ };
+	//実際の当たり判定レイの描画
+	
+	//_dbgDrawLine(
+	//	rayCenter.x, rayCenter.y,
+	//	rayCenter.x + movevec.x, rayCenter.y + movevec.y,
+	//	0x00ff00
+	//);
 
 	for (const auto& col : colList_)
 	{
 		Raycast::Ray ray = { rayCenter,movevec };
 
-		if (rayCast_.CheckCollision(ray, col, pos_ + offset_))
+		if (rayCast_.CheckCollision(ray, col, pos_ ))
 		{
-
 			return false;
 		}
 	}
@@ -229,18 +261,12 @@ void Player::JumpDraw()
 void Player::MoveDraw()
 {
 
-	//DrawRotaGraph2F(pos_.x, pos_.y,
-	//	24.0f, 35.0f,
-	//	1.5, 0.0,
-	//	lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-	//	true, static_cast<int>(dir_LR_), 0);
-
 }
 
 void Player::Move(Input& input)
 {
 	float speed = 0.2f;
-	//右もしくは左キーが押されていないとき
+	//右とは左キーが押されていないとき
 	if (!input.IsPrassed("right")&&!input.IsPrassed("left"))
 	{
 		//移動量が0.1より大きかったら
@@ -298,6 +324,7 @@ void Player::Move(Input& input)
 			movePow_.x = 8.0f;
 		}
 	}
+
 	//壁に当たったら加速度を０にする 1:自分の前方 2:上斜め前 
 	Vector2DFloat diagonallyVec = { moveVec_.x,-30.0f };
 	if (!Collision(moveVec_)|| !Collision(diagonallyVec))

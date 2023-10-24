@@ -20,7 +20,7 @@ public:
 	 ~Player();
 	 void Init(ColList colList,int headTest);
 	 void Update(Input& input);
-	 void Draw();
+	 void Draw(Vector2DFloat cameraPos);//これにオフセット値を渡し描画をずらすようにする
 	 const Vector2DFloat GetPos();
 
 	 int headFlag_;//自分が先頭かどうか
@@ -34,8 +34,9 @@ private:
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
 	void FallPhase(Input& input);//落下中
-
+	//true 当たってない:false 当たってる
 	bool Collision();
+	//true 当たってない:false 当たってる
 	bool Collision(Vector2DFloat movevec);
 
 	void IdleDraw();
