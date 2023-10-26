@@ -15,6 +15,7 @@ public:
 
     virtual void Update(Input& input) override;
     virtual void Draw() override;
+    void DecideOnTheBeginning();
      void DrawOwnScreen() ;
 private:
 
@@ -28,5 +29,5 @@ private:
     std::unique_ptr<Stage> stage_;
     std::unique_ptr<Camera> camera_;
     Vector2DFloat drawOffset_;
-    
+    int playerNum_;
 };

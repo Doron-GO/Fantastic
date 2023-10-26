@@ -157,6 +157,7 @@
     <ClCompile Include="Obj\AnimMng.cpp" />
     <ClCompile Include="Obj\Camera.cpp" />
     <ClCompile Include="Obj\ImageMng.cpp" />
+    <ClCompile Include="Obj\LoadMap.cpp" />
     <ClCompile Include="Obj\Stage.cpp" />
     <ClCompile Include="Obj\TmxObj.cpp" />
     <ClCompile Include="Player\Player.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Obj\Camera.h" />
     <ClInclude Include="Obj\GetAtr.h" />
     <ClInclude Include="Obj\ImageMng.h" />
+    <ClInclude Include="Obj\LoadMap.h" />
     <ClInclude Include="Obj\Stage.h" />
     <ClInclude Include="Obj\TmxObj.h" />
     <ClInclude Include="Player\Player.h" />

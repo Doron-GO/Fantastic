@@ -4,18 +4,18 @@
 GameScene::GameScene(SceneMng& manager):Scene(manager)
 {
 	SetDrawScreen(DX_SCREEN_BACK);
-
 	screenID_ = MakeScreen(1000, 800, true);
-	
 	stage_ = std::make_unique<Stage>();
 	stage_->Init();
 	camera_ = std::make_unique<Camera>();
 	//tmxObj_.LoadTMX("./tmx/stage.tmx");
-	for (int i = 1; i <= 2; i++)
+	//playerNum = GetJoypadNum();
+
+	for (int playerNum = 1; playerNum <= GetJoypadNum(); playerNum++)
 	{
 		std::shared_ptr<Player> player;
-		player = std::make_shared<Player>(i);
-		player->Init(stage_->GetColList(), i);
+		player = std::make_shared<Player>(playerNum);
+		player->Init(stage_->GetColList(), playerNum);
 		players_.push_back(player);
 	}
 
@@ -26,6 +26,7 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 
 void GameScene::Update(Input& input)
 {
+	DecideOnTheBeginning();
 	camera_->Update();
 	
 	for (const auto& player : players_)
@@ -39,6 +40,23 @@ void GameScene::Draw()
 {
 	
 
+}
+
+void GameScene::DecideOnTheBeginning()
+{
+	int beginning = 0;
+	for (int playerNum =0; playerNum <players_.size()-1; playerNum++)
+	{
+		if (players_[playerNum]->GetPos().x <= players_[playerNum + 1]->GetPos().x)
+		{
+			beginning = playerNum+1;
+		}
+		else
+		{
+			beginning = playerNum;
+		}
+	}
+	camera_->ReConnect(players_[beginning]);
 }
 
 void GameScene::DrawOwnScreen()
