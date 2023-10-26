@@ -4,7 +4,7 @@
 GameScene::GameScene(SceneMng& manager):Scene(manager)
 {
 	SetDrawScreen(DX_SCREEN_BACK);
-	screenID_ = MakeScreen(1000, 800, true);
+	screenID_ = MakeScreen(1600.0f, 1000.0f, true);
 	stage_ = std::make_unique<Stage>();
 	stage_->Init();
 	camera_ = std::make_unique<Camera>();
@@ -18,17 +18,16 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 		player->Init(stage_->GetColList(), playerNum);
 		players_.push_back(player);
 	}
-
 	camera_->ReConnect(players_[0]);
+	new_Num_ = PLAYER_NUM::P_1;
+	old_Num_ = PLAYER_NUM::P_1;
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//カメラを初期化
-
 }
 
 void GameScene::Update(Input& input)
 {
 	DecideOnTheBeginning();
 	camera_->Update();
-	
 	for (const auto& player : players_)
 	{
 		player->Update(input);
@@ -39,39 +38,41 @@ void GameScene::Update(Input& input)
 void GameScene::Draw()
 {
 	
-
 }
 
 void GameScene::DecideOnTheBeginning()
 {
-	int beginning = 0;
+
+	//プレイヤーの人数分回す
 	for (int playerNum =0; playerNum <players_.size()-1; playerNum++)
-	{
-		if (players_[playerNum]->GetPos().x <= players_[playerNum + 1]->GetPos().x)
+	{	
+		//プレイヤーnの座標が次のプレイヤーn+1よりも先を走っていたら
+		if (players_[playerNum]->GetPos().x < players_[playerNum + 1]->GetPos().x)
 		{
-			beginning = playerNum+1;
+			new_Num_ = static_cast<PLAYER_NUM>(playerNum + 1);
 		}
 		else
 		{
-			beginning = playerNum;
+			new_Num_ = static_cast<PLAYER_NUM>(playerNum);
 		}
 	}
-	camera_->ReConnect(players_[beginning]);
+
+	if (old_Num_!=new_Num_)
+	{
+		camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
+		camera_->PhaseChanging(static_cast<int>(new_Num_));
+	}
+	//camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
+	old_Num_ = new_Num_;
 }
 
 void GameScene::DrawOwnScreen()
 {
-
 	//auto worldArea = tmxObj_.GetWorldArea();
 	//const auto tileSize = tmxObj_.GetTileSize();
 	//auto mapData = tmxObj_.GetMapData();
 
 	DrawString(50, 50, "GameScene", 0xffffff);
-
-	Vector2DFloat view = { 1200.0f, 800.0f };
-
-	auto offset = (view / 3.0f) - camera_->GetPos();
-	auto camera =  camera_->GetPos();
 
 	stage_->Draw(camera_->GetPos());
 
@@ -79,7 +80,5 @@ void GameScene::DrawOwnScreen()
 	{
 		player->Draw(camera_->GetPos());
 	}
-
 	DrawFormatStringF(0, 80, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
-
 }

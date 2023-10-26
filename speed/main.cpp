@@ -10,7 +10,7 @@ using namespace std;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	SetGraphMode(1200, 800, 32);			//640×480ドットの32bitカラーに設定
+	SetGraphMode(1600, 1000, 32);			//640×480ドットの32bitカラーに設定
 	ChangeWindowMode(true);
 	if (DxLib_Init() == -1)
 	{
