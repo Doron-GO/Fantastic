@@ -105,7 +105,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 
 	Vector2DFloat rayCenter = { pos - center_ };
-	Vector2DFloat diagonallyVec = { moveVec_.x,-30.0f };
+	Vector2DFloat diagonallyVec = { moveVec_.x,slideY_ };
 
 	if (_phase == &Player::MovePhase)
 	{
@@ -326,13 +326,18 @@ void Player::Move(Input& input)
 	}
 
 	//壁に当たったら加速度を０にする 1:自分の前方 2:上斜め前 
-	Vector2DFloat diagonallyVec = { moveVec_.x,-30.0f };
+	Vector2DFloat diagonallyVec = { moveVec_.x,slideY_ };
 	if (!Collision(moveVec_)|| !Collision(diagonallyVec))
 	{
 		movePow_.x = 0.0f;
 	}
 	//背中から壁に当たったら
 	Vector2DFloat backVec = { -(moveVec_.x/2.0f),0.0f };
+	if (!Collision(backVec))
+	{
+		movePow_.x = -(backVec.x/11.0f);
+	}
+	backVec.y = slideY_;
 	if (!Collision(backVec))
 	{
 		movePow_.x = -(backVec.x/11.0f);
@@ -347,15 +352,11 @@ void Player::Move(Input& input)
 		{
 			lpAnimMng.SetAnime(animeStr_, "Slide");
 			//スライディング中は減速する
-			if (movePow_.x >= 0.05f)
-			{
-				movePow_.x -= 0.1f;
-			}
-			if (movePow_.x <= -0.05f)
-			{
-				movePow_.x += 0.1f;
-			}
+			if (movePow_.x >= 0.05f) { movePow_.x -= 0.1f;}
+			if (movePow_.x <= -0.05f)  {movePow_.x += 0.1f;}
+			slideY_ = -15.0f;
 		}
+		else{ slideY_ = -35.0f; }
 	}
 
 }

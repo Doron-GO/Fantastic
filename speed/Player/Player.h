@@ -64,15 +64,15 @@ private:
 	Raycast rayCast_;
 
 	Vector2DFloat cameraPos_;//ÉJÉÅÉâÇÃç¿ïW
-
 	Vector2DFloat view = { 1200.0f, 800.0f };
 
 	Vector2DFloat offset_;
 
 	
-
 	Vector2DFloat movePow_;
 	Vector2DFloat moveVec_;
+
+	float slideY_ = -35.0f;
 
 	//VECTOR movePow_;
 	//VECTOR moveVec_;
