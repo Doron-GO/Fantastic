@@ -281,7 +281,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"stage.tsx"
+         "source":"StageCip.png"
         }],
  "tilewidth":32,
  "type":"map",
