@@ -60,7 +60,7 @@ bool LoadMap::SetMap()
 	}
 
 	//0‚Æ‚©1‚Æ‚©‚Ìƒ}ƒbƒvî•ñ‚ğˆêŒÂˆêŒÂŠi”[‚µ‚Ä‚é
-	auto data = layer["data"];
+	auto& data = layer["data"];
 	int cnt = 0;
 	for (auto& vecData : layerData.first->second)
 	{
@@ -70,8 +70,8 @@ bool LoadMap::SetMap()
 
 
 	//‚Æ‚Á‚Ä‚«‚½î•ñ‚Å‹éŒ`‚ğì‚é‚»‚ê‚ğlist‚ÉŠi”[
-	auto col = json_["layers"][2]["objects"];
-	for (int cnt = 0; cnt < col.size()-1 ; cnt++)
+	auto &col = json_["layers"][2]["objects"];
+	for (int cnt = 0; cnt <= col.size()-1 ; cnt++)
 	{
 		float x = col[cnt]["x"].get<int>();
 		float y = col[cnt]["y"].get<int>();
@@ -79,12 +79,28 @@ bool LoadMap::SetMap()
 		float h = col[cnt]["height"].get<int>();
 		colList_.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{w,h} });
 	}
+
+	//‚Æ‚Á‚Ä‚«‚½î•ñ‚Å‹éŒ`‚ğì‚é‚»‚ê‚ğlist‚ÉŠi”[
+	auto &wallRight = json_["layers"][4]["objects"];
+	for (int cnt = 0; cnt <= wallRight.size() - 1; cnt++)
+	{
+		float x = wallRight[cnt]["x"].get<int>();
+		float y = wallRight[cnt]["y"].get<int>();
+		float w = wallRight[cnt]["width"].get<int>();
+		float h = wallRight[cnt]["height"].get<int>();
+		WallCollList_.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{w,h} });
+	}
 	return true;
 }
 
-const ColList& LoadMap::GetColList(void)
+const GrndColList& LoadMap::GetColList(void)
 {
 	return colList_;
+}
+
+const WallColList& LoadMap::WallGetColList(void)
+{
+	return WallCollList_;
 }
 
 const Vector2D& LoadMap::GetWorldArea(void)

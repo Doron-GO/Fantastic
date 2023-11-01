@@ -18,7 +18,7 @@ class Player
 public:
 	 Player(int playerNum);
 	 ~Player();
-	 void Init(ColList colList,int headTest);
+	 void Init(GrndColList colList, WallColList wallColList);
 	 void Update(Input& input);
 	 void Draw(Vector2DFloat cameraPos);//これにオフセット値を渡し描画をずらすようにする
 	 const Vector2DFloat GetPos();
@@ -34,15 +34,18 @@ private:
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
 	void FallPhase(Input& input);//落下中
-	//true 当たってない:false 当たってる
+	void WallJumpPhese(Input& input);//壁ジャンプ
+	//自分の中心から true 当たってない:false 当たってる
 	bool Collision();
-	//true 当たってない:false 当たってる
+	//足元から　true 当たってない:false 当たってる
 	bool Collision(Vector2DFloat movevec);
+
+
+	bool CollWallJump(Vector2DFloat movevec);
 
 	void IdleDraw();
 	void JumpDraw();
 	void MoveDraw();
-
 
 	//左右移動
 	void Move(Input& input);
@@ -51,30 +54,21 @@ private:
 	std::map<std::string, int> imgkey_;
 	
 	AnimStr animeStr_;
-
 	Input input_;
-
 	int padNum_;//自分が何番目のPADを使っているか
 
 	DIR_LR dir_LR_;//キャラクターの向き
 	Vector2DFloat pos_;//キャラの座標
-	Vector2DFloat oldPos_;//前のキャラ座標
 	Vector2DFloat center_;//キャラの中心座標
-	ColList colList_;
+	GrndColList colList_;
+	WallColList wallcolList_;
 	Raycast rayCast_;
 
 	Vector2DFloat cameraPos_;//カメラの座標
-	Vector2DFloat view = { 1200.0f, 800.0f };
+	Vector2DFloat movePow_;	//移動する力
+	Vector2DFloat moveVec_;	//向いている方向
 
-	Vector2DFloat offset_;
-
-	
-	Vector2DFloat movePow_;
-	Vector2DFloat moveVec_;
-
-	float slideY_ = -35.0f;
-
-	//VECTOR movePow_;
-	//VECTOR moveVec_;
+	float slideY_ = -35.0f;	
+	int test= 0xffffff;
 };
 

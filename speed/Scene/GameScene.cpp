@@ -15,7 +15,7 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	{
 		std::shared_ptr<Player> player;
 		player = std::make_shared<Player>(playerNum);
-		player->Init(stage_->GetColList(), playerNum);
+		player->Init(stage_->GetColList(), stage_->GetWallColList());
 		players_.push_back(player);
 	}
 	camera_->ReConnect(players_[0]);

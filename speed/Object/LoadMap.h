@@ -19,7 +19,8 @@ public:
 
 	bool SetMap();
 
-	const ColList& GetColList(void);
+	const GrndColList& GetColList(void);
+	const WallColList& WallGetColList(void);
 	const Vector2D& GetWorldArea(void);
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);
@@ -29,7 +30,8 @@ private:
 	Vector2D layerSize_;
 	Vector2D WorldArea_;	//	世界の大きさ
 	Vector2D tileSize_;
-	ColList colList_;
+	GrndColList colList_;
+	WallColList WallCollList_;
 
 	std::string mapKey_;
 	MapData mapData;//マップにストリングはあまり使わない方がいいenumの方がいい

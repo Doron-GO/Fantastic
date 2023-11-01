@@ -1,5 +1,4 @@
 #pragma once
-#include"TmxObj.h"
 #include"LoadMap.h"
 #include"../Vector2D.h"
 
@@ -21,11 +20,11 @@ public:
 	const  Vector2D& GetWorldArea();
 	const  Vector2D& GetTileSize();
 	const std::string& GetMapKey();
-	const ColList& GetColList(void);
+	const GrndColList& GetColList(void);
+	const WallColList& GetWallColList(void);
 
 private:
 
-	TmxObj tmxObj_;
 	LoadMap loadMap_;
 
 };

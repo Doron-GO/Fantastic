@@ -1,3 +1,4 @@
+#include <DxLib.h>
 #include "Stage.h"
 #include"ImageMng.h"
 
@@ -53,7 +54,7 @@ void Stage::Draw(Vector2DFloat cameraPos)
 			}
 		}
 	}
-	for ( auto& line : tmxObj_.GetColList())
+	for ( auto& line : loadMap_.GetColList())
 	{
 		auto first = line.first;
 		auto second = line.second;
@@ -95,7 +96,12 @@ const  std::string& Stage::GetMapKey()
 	return loadMap_.GetMapKey();
 }
 
-const ColList& Stage::GetColList(void)
+const GrndColList& Stage::GetColList(void)
 {
 	return loadMap_.GetColList();
+}
+
+const WallColList& Stage::GetWallColList(void)
+{
+	return loadMap_.WallGetColList();
 }

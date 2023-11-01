@@ -14,12 +14,13 @@ Player::~Player()
 {
 }
 
-void Player::Init(ColList colList, int headTest)
+void Player::Init(GrndColList colList, WallColList wallColList)
 {
 	pos_ = { 300.0f,10.0f };
 
 	center_ = { 0.0f,11.0f };
 	colList_ = colList;
+	wallcolList_ = wallColList;
 
 	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
 	 char num = '0'+padNum_;
@@ -44,7 +45,6 @@ void Player::Init(ColList colList, int headTest)
 	{
 		headFlag_ = false;
 	}
-	offset_ = (view / 3.0f) - pos_;
 	moveVec_ = { 0.0f,0.0f };
 	movePow_ = { 0.0f,0.0f };
 	dir_LR_ = DIR_LR::LIGHT;
@@ -102,6 +102,10 @@ void Player::Draw(Vector2DFloat cameraPos)
 	if (!Collision())
 	{
 		DrawString(0, 60, "床に当たった", 0xffffff);
+	}
+	if (!CollWallJump(moveVec_))
+	{
+		DrawString(0, 70, "ジャンプ壁に当たった", test);
 	}
 
 	Vector2DFloat rayCenter = { pos - center_ };
@@ -205,6 +209,13 @@ void Player::FallPhase(Input& input)
 
 }
 
+void Player::WallJumpPhese(Input& input)
+{
+	movePow_.y=2.0f;
+
+
+}
+
 bool Player::Collision()
 {
 	Vector2DFloat rayCenter = { pos_-center_};
@@ -243,6 +254,30 @@ bool Player::Collision(Vector2DFloat movevec)
 			return false;
 		}
 	}
+	return true;
+}
+
+bool Player::CollWallJump(Vector2DFloat movevec)
+{
+	float wallX=0.0f;
+	Vector2DFloat rayCenter = { pos_ - center_ };
+	for (const auto& col : wallcolList_)
+	{
+		Raycast::Ray ray = { rayCenter,movevec };
+		if (rayCast_.CheckCollision(ray, col, pos_))
+		{
+			wallX = (col.first.x)+32.0f ;
+			if (rayCenter.x> wallX)
+			{
+				test = 0xff0000;
+			}
+			else
+			{
+				test = 0x0000ff;
+			}
+			return false;
+		}
+	}	
 	return true;
 }
 
@@ -337,12 +372,31 @@ void Player::Move(Input& input)
 	{
 		movePow_.x = -(backVec.x/11.0f);
 	}
-	backVec.y = slideY_;
-	if (!Collision(backVec))
+	auto bacVec2= backVec;
+	bacVec2.y = slideY_;
+
+	if (!Collision(bacVec2))
 	{
 		movePow_.x = -(backVec.x/11.0f);
 	}
+	if (!CollWallJump(backVec))
+	{
+		movePow_.x = -(backVec.x / 11.0f);
+	}
+	if (!CollWallJump(backVec))
+	{
+		movePow_.x = -(backVec.x / 11.0f);
+	}
 
+	if (_phase == &Player::JumpPhese|| _phase == &Player::FallPhase)
+	{
+		if (!CollWallJump(moveVec_) || !CollWallJump(diagonallyVec))
+		{
+			movePow_.x = 0.0f;
+			_phase = &Player::WallJumpPhese;
+		}
+
+	}
 
 	//落下中じゃないとき
 	if (!(_phase == &Player::FallPhase)&&!(_phase == &Player::JumpPhese))
