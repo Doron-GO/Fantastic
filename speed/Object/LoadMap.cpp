@@ -13,16 +13,18 @@ bool LoadMap::LoadTSX(std::string fileName)
 
 	std::string source;
 
+	//TSX.json‚É‘‚¢‚Ä‚¢‚é—v‘f‚ğ“Ç‚İ‚Ş
 	auto width = json_["width"].get<int>();
 	auto height = json_["height"].get<int>();
-	auto tilewidth = json_["width"].get<int>();
-	auto tilecount = json_["tilewidth"].get<int>();
+	auto tilewidth = json_["tilewidth"].get<int>();
+	auto tilecount = json_["tilecount"].get<int>();
 	auto tileheight = json_["tileheight"].get<int>();
 	auto columns = json_["columns"].get<int>();
 	source = json_["source"];
 
 	mapKey_ = "mapChip";
-	lpImageMng.GetID("./tmx" + source.substr(1), mapKey_, { tilewidth, tileheight }, { columns ,tilecount / columns });
+	//GetID‚Å‰æ‘m‚ğ“Ç‚İ‚Ş(“à•”‚ÅLoadDiveGraph)
+	lpImageMng.GetID("./Src/Img/" + source, mapKey_, { tilewidth, tileheight }, { columns ,tilecount / columns });
 	return true;
 
 }
@@ -44,17 +46,30 @@ bool LoadMap::LoadStage(std::string fileName)
 bool LoadMap::SetMap()
 {
 
-	auto layer = json_["layers"][0];
-
+	auto& layer = json_["layers"][0];
 	layerSize_.x = layer["width"].get<int>();
 	layerSize_.y = layer["height"].get<int>();
 
+	int firstgid = layer["id"].get<int>();
+
+	std::string layerName = layer["name"];
+	auto layerData = mapData.try_emplace(layerName);
+	if (layerData.second)
+	{
+		layerData.first->second.resize(WorldArea_.x * WorldArea_.y);
+	}
+
+	//0‚Æ‚©1‚Æ‚©‚Ìƒ}ƒbƒvî•ñ‚ğˆêŒÂˆêŒÂŠi”[‚µ‚Ä‚é
+	auto data = layer["data"];
+	int cnt = 0;
+	for (auto& vecData : layerData.first->second)
+	{
+		vecData = data[cnt].get<int>()-firstgid;
+		cnt++;
+	}
 
 
-
-
-
-
+	//‚Æ‚Á‚Ä‚«‚½î•ñ‚Å‹éŒ`‚ğì‚é‚»‚ê‚ğlist‚ÉŠi”[
 	auto col = json_["layers"][2]["objects"];
 	for (int cnt = 0; cnt < col.size()-1 ; cnt++)
 	{

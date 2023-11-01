@@ -12,9 +12,9 @@ Stage::~Stage()
 
 void Stage::Init()
 {
-	//tmxObj_.LoadTMX("./tmx/stage.tmx");
+	//tmxObj_.LoadTSX("./tmx/stage.tmx");
 	loadMap_.LoadTSX("Src/Json/TSX.json");
-	loadMap_.LoadStage("Src/Json/stageMap.json");
+	loadMap_.LoadStage("Src/Json/stage_.json");
 
 }
 
@@ -47,10 +47,6 @@ void Stage::Draw(Vector2DFloat cameraPos)
 							(y * tileSize.y + cameraPos.y),
 							lpImageMng.GetID(loadMap_.GetMapKey())
 							[gid], true);
-						//DrawGraph(x  * tileSize.x,
-						//	(y * tileSize.y ),
-						//	lpImageMng.GetID(tmxObj_.GetMapKey())
-						//	[gid], true);
 					}
 				}
 
