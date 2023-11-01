@@ -1,7 +1,7 @@
 #include<DxLib.h>
 #include<string>
 #include "Player.h"
-#include"../Obj/ImageMng.h"
+#include"../Object/ImageMng.h"
 #include"../_debug/_DebugConOut.h"
 #include"../_debug/_DebugDispOut.h"
 

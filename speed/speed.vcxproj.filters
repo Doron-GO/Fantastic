@@ -21,10 +21,10 @@
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Obj\AnimMng.cpp">
+    <ClCompile Include="Object\AnimMng.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Obj\ImageMng.cpp">
+    <ClCompile Include="Object\ImageMng.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Player\Player.cpp">
@@ -39,7 +39,7 @@
     <ClCompile Include="Scene\SceneMng.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Obj\TmxObj.cpp">
+    <ClCompile Include="Object\TmxObj.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Common\Raycast.cpp">
@@ -57,13 +57,13 @@
     <ClCompile Include="_debug\_DebugDispOut.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Obj\Camera.cpp">
+    <ClCompile Include="Object\Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Obj\Stage.cpp">
+    <ClCompile Include="Object\Stage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Obj\LoadMap.cpp">
+    <ClCompile Include="Object\LoadMap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,10 +71,10 @@
     <ClInclude Include="Input\Input.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\ImageMng.h">
+    <ClInclude Include="Object\ImageMng.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\AnimMng.h">
+    <ClInclude Include="Object\AnimMng.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Player\Player.h">
@@ -98,7 +98,7 @@
     <ClInclude Include="details\Vector2D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\TmxObj.h">
+    <ClInclude Include="Object\TmxObj.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="rapidxml\rapidxml_utils.hpp">
@@ -113,7 +113,7 @@
     <ClInclude Include="rapidxml\rapidxml_print.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\GetAtr.h">
+    <ClInclude Include="Object\GetAtr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Common\Collision.h">
@@ -134,13 +134,13 @@
     <ClInclude Include="_debug\_DebugDispOut.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\Camera.h">
+    <ClInclude Include="Object\Camera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\Stage.h">
+    <ClInclude Include="Object\Stage.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Obj\LoadMap.h">
+    <ClInclude Include="Object\LoadMap.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

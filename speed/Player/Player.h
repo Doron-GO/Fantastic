@@ -2,11 +2,11 @@
 #include<map>
 #include<string>
 #include"../Vector2D.h"
-#include"../Obj/AnimMng.h"
+#include"../Object/AnimMng.h"
 #include"../Common/Collision.h"
 #include"../Common/Raycast.h"
 #include"../Input/Input.h"
-#include"../Obj/Camera.h"
+#include"../Object/Camera.h"
 enum class DIR_LR
 {
 	LIGHT,

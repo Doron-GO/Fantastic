@@ -1,11 +1,11 @@
 #pragma once
 #include "Scene.h"
 #include"../Player/Player.h"
-#include"../Obj/Camera.h"
+#include"../Object/Camera.h"
 #include<memory>
-#include"../Obj/Camera.h"
+#include"../Object/Camera.h"
 #include"../Input/Input.h"
-#include"../Obj/Stage.h"
+#include"../Object/Stage.h"
 
 class GameScene :
     public Scene

@@ -1,6 +1,6 @@
 #include<DxLib.h>
 #include "GameScene.h"
-#include"../Obj/ImageMng.h"
+#include"../Object/ImageMng.h"
 GameScene::GameScene(SceneMng& manager):Scene(manager)
 {
 	SetDrawScreen(DX_SCREEN_BACK);
