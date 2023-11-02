@@ -47,7 +47,7 @@ void Player::Init(GrndColList colList, WallColList wallColList)
 	}
 	moveVec_ = { 0.0f,0.0f };
 	movePow_ = { 0.0f,0.0f };
-	dir_LR_ = DIR_LR::LIGHT;
+	dir_LR_ = DIR_LR::RIGHT;
 	_phase = &Player::FallPhase;
 	_draw = &Player::MoveDraw;
 	
@@ -92,18 +92,19 @@ void Player::Draw(Vector2DFloat cameraPos)
 	if (padNum_ == 1)
 	{
 		DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-		DrawFormatStringF(0, 20, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+		DrawFormatStringF(0, 30, 0xffffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
+		DrawFormatStringF(0, 50, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
 
 	}
 	if (!Collision(moveVec_))
 	{
-		DrawString(0, 40, "壁に当たった", 0xffffff);
+		DrawString(0, 120, "壁に当たった", 0xffffff);
 	}
 	if (!Collision())
 	{
-		DrawString(0, 60, "床に当たった", 0xffffff);
+		DrawString(0, 90, "床に当たった", 0xffffff);
 	}
-	if (!CollWallJump(moveVec_))
+	if (!ColWallSlide(moveVec_))
 	{
 		DrawString(0, 70, "ジャンプ壁に当たった", test);
 	}
@@ -179,7 +180,6 @@ void Player::JumpPhese(Input& input)
 		movePow_.y += -0.2f;
 		movePow_.y += -0.3f;
 	}
-	
 }
 
 void Player::FallPhase(Input& input)
@@ -209,9 +209,57 @@ void Player::FallPhase(Input& input)
 
 }
 
+void Player::WallSlidePhese(Input& input)
+{
+	Vector2DFloat diagonallyVec = { moveVec_.x,slideY_ };
+	Jump(input);
+
+	//壁にくっついていなかったらフォール状態に移行する
+	if (!(_phase == &Player::WallJumpPhese))
+	{
+		if ((ColWallSlide(moveVec_)||ColWallSlide(diagonallyVec))&&Collision())
+		{
+			_phase = &Player::FallPhase;
+		}
+	}
+	//もし地面に足がついたら
+	if (!Collision())
+	{
+		movePow_.y = 0.0f;
+		_phase = &Player::MovePhase;
+	}
+	else
+	{
+		lpAnimMng.SetAnime(animeStr_, "WallSlide");
+		movePow_.y = 2.0f;
+	}
+}
+
 void Player::WallJumpPhese(Input& input)
 {
-	movePow_.y=2.0f;
+	lpAnimMng.SetAnime(animeStr_, "Jump");
+	Vector2DFloat diagonallyVec = { moveVec_.x,slideY_ };
+	Vector2DFloat movevec = { 0.0f,-40.0f };
+	//ジャンプ高度が最大に達したもしくは、地面に接地したら
+	if ((movePow_.y <= -12.0f) || !(Collision(movevec)))
+	{
+		//ｙの移動量0にしてフォールを呼ぶ
+		movePow_.y = 0.0f;
+		_phase = &Player::FallPhase;
+	}
+	//でなければyの移動量を加算する
+	else
+	{
+		movePow_.y += -0.2f;
+		movePow_.y += -0.3f;
+		movePow_.x += (moveVec_.x / 30.0f);
+
+	}
+	if ((!ColWallSlide(moveVec_) || !ColWallSlide(diagonallyVec)) )
+	{
+		movePow_.x = 0.0f;
+		_phase = &Player::WallSlidePhese;
+	}
 
 
 }
@@ -231,7 +279,6 @@ bool Player::Collision()
 		}
 	}
 	return true;
-
 }
 
 bool Player::Collision(Vector2DFloat movevec)
@@ -257,7 +304,7 @@ bool Player::Collision(Vector2DFloat movevec)
 	return true;
 }
 
-bool Player::CollWallJump(Vector2DFloat movevec)
+bool Player::ColWallSlide(Vector2DFloat movevec)
 {
 	float wallX=0.0f;
 	Vector2DFloat rayCenter = { pos_ - center_ };
@@ -290,7 +337,6 @@ void Player::IdleDraw()
 void Player::JumpDraw()
 {
 	lpAnimMng.SetAnime(animeStr_, "Jump");
-
 }
 
 void Player::MoveDraw()
@@ -314,6 +360,20 @@ void Player::Move(Input& input)
 		{
 			movePow_.x += speed;
 		}
+		if (dir_LR_ == DIR_LR::RIGHT)
+		{
+			if (0.40f >= movePow_.x&& movePow_.x >= 0.02f)
+			{
+				movePow_.x = 0.0f;
+			}
+		}
+		if (dir_LR_ == DIR_LR::LEFT)
+		{
+			if(-0.40f<=movePow_.x && movePow_.x <= -0.02f)
+			{
+				movePow_.x = 0.0f;
+			}
+		}
 		//ジャンプアニメーション中じゃなかったら
 		if (_phase == &Player::MovePhase)
 		{
@@ -332,23 +392,26 @@ void Player::Move(Input& input)
 	//スライディングボダンが押されていない時
 	if (!input.IsPrassed("c"))
 	{
-
-		//右キー
-		if (input.IsPrassed("right"))
+		if (!(_phase == &Player::WallJumpPhese))
 		{
-			dir_LR_ = DIR_LR::LIGHT;
-			movePow_.x += 0.2f;
-			moveVec_ = { 22.0f,0.0f };
+			//右キー
+			if (input.IsPrassed("right"))
+			{
+				dir_LR_ = DIR_LR::RIGHT;
+				movePow_.x += 0.2f;
+				moveVec_ = { 18.0f,0.0f };
 
-		}
-		//左キー
-		if (input.IsPrassed("left"))
-		{
-			dir_LR_ = DIR_LR::LEFT;
-			movePow_.x -= 0.2f;
-			moveVec_ = { -22.0f,0.0f };
+			}
+			//左キー
+			if (input.IsPrassed("left"))
+			{
+				dir_LR_ = DIR_LR::LEFT;
+				movePow_.x -= 0.2f;
+				moveVec_ = { -18.0f,0.0f };
 
+			}
 		}
+
 		//移動速度が一定を超えると最大速度に固定する
 		if (movePow_.x <= -8.0f)
 		{
@@ -379,23 +442,22 @@ void Player::Move(Input& input)
 	{
 		movePow_.x = -(backVec.x/11.0f);
 	}
-	if (!CollWallJump(backVec))
+	if (!ColWallSlide(backVec))
 	{
 		movePow_.x = -(backVec.x / 11.0f);
 	}
-	if (!CollWallJump(backVec))
+	if (!ColWallSlide(backVec))
 	{
 		movePow_.x = -(backVec.x / 11.0f);
 	}
 
 	if (_phase == &Player::JumpPhese|| _phase == &Player::FallPhase)
 	{
-		if (!CollWallJump(moveVec_) || !CollWallJump(diagonallyVec))
+		if ((!ColWallSlide(moveVec_)||!ColWallSlide(diagonallyVec)) && Collision())
 		{
 			movePow_.x = 0.0f;
-			_phase = &Player::WallJumpPhese;
+			_phase = &Player::WallSlidePhese;
 		}
-
 	}
 
 	//落下中じゃないとき
@@ -406,8 +468,15 @@ void Player::Move(Input& input)
 		{
 			lpAnimMng.SetAnime(animeStr_, "Slide");
 			//スライディング中は減速する
-			if (movePow_.x >= 0.05f) { movePow_.x -= 0.1f;}
-			if (movePow_.x <= -0.05f)  {movePow_.x += 0.1f;}
+			if (movePow_.x >= 0.0f) 
+			{
+				movePow_.x -= 0.1f;
+			}
+			if (movePow_.x <= 0.0f) 
+			{
+				movePow_.x += 0.1f;
+			}
+			
 			slideY_ = -15.0f;
 		}
 		else{ slideY_ = -35.0f; }
@@ -422,7 +491,26 @@ void Player::Jump(Input& input)
 	{
 		lpAnimMng.SetAnime(animeStr_, "Jump");
 		movePow_.y = 0.0f;
-		_phase = &Player::JumpPhese;
+		//壁すり状態なら壁ジャンプ
+		if ((_phase == &Player::WallSlidePhese))
+		{
+			moveVec_ = (-moveVec_);
+			if (moveVec_.x > 0.0f)
+			{
+				dir_LR_ = DIR_LR::RIGHT;
+			}
+			else
+			{
+				dir_LR_ = DIR_LR::LEFT;
+			}
+			movePow_.x = 0.0f;
 
+			_phase = &Player::WallJumpPhese;
+		}
+		else//違うなら通常ジャンプ
+		{
+			_phase = &Player::JumpPhese;
+		}
 	}
 }
+

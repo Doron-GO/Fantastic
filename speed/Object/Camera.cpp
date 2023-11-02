@@ -29,14 +29,14 @@ void Camera::Switching()
     offset.x = (view.x / 4.0f) * 2.0f - taeget_.lock()->GetPos().x;
     offset.y = (view.y / 2.0f) - taeget_.lock()->GetPos().y;
 
-    if (time <= 60){time++;}
-    cameraPos_.x = oldPos_.x * (1 - time / 60) + offset.x * time / 60;
-    cameraPos_.y = oldPos_.y * (1 - time / 60) + offset.y * time / 60;
+    if (time <= 60.0f){time++;}
+    cameraPos_.x = oldPos_.x * (1.0f - time / 60.0f) + offset.x * time / 60.0f;
+    cameraPos_.y = oldPos_.y * (1.0f - time / 60.0f) + offset.y * time / 60.0f;
    
-    if (time >= 60)
+    if (time >= 60.0f)
     {
         _phase = &Camera::Follow;
-        time = 0;
+        time = 0.0f;
     }
 }
 

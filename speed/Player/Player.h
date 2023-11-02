@@ -9,7 +9,7 @@
 #include"../Object/Camera.h"
 enum class DIR_LR
 {
-	LIGHT,
+	RIGHT,
 	LEFT
 };
 
@@ -34,6 +34,7 @@ private:
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
 	void FallPhase(Input& input);//落下中
+	void WallSlidePhese(Input& input);//壁ずり落ち
 	void WallJumpPhese(Input& input);//壁ジャンプ
 	//自分の中心から true 当たってない:false 当たってる
 	bool Collision();
@@ -41,7 +42,7 @@ private:
 	bool Collision(Vector2DFloat movevec);
 
 
-	bool CollWallJump(Vector2DFloat movevec);
+	bool ColWallSlide(Vector2DFloat movevec);
 
 	void IdleDraw();
 	void JumpDraw();
@@ -50,6 +51,7 @@ private:
 	//左右移動
 	void Move(Input& input);
 	void Jump(Input& input);
+	//bool Jump(Input& input);
 
 	std::map<std::string, int> imgkey_;
 	

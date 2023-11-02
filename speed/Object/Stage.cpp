@@ -25,8 +25,6 @@ void Stage::Draw(Vector2DFloat cameraPos)
 	const auto tileSize = loadMap_.GetTileSize();
 	auto mapData = loadMap_.GetMapData();
 
-	DrawString(50, 50, "GameScene", 0xffffff);
-
 	Vector2DFloat view = { 1200.0f, 800.0f };
 	auto offset = (view / 4.0f) - cameraPos;
 

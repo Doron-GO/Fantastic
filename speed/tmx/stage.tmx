@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="125" height="60" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="37">
+<map version="1.8" tiledversion="1.8.2" orientation="orthogonal" renderorder="right-down" width="125" height="60" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="60">
  <editorsettings>
   <export target="../Src/Json/stage_.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="stage_.json"/>
- <layer id="1" name="Groundレイヤー1" width="125" height="60">
+ <layer id="1" name="Ground" width="125" height="60">
   <data encoding="csv">
 8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -68,7 +68,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="3" name="タイルレイヤー2" width="125" height="60">
+ <layer id="3" name="タイルレイヤー2" width="125" height="60" visible="0">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -132,13 +132,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="2" name="col">
+ <objectgroup id="2" name="ColGround">
   <object id="8" x="192" y="160" width="2848" height="32"/>
   <object id="2" x="832" y="1600" width="2240" height="32"/>
-  <object id="13" x="0" y="0" width="32" height="1376"/>
-  <object id="14" x="704" y="64" width="64" height="32"/>
   <object id="16" x="256" y="960" width="800" height="32"/>
-  <object id="23" x="1024" y="192" width="32" height="768"/>
   <object id="26" x="32" y="544" width="832" height="32"/>
   <object id="27" x="32" y="1344" width="512" height="32"/>
   <object id="29" x="512" y="1376" width="32" height="64"/>
@@ -148,14 +145,33 @@
   <object id="33" x="672" y="1504" width="32" height="64"/>
   <object id="34" x="704" y="1536" width="64" height="32"/>
   <object id="35" x="736" y="1568" width="96" height="32"/>
+  <object id="37" x="960" y="0.179789" width="64" height="127.82"/>
+  <object id="38" x="704" y="64" width="64" height="32"/>
+  <object id="48" x="2304" y="1024" width="32" height="480.667"/>
+  <object id="49" x="0" y="0" width="32" height="544"/>
+  <object id="50" x="1024" y="192" width="32" height="768"/>
+  <object id="55" x="0" y="576" width="32" height="768"/>
+  <object id="56" x="2464" y="1152" width="33.3333" height="448"/>
+  <object id="57" x="1280" y="1280" width="384" height="32"/>
+  <object id="58" x="2016" y="992" width="320" height="32"/>
+  <object id="59" x="2464" y="1120" width="384" height="31"/>
  </objectgroup>
- <objectgroup id="7" name="col">
+ <objectgroup id="7" name="col" visible="0">
   <object id="11" x="3070" y="1599.33">
    <polygon points="0,0 97.3333,-96.6667 96.6667,0.666667"/>
   </object>
   <object id="12" x="416" y="160">
    <polygon points="0,0 32,-32 32,0"/>
   </object>
-  <object id="36" x="960" y="0" width="64" height="128"/>
+ </objectgroup>
+ <objectgroup id="9" name="Wall">
+  <object id="41" x="0" y="0" width="32" height="544"/>
+  <object id="42" x="0" y="576" width="32" height="768"/>
+  <object id="43" x="2304" y="1024" width="32" height="480"/>
+  <object id="44" x="2304" y="1024" width="32" height="480"/>
+  <object id="45" x="1024" y="192" width="32" height="768"/>
+  <object id="46" x="2464" y="1152" width="32" height="448"/>
+  <object id="51" x="0" y="576" width="32.6667" height="768"/>
+  <object id="52" x="1278.67" y="1278" width="385.333" height="34"/>
  </objectgroup>
 </map>

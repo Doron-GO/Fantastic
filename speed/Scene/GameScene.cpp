@@ -72,7 +72,7 @@ void GameScene::DrawOwnScreen()
 	//const auto tileSize = tmxObj_.GetTileSize();
 	//auto mapData = tmxObj_.GetMapData();
 
-	DrawString(50, 50, "GameScene", 0xffffff);
+	//DrawString(50, 50, "GameScene", 0xffffff);
 
 	stage_->Draw(camera_->GetPos());
 
@@ -80,5 +80,5 @@ void GameScene::DrawOwnScreen()
 	{
 		player->Draw(camera_->GetPos());
 	}
-	DrawFormatStringF(0, 80, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
+	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 }

@@ -47,9 +47,9 @@
 		</anime>
 	</action>
 		<action name = "WallSlide" source = "Src/Img/wall-slide2.png" divSizeX ="50" divSizeY ="37" divCntX = "2" divCntY = "1">
-		<anime loop ="0" encoding = "csv">
-			0,10,0,0,50,37,
-			1,10,0,0,50,37
+		<anime loop ="-1" encoding = "csv">
+			0,5,0,0,50,37,
+			1,5,0,0,50,37
 		</anime>
 	</action>
 </actionList>

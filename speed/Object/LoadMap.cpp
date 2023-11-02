@@ -68,7 +68,6 @@ bool LoadMap::SetMap()
 		cnt++;
 	}
 
-
 	//‚Æ‚Á‚Ä‚«‚½î•ñ‚Å‹éŒ`‚ğì‚é‚»‚ê‚ğlist‚ÉŠi”[
 	auto &col = json_["layers"][2]["objects"];
 	for (int cnt = 0; cnt <= col.size()-1 ; cnt++)
