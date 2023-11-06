@@ -1,5 +1,4 @@
 #include "Input.h"
-#include<DxLib.h>
 #include<cassert>
 #include<algorithm>
 
@@ -83,6 +82,12 @@ Input::Input()
 							{InputType::gamepad,PAD_INPUT_X} //padのA
 
 	};
+	//フック
+	inputTable_["hook"] = {
+							{ InputType::keybord, KEY_INPUT_R} ,
+							{InputType::gamepad,PAD_INPUT_T} //padのA
+
+	};
 	
 	//キーコンフィグ
 	inputTable_["keyconfig"] = {
@@ -115,6 +120,7 @@ void Input::Update(int padNum)
 	GetHitKeyStateAll(keycode);//キーボード入力
 	auto a= 0x0000 + padNum;
 	int padInfo = GetJoypadInputState(a);//パッド１番入力
+	auto padInfo2 = GetJoypadDirectInputState(a, &joyDInState_);
 	int mouseInfo = GetMouseInput();//マウス入力
 
 	lastState_ = currentState_;//更新前の情報を記録

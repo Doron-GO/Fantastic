@@ -7,6 +7,9 @@
 #include"../Common/Raycast.h"
 #include"../Input/Input.h"
 #include"../Object/Camera.h"
+
+class Wire;
+
 enum class DIR_LR
 {
 	RIGHT,
@@ -25,6 +28,12 @@ public:
 
 	 int headFlag_;//自分が先頭かどうか
 
+	GrndColList grndColList_;//特にギミックのない当たり判定
+	WallColList wallcolList_;//壁ジャンプができる当たり判定
+
+
+	Vector2DFloat GetMoveVec();
+	
 private:
 
 	void (Player::* _phase)(Input& input);
@@ -48,10 +57,10 @@ private:
 	void JumpDraw();
 	void MoveDraw();
 
-	//左右移動
-	void Move(Input& input);
+	void Move(Input& input);	//左右移動
+
+	void Anchoring(Input& input);//フックを飛ばす:進行方向の斜め上
 	void Jump(Input& input);
-	//bool Jump(Input& input);
 
 	std::map<std::string, int> imgkey_;
 	
@@ -62,13 +71,15 @@ private:
 	DIR_LR dir_LR_;//キャラクターの向き
 	Vector2DFloat pos_;//キャラの座標
 	Vector2DFloat center_;//キャラの中心座標
-	GrndColList colList_;
-	WallColList wallcolList_;
 	Raycast rayCast_;
 
 	Vector2DFloat cameraPos_;//カメラの座標
 	Vector2DFloat movePow_;	//移動する力
 	Vector2DFloat moveVec_;	//向いている方向
+
+
+
+	std::unique_ptr<Wire> wire_;
 
 	float slideY_ = -35.0f;	
 	int test= 0xffffff;

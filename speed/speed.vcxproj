@@ -160,6 +160,7 @@
     <ClCompile Include="Object\LoadMap.cpp" />
     <ClCompile Include="Object\Stage.cpp" />
     <ClCompile Include="Player\Player.cpp" />
+    <ClCompile Include="Player\Wire.cpp" />
     <ClCompile Include="Scene\GameScene.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Object\LoadMap.h" />
     <ClInclude Include="Object\Stage.h" />
     <ClInclude Include="Player\Player.h" />
+    <ClInclude Include="Player\Wire.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
     <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />

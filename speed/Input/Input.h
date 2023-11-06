@@ -1,4 +1,5 @@
 #pragma once
+#include<DxLib.h>
 
 #include<string>
 #include<unordered_map>
@@ -104,5 +105,8 @@ public:
 	/// </summary>
 	/// <returns>true:œŠO“ü—Í‚É“–‚½‚é,false:“–‚½‚ç‚È‚¢</returns>
 	bool CheckExclusiveInput();
+
+	DINPUT_JOYSTATE joyDInState_;
+
 };
 

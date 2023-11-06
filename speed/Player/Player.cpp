@@ -1,6 +1,7 @@
 #include<DxLib.h>
 #include<string>
 #include "Player.h"
+#include"Wire.h"
 #include"../Object/ImageMng.h"
 #include"../_debug/_DebugConOut.h"
 #include"../_debug/_DebugDispOut.h"
@@ -19,7 +20,7 @@ void Player::Init(GrndColList colList, WallColList wallColList)
 	pos_ = { 300.0f,10.0f };
 
 	center_ = { 0.0f,11.0f };
-	colList_ = colList;
+	grndColList_ = colList;
 	wallcolList_ = wallColList;
 
 	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
@@ -51,7 +52,7 @@ void Player::Init(GrndColList colList, WallColList wallColList)
 	_phase = &Player::FallPhase;
 	_draw = &Player::MoveDraw;
 	
-
+	wire_ = std::make_unique<Wire>(*this);
 }
 
 void Player::Update(Input& input)
@@ -59,6 +60,8 @@ void Player::Update(Input& input)
 	lpAnimMng.UpdateAnime(animeStr_);
 	input_.Update(padNum_);
 	Move(input_);
+	Anchoring(input);
+	
 	(this->*_phase)(input_);
 
 	pos_.y += movePow_.y;
@@ -145,6 +148,11 @@ const Vector2DFloat Player::GetPos()
 	return pos_;
 }
 
+Vector2DFloat Player::GetMoveVec()
+{
+	return moveVec_;
+}
+
 void Player::IdlePhase(Input& input)
 {
 
@@ -167,7 +175,7 @@ void Player::JumpPhese(Input& input)
 	lpAnimMng.SetAnime(animeStr_, "Jump");	
 	Vector2DFloat movevec={ 0.0f,-40.0f };
 
-	//ジャンプ高度が最大に達したもしくは、地面に接地したら
+	//ジャンプ高度が最大に達したもしくは、頭をぶつけたら
 	if((movePow_.y<=-13.0f)||!(Collision(movevec)))
 	{
 		//ｙの移動量0にしてフォールを呼ぶ
@@ -268,7 +276,7 @@ bool Player::Collision()
 {
 	Vector2DFloat rayCenter = { pos_-center_};
 	Vector2DFloat moveVec = { 0.0f,16.0f };
-	for (const auto& col : colList_)
+	for (const auto& col : grndColList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec};
 
@@ -292,7 +300,7 @@ bool Player::Collision(Vector2DFloat movevec)
 	//	0x00ff00
 	//);
 
-	for (const auto& col : colList_)
+	for (const auto& col : grndColList_)
 	{
 		Raycast::Ray ray = { rayCenter,movevec };
 
@@ -482,6 +490,19 @@ void Player::Move(Input& input)
 		else{ slideY_ = -35.0f; }
 	}
 
+}
+
+void Player::Anchoring(Input& input)
+{
+	if (input.IsPrassed("hook"))
+	{
+		if (_phase == &Player::MovePhase ||
+			_phase == &Player::JumpPhese)
+		{
+		auto p = 0;
+
+		}
+	}
 }
 
 void Player::Jump(Input& input)
