@@ -32,8 +32,9 @@ public:
 	WallColList wallcolList_;//壁ジャンプができる当たり判定
 
 
-	Vector2DFloat GetMoveVec();
-	
+	Vector2DFloat GetDiagonallyVecVec();
+	Vector2DFloat pos_;//キャラの座標
+
 private:
 
 	void (Player::* _phase)(Input& input);
@@ -69,13 +70,13 @@ private:
 	int padNum_;//自分が何番目のPADを使っているか
 
 	DIR_LR dir_LR_;//キャラクターの向き
-	Vector2DFloat pos_;//キャラの座標
 	Vector2DFloat center_;//キャラの中心座標
 	Raycast rayCast_;
 
 	Vector2DFloat cameraPos_;//カメラの座標
 	Vector2DFloat movePow_;	//移動する力
 	Vector2DFloat moveVec_;	//向いている方向
+	Vector2DFloat diagonallyVec_;	//向いている方向
 
 
 

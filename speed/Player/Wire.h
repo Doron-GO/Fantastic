@@ -12,7 +12,7 @@ public:
 	~Wire();
 
 	void Update();
-	void Draw();	
+	void Draw(Vector2DFloat cameraPos);
 	void (Wire::* _phase)();
 
 	void SwingPhase();
@@ -24,10 +24,11 @@ public:
 
 private:
 
-	Player& player_;
+	Player& const player_;
 	Raycast rayCast_;
 
 	Vector2DFloat pos_;
+	VECTOR movedPos_;
 	Vector2DFloat moveVec_;
 	VECTOR movePow_;
 

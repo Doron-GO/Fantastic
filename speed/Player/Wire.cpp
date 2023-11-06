@@ -4,6 +4,8 @@
 
 Wire::Wire(Player& player ):player_(player)
 {
+	_phase = &Wire::AnchoringPhase;
+
 }
 
 Wire::~Wire()
@@ -16,11 +18,14 @@ void Wire::Update()
 
 }
 
-void Wire::Draw()
+void Wire::Draw(Vector2DFloat cameraPos)
 {
-	auto pPos = player_.GetPos();
-	DrawCircle(pos_.x,pos_.y,5,0xff0000);
-	DrawLine(pPos.x, pPos.y, pos_.x, pos_.y, 0xffffff);
+	auto pPos = player_.pos_;
+	pPos += cameraPos;
+	DrawCircle(pos_.x+ cameraPos.x,pos_.y+ cameraPos.y,5,0xff0000);
+	DrawLine(pPos.x, pPos.y, pos_.x + cameraPos.x, pos_.y + cameraPos.y, 0xffffff);
+
+	DrawFormatStringF(0, 160, 0xffffff, "DiagonallyVecVec:x.%f,y.%f", player_.GetDiagonallyVecVec().x, player_.GetDiagonallyVecVec().y);
 }
 
 void Wire::SwingPhase()
@@ -33,22 +38,22 @@ void Wire:: AnchoringPhase()
 	
 
 	//êÃéˆã∆Ç≈çÏÇ¡ÇΩVectorÇégÇ¡ÇƒÇ¢ÇÈÇπÇ¢Ç≈ÇﬂÇÒÇ«Ç≠Ç≥Ç¢Ç±Ç∆Ç…Ç»Ç¡ÇƒÇ¢ÇÈ
-	VECTOR pos = { pos_.x,pos_.y };
-	pos = VAdd(pos, movePow_);
-
-	pos_.x = pos.x;
-	pos_.y = pos.y;
 }
 
 void Wire::SetPalam()
 {
+	pos_ = player_.pos_;
+	VECTOR pos = { pos_.x,pos_.y };
+	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,player_.GetDiagonallyVecVec().y };
 
-	pos_ = player_.GetPos();
-	moveVec_ = player_.GetMoveVec();
-	VECTOR moveVec = { player_.GetMoveVec().x,player_.GetMoveVec().y };
+	moveVec=VNorm(moveVec);
+	movePow_ = VScale(moveVec, 100.0f);
+	movedPos_ = VAdd(pos, movePow_);
 
-	movePow_ = VScale(moveVec, 3.0f);
-	_phase = &Wire::AnchoringPhase;
+	pos_.x = movedPos_.x;
+	pos_.y = movedPos_.y;
+
+	_phase = &Wire::SwingPhase;
 }
 
 bool Wire::IsHitHook()

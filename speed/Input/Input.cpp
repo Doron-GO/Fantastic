@@ -45,13 +45,13 @@ Input::Input()
 	//ジャンプ
 	inputTable_["jump"] = {
 							{ InputType::keybord, KEY_INPUT_Z} ,
-							{InputType::gamepad,PAD_INPUT_A} ,//padのA
+							{InputType::gamepad,PAD_INPUT_A} //padのA　プレステの□
 							};
 
 	//攻撃
-	inputTable_["attack"] = {
+	inputTable_["hook"] = {
 							{ InputType::keybord, KEY_INPUT_X} ,
-							{InputType::gamepad,PAD_INPUT_C} ,//padのA
+							{InputType::gamepad,PAD_INPUT_B} //プレステの×
 							};
 
 
@@ -79,15 +79,15 @@ Input::Input()
 	//スライディング
 	inputTable_["c"] = {
 							{ InputType::keybord, KEY_INPUT_C} ,
-							{InputType::gamepad,PAD_INPUT_X} //padのA
+							{InputType::gamepad,PAD_INPUT_X} //padのA　プレステの△
 
 	};
-	//フック
-	inputTable_["hook"] = {
-							{ InputType::keybord, KEY_INPUT_R} ,
-							{InputType::gamepad,PAD_INPUT_T} //padのA
+	////フック
+	//inputTable_["hook"] = {
+	//						{ InputType::keybord, KEY_INPUT_R} ,
+	//						{InputType::gamepad,PAD_INPUT_G} //padのA
 
-	};
+	//};
 	
 	//キーコンフィグ
 	inputTable_["keyconfig"] = {
