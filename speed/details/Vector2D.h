@@ -1,3 +1,4 @@
+#include <cmath>
 #include"../Vector2D.h"
 
 //ŽÀ‘Ì‚¾‚¯‚Ç .h ‚È‚Ì•sŽv‹c‚ÈŠ´‚¶ 
@@ -19,6 +20,48 @@ template <class T>
 Vector2DTemp<T>::~Vector2DTemp()
 {
 }
+
+template <class T>
+constexpr T Vector2DTemp<T>::Magnitude(void) const
+{
+	return static_cast<T>(sqrt(SqMagnitude()));
+
+}
+
+template<class T>
+constexpr T Vector2DTemp<T>::SqMagnitude(void) const
+{
+	return x * x + y * y ;
+}
+
+template<class T>
+inline void Vector2DTemp<T>::Normalize(void)
+{
+	T mag = Magnitude();
+	x /= mag;
+	y /= mag;
+
+}
+
+template<class T>
+inline constexpr Vector2DTemp<T> Vector2DTemp<T>::Normalized(void) const
+{
+	T mag = Magnitude();
+	return Vector2DTemp(x / mag, y / mag);
+}
+
+template<class T>
+inline constexpr T Vector2DTemp<T>::Dot(const Vector2DTemp& vec) const
+{
+	return x * vec.x + y * vec.y ;
+}
+
+template<class T>
+inline constexpr Vector2DTemp<T> Vector2DTemp<T>::Cross(const Vector2DTemp& vec) const
+{
+	return Vector2DTemp(x* vec.y - y * vec.x);
+}
+
 
 //‘ã“ü‰‰ŽZŽq
 
@@ -264,12 +307,12 @@ Vector2DTemp<T> operator*(const int num, const Vector2DTemp<T> vec)
 template <class T>
 Vector2DTemp<T> operator*(const Vector2DTemp<T> vec, const float num)
 {
-	return{ static_cast<int>(vec.x * num),static_cast<int>(vec.y * num) };
+	return{vec.x * num,vec.y * num };
 }
 template <class T>
 Vector2DTemp<T> operator*(const float num, const Vector2DTemp<T> vec)
 {
-	return{ static_cast<int>(vec.x * num),static_cast<int>(vec.y * num) };
+	return{vec.x * num,vec.y * num };
 }
 template <class T>
 Vector2DTemp<T> operator/(const Vector2DTemp<T> vec, const int num)

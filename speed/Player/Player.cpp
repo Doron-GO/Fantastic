@@ -65,11 +65,15 @@ void Player::Update(Input& input)
 	(this->*_phase)(input_);
 
 	wire_->Update();
-	pos_.y += movePow_.y;
-	//•Ç‚É“–‚½‚Á‚Ä‚¢‚½‚ç‰¡ˆÚ“®‚³‚¹‚È‚¢
-	if (Collision(moveVec_))
+	if (!(_phase == &Player::SwingPhese))
 	{
-		pos_.x += movePow_.x;
+		pos_.y += movePow_.y;
+		//•Ç‚É“–‚½‚Á‚Ä‚¢‚½‚ç‰¡ˆÚ“®‚³‚¹‚È‚¢
+		if (Collision(moveVec_))
+		{
+			pos_.x += movePow_.x;
+		}
+
 	}
 
 }
@@ -153,6 +157,16 @@ const Vector2DFloat Player::GetPos()
 Vector2DFloat Player::GetDiagonallyVecVec()
 {
 	return diagonallyVec_;
+}
+
+Vector2DFloat Player::GetMoveVec()
+{
+	return moveVec_;
+}
+
+Vector2DFloat Player::GetMovePow()
+{
+	return movePow_;
 }
 
 void Player::IdlePhase(Input& input)
@@ -272,6 +286,18 @@ void Player::WallJumpPhese(Input& input)
 	}
 
 
+}
+
+void Player::SwingPhese(Input& input)
+{
+	if (input.IsPrassed("jump"))
+	{
+		lpAnimMng.SetAnime(animeStr_, "Jump");
+		movePow_.y = 0.0f;
+		wire_->EndSwing();
+		_phase = &Player::FallPhase;
+
+	}
 }
 
 bool Player::Collision()
@@ -498,7 +524,9 @@ void Player::Anchoring(Input& input)
 {
 	if (input.IsPrassed("hook"))
 	{
+		if(!(_phase == &Player::SwingPhese))
 		wire_->SetPalam();
+		_phase = &Player::SwingPhese;
 	}
 }
 

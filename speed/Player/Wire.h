@@ -1,6 +1,7 @@
 #pragma once
 #include"../Vector2D.h"
 #include"../Common/Raycast.h"
+#include "../Common/Time.h"
 
 class Player;
 
@@ -16,21 +17,42 @@ public:
 	void (Wire::* _phase)();
 
 	void SwingPhase();
+	void TestSwingPhase();
+	void EndSwingPhase();
+
 	void AnchoringPhase();
 
 	void SetPalam();
+	void EndSwing();
 
 	bool IsHitHook();
 
 private:
+	Time timeManager_;
 
-	Player& const player_;
+	Player&  player_;
 	Raycast rayCast_;
 
-	Vector2DFloat pos_;
-	VECTOR movedPos_;
+	Vector2DFloat fulcrum_;
+	float angle_;
+	VECTOR vel_;
+	float V;
+	
 	Vector2DFloat moveVec_;
-	VECTOR movePow_;
+	Vector2DFloat gravity_;
+	Vector2DFloat yNorm_;			//軸から錘の正規化済み垂直ベクトル
+	
+	VECTOR Scale_;
+	VECTOR movedPos_;
+
+	float delta_;
+	float gMag_;			//重力の大きさ
+
+	float theta_;			//角度
+	float omega_;			//角速度
+
+	float length_;			//長さ
+
 
 };
 

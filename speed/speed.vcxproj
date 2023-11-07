@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Common\Raycast.cpp" />
+    <ClCompile Include="Common\Time.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\AnimMng.cpp" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="Common\Collision.h" />
     <ClInclude Include="Common\Raycast.h" />
+    <ClInclude Include="Common\Time.h" />
     <ClInclude Include="details\Vector2D.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Object\AnimMng.h" />

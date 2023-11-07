@@ -33,7 +33,11 @@ public:
 
 
 	Vector2DFloat GetDiagonallyVecVec();
+	Vector2DFloat GetMoveVec();
+	Vector2DFloat GetMovePow();
 	Vector2DFloat pos_;//キャラの座標
+	Vector2DFloat movePow_;	//移動する力
+	int padNum_;//自分が何番目のPADを使っているか
 
 private:
 
@@ -46,6 +50,7 @@ private:
 	void FallPhase(Input& input);//落下中
 	void WallSlidePhese(Input& input);//壁ずり落ち
 	void WallJumpPhese(Input& input);//壁ジャンプ
+	void SwingPhese(Input& input);//壁ジャンプ
 	//自分の中心から true 当たってない:false 当たってる
 	bool Collision();
 	//足元から　true 当たってない:false 当たってる
@@ -57,7 +62,6 @@ private:
 	void IdleDraw();
 	void JumpDraw();
 	void MoveDraw();
-
 	void Move(Input& input);	//左右移動
 
 	void Anchoring(Input& input);//フックを飛ばす:進行方向の斜め上
@@ -67,18 +71,14 @@ private:
 	
 	AnimStr animeStr_;
 	Input input_;
-	int padNum_;//自分が何番目のPADを使っているか
 
 	DIR_LR dir_LR_;//キャラクターの向き
 	Vector2DFloat center_;//キャラの中心座標
 	Raycast rayCast_;
 
 	Vector2DFloat cameraPos_;//カメラの座標
-	Vector2DFloat movePow_;	//移動する力
 	Vector2DFloat moveVec_;	//向いている方向
 	Vector2DFloat diagonallyVec_;	//向いている方向
-
-
 
 	std::unique_ptr<Wire> wire_;
 
