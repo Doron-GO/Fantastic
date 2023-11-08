@@ -10,15 +10,27 @@
 
 class Wire;
 
-enum class DIR_LR
-{
-	RIGHT,
-	LEFT
-};
 
 class Player
 {
 public:
+
+	enum class DIR_LR
+	{
+		RIGHT,
+		LEFT
+	};
+	enum class PHASE
+	{
+		FALL,
+		JUMP,
+		MOVE,
+		WALLSLIDE,
+		WALLJUMP,
+		SWING,
+		SWINGFALL
+	};
+
 	 Player(int playerNum);
 	 ~Player();
 	 void Init(GrndColList colList, WallColList wallColList);
@@ -26,20 +38,27 @@ public:
 	 void Draw(Vector2DFloat cameraPos);//これにオフセット値を渡し描画をずらすようにする
 	 const Vector2DFloat GetPos();
 
-	 int headFlag_;//自分が先頭かどうか
 
 	GrndColList grndColList_;//特にギミックのない当たり判定
 	WallColList wallcolList_;//壁ジャンプができる当たり判定
 
 
-	Vector2DFloat GetDiagonallyVecVec();
-	Vector2DFloat GetMoveVec();
-	Vector2DFloat GetMovePow();
+	const Vector2DFloat GetDiagonallyVecVec();
+	const Vector2DFloat GetMoveVec();
+	const Vector2DFloat GetMovePow();
 	Vector2DFloat pos_;//キャラの座標
 	Vector2DFloat movePow_;	//移動する力
 	int padNum_;//自分が何番目のPADを使っているか
+	DIR_LR dir_LR_;//キャラクターの向き
+
+	void EndSwing();
 
 private:
+
+	PHASE phase_;
+	std::string now_;
+
+	void DebugPhaseCheck();
 
 	void (Player::* _phase)(Input& input);
 	void (Player::* _draw)();
@@ -50,7 +69,8 @@ private:
 	void FallPhase(Input& input);//落下中
 	void WallSlidePhese(Input& input);//壁ずり落ち
 	void WallJumpPhese(Input& input);//壁ジャンプ
-	void SwingPhese(Input& input);//壁ジャンプ
+	void SwingPhese(Input& input);//スイング状態
+	void SwingJumpPhese(Input& input);//スイングジャンプ状態
 	//自分の中心から true 当たってない:false 当たってる
 	bool Collision();
 	//足元から　true 当たってない:false 当たってる
@@ -72,7 +92,6 @@ private:
 	AnimStr animeStr_;
 	Input input_;
 
-	DIR_LR dir_LR_;//キャラクターの向き
 	Vector2DFloat center_;//キャラの中心座標
 	Raycast rayCast_;
 

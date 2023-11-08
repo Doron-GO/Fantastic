@@ -14,20 +14,22 @@ public:
 
 	void Update();
 	void Draw(Vector2DFloat cameraPos);
-	void (Wire::* _phase)();
-
-	void SwingPhase();
-	void TestSwingPhase();
-	void EndSwingPhase();
-
-	void AnchoringPhase();
 
 	void SetPalam();
 	void EndSwing();
-
+	void Pump();
 	bool IsHitHook();
 
 private:
+
+	void (Wire::* _phase)();
+
+	void SwingPhase();
+	void SwingJump();
+	void EndSwingPhase();
+	void AnchoringPhase();
+
+
 	Time timeManager_;
 
 	Player&  player_;
@@ -36,7 +38,7 @@ private:
 	Vector2DFloat fulcrum_;
 	float angle_;
 	VECTOR vel_;
-	float V;
+	float v_;
 	
 	Vector2DFloat moveVec_;
 	Vector2DFloat gravity_;
@@ -47,12 +49,10 @@ private:
 
 	float delta_;
 	float gMag_;			//èdóÕÇÃëÂÇ´Ç≥
-
 	float theta_;			//äpìx
 	float omega_;			//äpë¨ìx
-
 	float length_;			//í∑Ç≥
-
+	float pow_;
 
 };
 
