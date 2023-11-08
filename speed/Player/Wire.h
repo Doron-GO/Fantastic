@@ -16,16 +16,19 @@ public:
 	void Draw(Vector2DFloat cameraPos);
 
 	void SetPalam();
+
+	//フェーズをEndSwingPhaseにして、player_.EndSwing();
+	void StartSwingJump(); 
 	void EndSwing();
 	void Pump();
 	bool IsHitHook();
+	void SwingJump();
 
 private:
 
 	void (Wire::* _phase)();
 
 	void SwingPhase();
-	void SwingJump();
 	void EndSwingPhase();
 	void AnchoringPhase();
 
@@ -47,7 +50,6 @@ private:
 	VECTOR Scale_;
 	VECTOR movedPos_;
 
-	float delta_;
 	float gMag_;			//重力の大きさ
 	float theta_;			//角度
 	float omega_;			//角速度

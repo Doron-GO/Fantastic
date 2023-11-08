@@ -51,7 +51,7 @@ public:
 	int padNum_;//自分が何番目のPADを使っているか
 	DIR_LR dir_LR_;//キャラクターの向き
 
-	void EndSwing();
+	void StartSwingJump();
 
 private:
 

@@ -14,10 +14,8 @@ Wire::~Wire()
 
 void Wire::Update()
 {
-	delta_ = timeManager_.Update()*2;
 	(this->*_phase)();
 	Pump();
-
 }
 
 void Wire::Draw(Vector2DFloat cameraPos)
@@ -30,10 +28,8 @@ void Wire::Draw(Vector2DFloat cameraPos)
 	if (player_.padNum_ == 1)
 	{
 		DrawFormatStringF(0, 160, 0xffffff, "DiagonallyVecVec:x.%f,y.%f", player_.GetDiagonallyVecVec().x, player_.GetDiagonallyVecVec().y);
-		DrawFormatStringF(0, 180, 0xffffff, "delta:%f", delta_);
 		DrawFormatStringF(0, 200, 0xffffff, "Žx“_pos_:x%f:y%f", fulcrum_.x,fulcrum_.y);
 		DrawFormatStringF(0, 220, 0xffffff, "angle_:%f", angle_);
-
 	}
 }
 
@@ -52,9 +48,8 @@ void Wire::SwingPhase()
 
 	if (player_.pos_.y <= fulcrum_.y + -150.0f)
 	{
-		EndSwing();
+		StartSwingJump();
 	}
-
 }
 
 void Wire::SwingJump()
@@ -62,7 +57,6 @@ void Wire::SwingJump()
 	_phase = &Wire::EndSwingPhase;
 	player_.movePow_.x = (vel_.x / 2.0f);
 	player_.movePow_.y = (vel_.y / 2.0f);
-
 }
 
 void Wire::EndSwingPhase()
@@ -70,12 +64,8 @@ void Wire::EndSwingPhase()
 
 }
 
-
-
 void Wire:: AnchoringPhase()
 {
-	
-
 	//ÌŽö‹Æ‚Åì‚Á‚½Vector‚ðŽg‚Á‚Ä‚¢‚é‚¹‚¢‚Å‚ß‚ñ‚Ç‚­‚³‚¢‚±‚Æ‚É‚È‚Á‚Ä‚¢‚é
 }
 
@@ -113,11 +103,16 @@ void Wire::SetPalam()
 
 }
 
-void Wire::EndSwing()
+void Wire::StartSwingJump()
 {
 	_phase = &Wire::EndSwingPhase;
 
-	player_.EndSwing();
+	player_.StartSwingJump();
+}
+
+void Wire::EndSwing()
+{
+	_phase = &Wire::EndSwingPhase;
 }
 
 void Wire::Pump()
