@@ -94,12 +94,12 @@ const  std::string& Stage::GetMapKey()
 	return loadMap_.GetMapKey();
 }
 
-const GrndColList& Stage::GetColList(void)
+const ColList& Stage::GetColList(void)
 {
 	return loadMap_.GetColList();
 }
 
-const WallColList& Stage::GetWallColList(void)
+const ColList& Stage::GetWallColList(void)
 {
 	return loadMap_.WallGetColList();
 }

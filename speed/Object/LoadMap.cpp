@@ -68,27 +68,26 @@ bool LoadMap::SetMap()
 		cnt++;
 	}
 
-	//とってきた情報で矩形を作るそれをlistに格納
-	auto &col = json_["layers"][2]["objects"];
-	for (int cnt = 0; cnt <= col.size()-1 ; cnt++)
+	//ステージの当たり判定を読み込むラムダ式
+	auto LoadCol = [](json json, std::list<Collision> &col)
 	{
-		float x = col[cnt]["x"].get<int>();
-		float y = col[cnt]["y"].get<int>();
-		float w = col[cnt]["width"].get<int>();
-		float h = col[cnt]["height"].get<int>();
-		colList_.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{w,h} });
-	}
+		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
+		{
+			float x = json[cnt]["x"].get<int>();
+			float y = json[cnt]["y"].get<int>();
+			float w = json[cnt]["width"].get<int>();
+			float h = json[cnt]["height"].get<int>();
+			col.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{w,h} });
+		}
+	};
+	auto & col = json_["layers"][2]["objects"];
+	auto& wireCol = json_["layers"][3]["objects"];
+	auto& wallCol = json_["layers"][4]["objects"];
 
-	//とってきた情報で矩形を作るそれをlistに格納
-	auto &wallRight = json_["layers"][4]["objects"];
-	for (int cnt = 0; cnt <= wallRight.size() - 1; cnt++)
-	{
-		float x = wallRight[cnt]["x"].get<int>();
-		float y = wallRight[cnt]["y"].get<int>();
-		float w = wallRight[cnt]["width"].get<int>();
-		float h = wallRight[cnt]["height"].get<int>();
-		WallCollList_.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{w,h} });
-	}
+	LoadCol(col, colList_);
+	LoadCol(wallCol, WallCollList_);
+	LoadCol(wireCol, WireCollList_);
+
 	return true;
 }
 

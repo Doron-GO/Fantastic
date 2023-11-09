@@ -30,8 +30,9 @@ private:
 	Vector2D layerSize_;
 	Vector2D WorldArea_;	//	世界の大きさ
 	Vector2D tileSize_;
-	GrndColList colList_;
-	WallColList WallCollList_;
+	ColList colList_;
+	ColList WallCollList_;
+	ColList WireCollList_;
 
 	std::string mapKey_;
 	MapData mapData;//マップにストリングはあまり使わない方がいいenumの方がいい

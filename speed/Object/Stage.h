@@ -20,8 +20,8 @@ public:
 	const  Vector2D& GetWorldArea();
 	const  Vector2D& GetTileSize();
 	const std::string& GetMapKey();
-	const GrndColList& GetColList(void);
-	const WallColList& GetWallColList(void);
+	const ColList& GetColList(void);
+	const ColList& GetWallColList(void);
 
 private:
 

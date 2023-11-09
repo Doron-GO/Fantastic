@@ -28,19 +28,19 @@ public:
 		WALLSLIDE,
 		WALLJUMP,
 		SWING,
-		SWINGFALL
+		SWINGJUMP
 	};
 
 	 Player(int playerNum);
 	 ~Player();
-	 void Init(GrndColList colList, WallColList wallColList);
+	 void Init(ColList colList, ColList wallColList);
 	 void Update(Input& input);
 	 void Draw(Vector2DFloat cameraPos);//これにオフセット値を渡し描画をずらすようにする
 	 const Vector2DFloat GetPos();
 
 
-	GrndColList grndColList_;//特にギミックのない当たり判定
-	WallColList wallcolList_;//壁ジャンプができる当たり判定
+	 ColList grndColList_;//特にギミックのない当たり判定
+	ColList wallcolList_;//壁ジャンプができる当たり判定
 
 
 	const Vector2DFloat GetDiagonallyVecVec();
@@ -71,12 +71,12 @@ private:
 	void WallJumpPhese(Input& input);//壁ジャンプ
 	void SwingPhese(Input& input);//スイング状態
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
+
+	void MoveColision();
 	//自分の中心から true 当たってない:false 当たってる
-	bool Collision();
+	bool CollisionDown();
 	//足元から　true 当たってない:false 当たってる
-	bool Collision(Vector2DFloat movevec);
-
-
+	bool CollisionVec(Vector2DFloat movevec);
 	bool ColWallSlide(Vector2DFloat movevec);
 
 	void IdleDraw();
@@ -98,6 +98,7 @@ private:
 	Vector2DFloat cameraPos_;//カメラの座標
 	Vector2DFloat moveVec_;	//向いている方向
 	Vector2DFloat diagonallyVec_;	//向いている方向
+	Vector2DFloat up_;	//向いている方向
 
 	std::unique_ptr<Wire> wire_;
 
