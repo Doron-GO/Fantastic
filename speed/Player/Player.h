@@ -79,6 +79,8 @@ private:
 	bool CollisionVec(Vector2DFloat movevec);
 	bool ColWallSlide(Vector2DFloat movevec);
 
+	bool IsWall();
+
 	void IdleDraw();
 	void JumpDraw();
 	void MoveDraw();

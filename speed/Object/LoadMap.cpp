@@ -91,12 +91,12 @@ bool LoadMap::SetMap()
 	return true;
 }
 
-const GrndColList& LoadMap::GetColList(void)
+const ColList& LoadMap::GetColList(void)
 {
 	return colList_;
 }
 
-const WallColList& LoadMap::WallGetColList(void)
+const ColList& LoadMap::WallGetColList(void)
 {
 	return WallCollList_;
 }

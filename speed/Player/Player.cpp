@@ -15,7 +15,7 @@ Player::~Player()
 {
 }
 
-void Player::Init(GrndColList colList, WallColList wallColList)
+void Player::Init(ColList colList, ColList wallColList)
 {
 	pos_ = { 300.0f,10.0f };
 
@@ -281,7 +281,7 @@ void Player::WallSlidePhese(Input& input)
 	//壁にくっついていなかったらフォール状態に移行する
 	if (!(_phase == &Player::WallJumpPhese))
 	{
-		if ((ColWallSlide(moveVec_) || ColWallSlide(diagonallyVec_)))
+		if (!IsWall())
 		{
 			moveVec_ = -(moveVec_);
 			_phase = &Player::FallPhase;
@@ -332,7 +332,7 @@ void Player::WallJumpPhese(Input& input)
 		movePow_.x += (moveVec_.x / 30.0f);
 
 	}
-	if ((!ColWallSlide(moveVec_) || !ColWallSlide(diagonallyVec_)))
+	if (IsWall())
 	{
 		movePow_.x = 0.0f;
 		_phase = &Player::WallSlidePhese;
@@ -429,7 +429,7 @@ void Player::MoveColision()
 	//壁つかまり状態の判定
 	if (!(_phase == &Player::MovePhase) && !(_phase == &Player::WallSlidePhese))
 	{
-		if ((!ColWallSlide(moveVec_) || !ColWallSlide(diagonallyVec_)) && CollisionDown())
+		if (IsWall() && CollisionDown())
 		{
 			if (!(_phase == &Player::FallPhase))
 			{
@@ -474,7 +474,7 @@ void Player::MoveColision()
 bool Player::CollisionDown()
 {
 	Vector2DFloat rayCenter = { pos_-center_};
-	Vector2DFloat moveVec = { 0.0f,27.0f };
+	Vector2DFloat moveVec = { 0.0f,20.0f };
 	for (const auto& col : grndColList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec};
@@ -534,6 +534,11 @@ bool Player::ColWallSlide(Vector2DFloat movevec)
 		}
 	}	
 	return true;
+}
+
+bool Player::IsWall()
+{
+	return (!ColWallSlide(moveVec_) || !ColWallSlide(diagonallyVec_));
 }
 
 void Player::IdleDraw()
@@ -607,7 +612,7 @@ void Player::Move(Input& input)
 			{
 				dir_LR_ = DIR_LR::RIGHT;
 				movePow_.x += 0.2f;
-				moveVec_ = { 22.0f,0.0f };
+				moveVec_ = { 16.0f,0.0f };
 
 			}
 			//左キー
@@ -615,7 +620,7 @@ void Player::Move(Input& input)
 			{
 				dir_LR_ = DIR_LR::LEFT;
 				movePow_.x -= 0.2f;
-				moveVec_ = { -22.0f,0.0f };
+				moveVec_ = { -16.0f,0.0f };
 
 			}
 		}

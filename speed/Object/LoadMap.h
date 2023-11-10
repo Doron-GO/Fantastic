@@ -19,8 +19,8 @@ public:
 
 	bool SetMap();
 
-	const GrndColList& GetColList(void);
-	const WallColList& WallGetColList(void);
+	const ColList& GetColList(void);
+	const ColList& WallGetColList(void);
 	const Vector2D& GetWorldArea(void);
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);

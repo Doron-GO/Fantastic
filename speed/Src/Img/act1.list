@@ -1,6 +1,6 @@
  <?xml version= "1.0" encoding= "UTF-8"?>
  <actionList name ="Player1" virsion = "1.0">
-	<action name = "Run" source = "Src/Img/Run.png" divSizeX ="45" divSizeY ="37" divCntX = "1" divCntY = "6">
+	<action name = "Run" source = "Src/Img/Run.png" divSizeX ="50" divSizeY ="37" divCntX = "1" divCntY = "6">
 		<anime loop ="-1" encoding = "csv">
 			0,5,0,0,49,37,
 			1,5,0,0,49,37,
@@ -46,7 +46,7 @@
 			4,10,0,0,50,37
 		</anime>
 	</action>
-		<action name = "WallSlide" source = "Src/Img/wall-slide.png" divSizeX ="50" divSizeY ="37" divCntX = "2" divCntY = "1">
+		<action name = "WallSlide" source = "Src/Img/wall-slide1.png" divSizeX ="50" divSizeY ="37" divCntX = "2" divCntY = "1">
 		<anime loop ="-1" encoding = "csv">
 			0,10,0,0,50,37,
 			1,10,0,0,50,37
