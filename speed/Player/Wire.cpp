@@ -2,7 +2,7 @@
 #include "Wire.h"
 #include"Player.h"
 
-Wire::Wire(Player& player ):player_(player), pow_(0.0f)
+Wire::Wire(Player& player, ColList& list):player_(player), pow_(0.0f),col(list)
 {
 	_phase = &Wire::AnchoringPhase;
 
@@ -43,13 +43,23 @@ void Wire::SwingPhase()
 	vel_ = { -v_ * cosf(angle_),v_ * sinf(angle_) };
 
 	Vector2DFloat vel = { vel_.x,vel_.y };
-	player_.pos_ += vel;		//vel‚ğ‰ÁZ
-	player_.pos_ = fulcrum_ + (player_.pos_ - fulcrum_).Normalized() * length_;//’·‚³‚ğ•â³
+
+	if (_phase == &Wire::SwingPhase)
+	{
+		player_.pos_ += vel;		//vel‚ğ‰ÁZ
+		player_.pos_ = fulcrum_ + (player_.pos_ - fulcrum_).Normalized() * length_;//’·‚³‚ğ•â³
+	}
 
 	if (player_.pos_.y <= fulcrum_.y + -150.0f)
 	{
 		StartSwingJump();
 	}
+}
+
+void Wire::StandbyPhase()
+{
+	fulcrum_ = player_.pos_;
+
 }
 
 void Wire::SwingJump()
@@ -59,6 +69,12 @@ void Wire::SwingJump()
 	player_.movePow_.y = (vel_.y / 2.0f);
 }
 
+void Wire::ChangeStandby()
+{
+	_phase = &Wire::StandbyPhase;
+
+}
+
 void Wire::EndSwingPhase()
 {
 
@@ -66,21 +82,29 @@ void Wire::EndSwingPhase()
 
 void Wire:: AnchoringPhase()
 {
-	//Ìö‹Æ‚Åì‚Á‚½Vector‚ğg‚Á‚Ä‚¢‚é‚¹‚¢‚Å‚ß‚ñ‚Ç‚­‚³‚¢‚±‚Æ‚É‚È‚Á‚Ä‚¢‚é
+	fulcrum_pos = VAdd(fulcrum_pos, Scale_);
+	fulcrum_.x = fulcrum_pos.x;
+	fulcrum_.y = fulcrum_pos.y;
+	if (!IsHitHook())
+	{
+		SetSwingPalam();
+		
+	}
 }
 
-void Wire::SetPalam()
+void Wire::SetSwingPalam()
 {	
-	//x“_‚ğŒˆ’è
-	fulcrum_ = player_.pos_;
-	VECTOR pos = { fulcrum_.x,fulcrum_.y };
-	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,player_.GetDiagonallyVecVec().y };
-	moveVec=VNorm(moveVec);
-	Scale_ = VScale(moveVec, 400.0f);
-	movedPos_ = VAdd(pos, Scale_);
-	fulcrum_.x = movedPos_.x;
-	fulcrum_.y = movedPos_.y;
-	vel_ = { 0.0f,0.0f };
+	////x“_‚ğŒˆ’è
+	//fulcrum_ = player_.pos_;
+	// fulcrum_pos = { fulcrum_.x,fulcrum_.y };
+	//VECTOR moveVec = { player_.GetDiagonallyVecVec().x,player_.GetDiagonallyVecVec().y };
+	//moveVec=VNorm(moveVec);
+	//Scale_ = VScale(moveVec, 400.0f);
+	//movedPos_ = VAdd(fulcrum_pos, Scale_);
+	//fulcrum_.x = movedPos_.x;
+	//fulcrum_.y = movedPos_.y;
+	//vel_ = { 0.0f,0.0f };
+
 	auto lVec = player_.pos_ - fulcrum_;	//x“_¨‚ÌƒxƒNƒgƒ‹(•R)
 
 	length_ = lVec.Magnitude();							//•R‚Ì’·‚³
@@ -100,6 +124,22 @@ void Wire::SetPalam()
 		pow_ = -0.3f;
 	}
 	_phase = &Wire::SwingPhase;
+	player_.StartSwing();
+}
+
+void Wire::SetAnchorPalam()
+{
+	fulcrum_ = player_.pos_;
+	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,player_.GetDiagonallyVecVec().y };
+	moveVec_.x = moveVec.x/2.0f;
+	moveVec_.y = moveVec.y/2.0f;
+
+	moveVec = VNorm(moveVec);
+	Scale_ = VScale(moveVec, 50.0f);
+	fulcrum_pos.x = fulcrum_.x;
+	fulcrum_pos.y = fulcrum_.y;
+	
+	_phase = &Wire::AnchoringPhase;
 
 }
 
@@ -108,6 +148,12 @@ void Wire::StartSwingJump()
 	_phase = &Wire::EndSwingPhase;
 
 	player_.StartSwingJump();
+}
+
+void Wire::StartSwing()
+{
+	_phase = &Wire::SwingPhase;
+
 }
 
 void Wire::EndSwing()
@@ -125,7 +171,7 @@ void Wire::Pump()
 
 bool Wire::IsHitHook()
 {
-	for (const auto& col :player_. wallcolList_)
+	for (const auto& col : col)
 	{
 		Raycast::Ray ray = { fulcrum_,moveVec_ };
 		if (rayCast_.CheckCollision(ray, col, fulcrum_))

@@ -9,36 +9,42 @@ class Wire
 {
 public:
 
-	Wire(Player& player);
+	Wire(Player& player,ColList& list);
 	~Wire();
 
 	void Update();
 	void Draw(Vector2DFloat cameraPos);
 
-	void SetPalam();
+	void SetSwingPalam();
+	void SetAnchorPalam();
 
 	//フェーズをEndSwingPhaseにして、player_.EndSwing();
 	void StartSwingJump(); 
+	void StartSwing(); 
 	void EndSwing();
 	void Pump();
 	bool IsHitHook();
 	void SwingJump();
+	void ChangeStandby();
 
 private:
 
 	void (Wire::* _phase)();
 
 	void SwingPhase();
+	void StandbyPhase();
 	void EndSwingPhase();
 	void AnchoringPhase();
 
 
+	ColList col;
 	Time timeManager_;
 
 	Player&  player_;
 	Raycast rayCast_;
 
 	Vector2DFloat fulcrum_;
+	VECTOR fulcrum_pos;//計算用
 	float angle_;
 	VECTOR vel_;
 	float v_;
@@ -48,7 +54,6 @@ private:
 	Vector2DFloat yNorm_;			//軸から錘の正規化済み垂直ベクトル
 	
 	VECTOR Scale_;
-	VECTOR movedPos_;
 
 	float gMag_;			//重力の大きさ
 	float theta_;			//角度

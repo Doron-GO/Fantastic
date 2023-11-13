@@ -9,15 +9,17 @@
 Player::Player(int playerNum)
 {
 	padNum_ = playerNum;
+	AnchoringFlag_ = false;
+
 }
 
 Player::~Player()
 {
 }
 
-void Player::Init(ColList colList, ColList wallColList)
+void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 300.0f,10.0f };
+	pos_ = { 1869,1595 };
 
 	center_ = { 0.0f,21.0f };
 	grndColList_ = colList;
@@ -45,7 +47,7 @@ void Player::Init(ColList colList, ColList wallColList)
 	_phase = &Player::FallPhase;
 	_draw = &Player::MoveDraw;
 	
-	wire_ = std::make_unique<Wire>(*this);
+	wire_ = std::make_unique<Wire>(*this, wireColList);
 }
 
 void Player::Update(Input& input)
@@ -248,13 +250,8 @@ void Player::FallPhase(Input& input)
 {
 	phase_ = Player::PHASE::FALL;
 
-	lpAnimMng.SetAnime(animeStr_, "Fall");
-	//落下速度が一定を超えたら決まった値にする
-	if (movePow_.y >= 8.0f)
-	{
-		movePow_.y = 8.0f;
-	}
 
+	lpAnimMng.SetAnime(animeStr_, "Fall");	
 	Vector2DFloat movecec = { 0.0f,movePow_.y };
 
 	//床と当たっていなかったら
@@ -268,6 +265,14 @@ void Player::FallPhase(Input& input)
 	{
 		movePow_.y += 0.2f;
 	}
+
+	//落下速度が一定を超えたら決まった値にする
+	if (movePow_.y >= 8.0f)
+	{
+		movePow_.y = 8.0f;
+	}
+
+
 
 }
 
@@ -329,7 +334,7 @@ void Player::WallJumpPhese(Input& input)
 	{
 		movePow_.y += -0.2f;
 		movePow_.y += -0.3f;
-		movePow_.x += (moveVec_.x / 30.0f);
+		movePow_.x = (moveVec_.x / 2.0f);
 
 	}
 	if (IsWall())
@@ -353,45 +358,52 @@ void Player::SwingPhese(Input& input)
 		movePow_.y =0.0f;
 		movePow_.x = 0.0f;
 		_phase = &Player::WallSlidePhese;
-		wire_->EndSwing();
+		wire_->ChangeStandby();
 	}
 	if (!CollisionVec(moveVec_) || !CollisionVec(diagonallyVec_))
 	{
 		movePow_.x = 0.0f;
 		movePow_.y= 0.0f;
 		_phase = &Player::FallPhase;
-		wire_->EndSwing();
+		wire_->ChangeStandby();
 	}
 
-	Vector2DFloat up = { 0.0f,-50.0f };
+	Vector2DFloat up = { 0.0f,-60.0f };
 	//地面もしくは天井に当たったらスイングをやめる
+	if (!CollisionVec(up))
+	{
+		wire_->ChangeStandby();
+		_phase = &Player::MovePhase;
+		movePow_.y = 0.0f;
+
+	}
+
 	if (!CollisionDown())
 	{			
+		wire_->ChangeStandby();
 		movePow_.y = 0.0f;
 		wire_->EndSwing();
 		_phase = &Player::MovePhase;
 	}
-	if (!CollisionVec(up))
+	if (CollisionDown())
 	{
-		movePow_.y = 0.0f;
-		wire_->EndSwing();
-		_phase = &Player::FallPhase;
+		if (_phase == &Player::SwingPhese)
+		{
+			if (input.IsPrassed("hook"))
+			{
+				lpAnimMng.SetAnime(animeStr_, "Jump");
+				movePow_.y = 0.0f;
+				wire_->Pump();
+			}
+			else
+			{
+				wire_->SwingJump();
+				StartSwingJump();
+
+			}
+		}
 	}
 
-	if (_phase == &Player::SwingPhese)
-	{
-		if (input.IsPrassed("hook"))
-		{
-			lpAnimMng.SetAnime(animeStr_, "Jump");
-			movePow_.y = 0.0f;
-			wire_->Pump();
-		}
-		else
-		{
-			wire_->SwingJump();
-			StartSwingJump();
-		}
-	}
 }
 
 void Player::SwingJumpPhese(Input& input)
@@ -412,6 +424,7 @@ void Player::SwingJumpPhese(Input& input)
 	if (!CollisionVec(movecec)|| !CollisionVec(up))
 	{
 		movePow_.y = 0.0f;
+		wire_->ChangeStandby();
 		_phase = &Player::MovePhase;
 
 	}
@@ -419,6 +432,13 @@ void Player::SwingJumpPhese(Input& input)
 	{
 		movePow_.y += 0.2f;
 	}
+
+}
+
+void Player::AnchoringPhese(Input& input)
+{
+
+
 
 }
 
@@ -667,18 +687,47 @@ void Player::Move(Input& input)
 
 void Player::Anchoring(Input& input)
 {
-	if (input.IsTriggerd("hook"))
+	if (!(_phase == &Player::MovePhase))
 	{
-		if (CollisionDown()&&CollisionVec(moveVec_)&&CollisionVec(diagonallyVec_))
+		if (input.IsTriggerd("hook"))
 		{
-			if (!(_phase == &Player::SwingPhese)&& !(_phase == &Player::WallSlidePhese))
+			if (CollisionDown() && CollisionVec(moveVec_) && CollisionVec(diagonallyVec_))
 			{
-				lpAnimMng.SetAnime(animeStr_, "Jump");
-				wire_->SetPalam();
-				_phase = &Player::SwingPhese;
+				if (!(_phase == &Player::SwingPhese) && !(_phase == &Player::WallSlidePhese))
+				{
+					lpAnimMng.SetAnime(animeStr_, "Jump");
+
+					wire_->SetAnchorPalam();
+					AnchoringFlag_ = true;
+				}
 			}
 		}
 	}
+	if (!(_phase == &Player::SwingPhese))
+	{
+		if (AnchoringFlag_)
+		{
+			if (input.IsPrassed("hook"))
+			{
+				lpAnimMng.SetAnime(animeStr_, "Jump");
+
+			}
+			else
+			{
+				_phase = &Player::FallPhase;
+				AnchoringFlag_ = false;
+				wire_->ChangeStandby();
+
+			}
+		}
+	}
+}
+
+void Player::StartSwing()
+{
+	_phase = &Player::SwingPhese;
+	AnchoringFlag_ = false;
+
 }
 
 void Player::Jump(Input& input)

@@ -21,6 +21,7 @@ public:
 
 	const ColList& GetColList(void);
 	const ColList& WallGetColList(void);
+	const ColList& WireGetColList(void);
 	const Vector2D& GetWorldArea(void);
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);

@@ -22,6 +22,7 @@ public:
 	const std::string& GetMapKey();
 	const ColList& GetColList(void);
 	const ColList& GetWallColList(void);
+	const ColList& GetWireColList(void);
 
 private:
 

@@ -21,9 +21,9 @@ void Stage::Init()
 
 void Stage::Draw(Vector2DFloat cameraPos)
 {
-	auto worldArea = loadMap_.GetWorldArea();
-	const auto tileSize = loadMap_.GetTileSize();
-	auto mapData = loadMap_.GetMapData();
+	auto &worldArea = loadMap_.GetWorldArea();
+	const auto &tileSize = loadMap_.GetTileSize();
+	auto& mapData = loadMap_.GetMapData();
 
 	Vector2DFloat view = { 1200.0f, 800.0f };
 	auto offset = (view / 4.0f) - cameraPos;
@@ -40,7 +40,7 @@ void Stage::Draw(Vector2DFloat cameraPos)
 
 					if (gid >= 0)
 					{
-						auto a = loadMap_.GetMapKey();
+						auto& a = loadMap_.GetMapKey();
 
 						DrawGraph(x * tileSize.x+ cameraPos.x,
 							(y * tileSize.y + cameraPos.y),
@@ -102,4 +102,9 @@ const ColList& Stage::GetColList(void)
 const ColList& Stage::GetWallColList(void)
 {
 	return loadMap_.WallGetColList();
+}
+
+const ColList& Stage::GetWireColList(void)
+{
+	return loadMap_.WireGetColList();
 }

@@ -81,8 +81,8 @@ bool LoadMap::SetMap()
 		}
 	};
 	auto & col = json_["layers"][2]["objects"];
-	auto& wireCol = json_["layers"][3]["objects"];
-	auto& wallCol = json_["layers"][4]["objects"];
+	auto& wallCol = json_["layers"][3]["objects"];
+	auto& wireCol = json_["layers"][4]["objects"];
 
 	LoadCol(col, colList_);
 	LoadCol(wallCol, WallCollList_);
@@ -99,6 +99,11 @@ const ColList& LoadMap::GetColList(void)
 const ColList& LoadMap::WallGetColList(void)
 {
 	return WallCollList_;
+}
+
+const ColList& LoadMap::WireGetColList(void)
+{
+	return WireCollList_;
 }
 
 const Vector2D& LoadMap::GetWorldArea(void)

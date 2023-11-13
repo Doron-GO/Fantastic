@@ -33,7 +33,7 @@ public:
 
 	 Player(int playerNum);
 	 ~Player();
-	 void Init(ColList colList, ColList wallColList);
+	 void Init(ColList colList, ColList wallColList, ColList wireColList);
 	 void Update(Input& input);
 	 void Draw(Vector2DFloat cameraPos);//これにオフセット値を渡し描画をずらすようにする
 	 const Vector2DFloat GetPos();
@@ -52,6 +52,7 @@ public:
 	DIR_LR dir_LR_;//キャラクターの向き
 
 	void StartSwingJump();
+	void StartSwing();
 
 private:
 
@@ -71,6 +72,7 @@ private:
 	void WallJumpPhese(Input& input);//壁ジャンプ
 	void SwingPhese(Input& input);//スイング状態
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
+	void AnchoringPhese(Input& input);//スイングジャンプ状態
 
 	void MoveColision();
 	//自分の中心から true 当たってない:false 当たってる
@@ -103,6 +105,8 @@ private:
 	Vector2DFloat up_;	//向いている方向
 
 	std::unique_ptr<Wire> wire_;
+
+	bool AnchoringFlag_;
 
 	float slideY_ = -35.0f;	
 	int test= 0xffffff;
