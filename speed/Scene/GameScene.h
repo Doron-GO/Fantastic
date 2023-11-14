@@ -1,11 +1,14 @@
 #pragma once
 #include "Scene.h"
-#include"../Player/Player.h"
-#include"../Object/Camera.h"
 #include<memory>
+#include<vector>
+#include"../Object/OutSide.h"
 #include"../Object/Camera.h"
+#include"../Object/Stage/Stage.h"
+#include"../Player/Player.h"
 #include"../Input/Input.h"
-#include"../Object/Stage.h"
+
+
 
 class GameScene :
     public Scene
@@ -33,10 +36,12 @@ private:
     void DecideOnTheBeginning();
 
 
-    //std::shared_ptr<Player> player_;
+    std::shared_ptr<Player> player_;
     std::vector<std::shared_ptr<Player>> players_;
     std::unique_ptr<Stage> stage_;
     std::unique_ptr<Camera> camera_;
+    std::unique_ptr<OutSide> outSide_;
+
     Vector2DFloat drawOffset_;
     int playerNum_;
 

@@ -52,7 +52,8 @@ void Wire::SwingPhase()
 
 	if (player_.pos_.y <= fulcrum_.y + -150.0f)
 	{
-		StartSwingJump();
+		SwingJump();
+		player_.StartSwingJump();
 	}
 }
 
@@ -64,9 +65,9 @@ void Wire::StandbyPhase()
 
 void Wire::SwingJump()
 {
-	_phase = &Wire::EndSwingPhase;
 	player_.movePow_.x = (vel_.x / 2.0f);
 	player_.movePow_.y = (vel_.y / 2.0f);
+	_phase = &Wire::EndSwingPhase;
 }
 
 void Wire::ChangeStandby()
@@ -81,15 +82,19 @@ void Wire::EndSwingPhase()
 }
 
 void Wire:: AnchoringPhase()
-{
+{	
+	if (!IsHitHook())
+	{
+		SetSwingPalam();
+	}
 	fulcrum_pos = VAdd(fulcrum_pos, Scale_);
 	fulcrum_.x = fulcrum_pos.x;
 	fulcrum_.y = fulcrum_pos.y;
 	if (!IsHitHook())
 	{
 		SetSwingPalam();
-		
 	}
+
 }
 
 void Wire::SetSwingPalam()
@@ -130,12 +135,14 @@ void Wire::SetSwingPalam()
 void Wire::SetAnchorPalam()
 {
 	fulcrum_ = player_.pos_;
-	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,player_.GetDiagonallyVecVec().y };
+	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,
+		(player_.GetDiagonallyVecVec().y)+17.0f};
+
 	moveVec_.x = moveVec.x/2.0f;
 	moveVec_.y = moveVec.y/2.0f;
 
 	moveVec = VNorm(moveVec);
-	Scale_ = VScale(moveVec, 50.0f);
+	Scale_ = VScale(moveVec, 30.0f);
 	fulcrum_pos.x = fulcrum_.x;
 	fulcrum_pos.y = fulcrum_.y;
 	
@@ -145,9 +152,9 @@ void Wire::SetAnchorPalam()
 
 void Wire::StartSwingJump()
 {
+	player_.StartSwingJump();
 	_phase = &Wire::EndSwingPhase;
 
-	player_.StartSwingJump();
 }
 
 void Wire::StartSwing()

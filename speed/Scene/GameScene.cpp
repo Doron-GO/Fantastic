@@ -1,6 +1,8 @@
 #include<DxLib.h>
 #include "GameScene.h"
-#include"../Object/ImageMng.h"
+#include"../Object/Manager/ImageMng.h"
+
+
 GameScene::GameScene(SceneMng& manager):Scene(manager)
 {
 	SetDrawScreen(DX_SCREEN_BACK);
@@ -22,12 +24,14 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	new_Num_ = PLAYER_NUM::P_1;
 	old_Num_ = PLAYER_NUM::P_1;
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ƒJƒƒ‰‚ğ‰Šú‰»
+	outSide_ = std::make_unique<OutSide>(*camera_);
 }
 
 void GameScene::Update(Input& input)
 {
 	DecideOnTheBeginning();
 	camera_->Update();
+	outSide_->Update();
 	for (const auto& player : players_)
 	{
 		player->Update(input);
@@ -80,5 +84,6 @@ void GameScene::DrawOwnScreen()
 	{
 		player->Draw(camera_->GetPos());
 	}
+	outSide_->Draw();
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 }

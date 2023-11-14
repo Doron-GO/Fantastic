@@ -20,8 +20,8 @@ public:
 
 	//フェーズをEndSwingPhaseにして、player_.EndSwing();
 	void StartSwingJump(); 
-	void StartSwing(); 
-	void EndSwing();
+	void StartSwing(); //スイングフェーズに切り替える関数
+	void EndSwing();//スイングフェーズに切り替える関数
 	void Pump();
 	bool IsHitHook();
 	void SwingJump();

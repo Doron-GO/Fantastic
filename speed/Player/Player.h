@@ -2,14 +2,13 @@
 #include<map>
 #include<string>
 #include"../Vector2D.h"
-#include"../Object/AnimMng.h"
+#include"../Object/Manager/AnimMng.h"
 #include"../Common/Collision.h"
 #include"../Common/Raycast.h"
 #include"../Input/Input.h"
 #include"../Object/Camera.h"
 
 class Wire;
-
 
 class Player
 {
@@ -35,14 +34,15 @@ public:
 	 ~Player();
 	 void Init(ColList colList, ColList wallColList, ColList wireColList);
 	 void Update(Input& input);
-	 void Draw(Vector2DFloat cameraPos);//これにオフセット値を渡し描画をずらすようにする
-	 const Vector2DFloat GetPos();
+
+	//これにオフセット値を渡し描画をずらすようにする
+	 void Draw(Vector2DFloat cameraPos);
 
 
-	 ColList grndColList_;//特にギミックのない当たり判定
+	ColList grndColList_;//特にギミックのない当たり判定
 	ColList wallcolList_;//壁ジャンプができる当たり判定
 
-
+	const Vector2DFloat GetPos();
 	const Vector2DFloat GetDiagonallyVecVec();
 	const Vector2DFloat GetMoveVec();
 	const Vector2DFloat GetMovePow();
@@ -51,7 +51,9 @@ public:
 	int padNum_;//自分が何番目のPADを使っているか
 	DIR_LR dir_LR_;//キャラクターの向き
 
+	//SwingJump状態に変更
 	void StartSwingJump();
+	//Swing状態に変更
 	void StartSwing();
 
 private:
@@ -62,8 +64,8 @@ private:
 	void DebugPhaseCheck();
 
 	void (Player::* _phase)(Input& input);
-	void (Player::* _draw)();
 
+	//プレイヤーの状態
 	void IdlePhase(Input& input);
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
@@ -74,20 +76,21 @@ private:
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
 	void AnchoringPhese(Input& input);//スイングジャンプ状態
 
+
+	//当たり判定系
 	void MoveColision();
 	//自分の中心から true 当たってない:false 当たってる
 	bool CollisionDown();
 	//足元から　true 当たってない:false 当たってる
 	bool CollisionVec(Vector2DFloat movevec);
 	bool ColWallSlide(Vector2DFloat movevec);
-
 	bool IsWall();
 
-	void IdleDraw();
-	void JumpDraw();
-	void MoveDraw();
-	void Move(Input& input);	//左右移動
+	void Dead();
 
+
+	//プレイヤーのアクション
+	void Move(Input& input);	//左右移動
 	void Anchoring(Input& input);//フックを飛ばす:進行方向の斜め上
 	void Jump(Input& input);
 
@@ -101,12 +104,13 @@ private:
 
 	Vector2DFloat cameraPos_;//カメラの座標
 	Vector2DFloat moveVec_;	//向いている方向
-	Vector2DFloat diagonallyVec_;	//向いている方向
+	Vector2DFloat diagonallyVec_;//向いている方向の斜め上
 	Vector2DFloat up_;	//向いている方向
 
 	std::unique_ptr<Wire> wire_;
 
 	bool AnchoringFlag_;
+	bool aliveFlag_;
 
 	float slideY_ = -35.0f;	
 	int test= 0xffffff;
