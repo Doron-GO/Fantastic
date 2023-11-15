@@ -64,3 +64,13 @@ bool Camera::ReConnect(std::weak_ptr<Player> actor)
     return true;
 }
 
+const Vector2DFloat& Camera::GetPos(void) const
+{
+    return cameraPos_; 
+}
+
+const Vector2DFloat& Camera::GetTargetPos(void) const
+{
+     return taeget_.lock()->GetPos(); 
+}
+

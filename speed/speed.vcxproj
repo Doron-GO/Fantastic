@@ -177,9 +177,9 @@
     <ClInclude Include="Common\Time.h" />
     <ClInclude Include="details\Vector2D.h" />
     <ClInclude Include="Input\Input.h" />
+    <ClInclude Include="Object\GetAtr.h" />
     <ClInclude Include="Object\Manager\AnimMng.h" />
     <ClInclude Include="Object\Camera.h" />
-    <ClInclude Include="Object\GetAtr.h" />
     <ClInclude Include="Object\Manager\ImageMng.h" />
     <ClInclude Include="Object\Stage\LoadMap.h" />
     <ClInclude Include="Object\OutSide.h" />

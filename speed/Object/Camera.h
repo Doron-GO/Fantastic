@@ -18,7 +18,8 @@ public:
 	void PhaseChanging(int num);
 
 	bool ReConnect(std::weak_ptr<Player> actor);
-	const Vector2DFloat& GetPos(void)const { return cameraPos_; }
+	const Vector2DFloat& GetPos(void)const;
+	const Vector2DFloat& GetTargetPos(void)const;
 private:
 
 	float time = 0;

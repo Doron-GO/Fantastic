@@ -55,6 +55,8 @@ public:
 	void StartSwingJump();
 	//Swing状態に変更
 	void StartSwing();
+	void Dead();
+	void Alive();
 
 private:
 
@@ -86,7 +88,6 @@ private:
 	bool ColWallSlide(Vector2DFloat movevec);
 	bool IsWall();
 
-	void Dead();
 
 
 	//プレイヤーのアクション

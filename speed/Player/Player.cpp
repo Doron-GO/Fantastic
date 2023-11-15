@@ -19,7 +19,7 @@ Player::~Player()
 
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 1869.0f-padNum_*20.0f,1595 };
+	pos_ = { 404.0f-padNum_*20.0f,0.0f };
 
 	center_ = { 0.0f,12.0f };
 	grndColList_ = colList;
@@ -88,6 +88,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 
 	//見せかけのキャラクター描画
 	DrawCircle(pos.x, pos.y, 5.0f, 0xffffff);
+	DrawCircle(cameraPos.x, cameraPos.y, 5.0f, 0x00ff00);
 	DrawRotaGraph2F(pos.x, pos.y,
 		24.0f, 35.0f,
 		1.5, 0.0,
@@ -103,17 +104,6 @@ void Player::Draw(Vector2DFloat cameraPos)
 
 		DrawLine(pos.x-center_.x, pos.y - center_.y,
 			pos.x + center_.x, pos.y + center_.y, 0xff0000);
-
-	}
-	auto num= '0' + padNum_;
-	std::string p = num +"死んだ";
-	std::string pp = "Player" +p;
-	if (!aliveFlag_)
-	{
-		DrawStringF(0, 140+(padNum_*10), pp.c_str() , 0xffffff);
-	}
-
-
 	if (!CollisionVec(moveVec_))
 	{
 		DrawString(0, 100, "壁に当たった", 0xffffff);
@@ -126,6 +116,19 @@ void Player::Draw(Vector2DFloat cameraPos)
 	{
 		DrawString(0, 60, "ジャンプ壁に当たった", test);
 	}
+
+	}
+	char num= '0' + padNum_;
+	std::string pp ="死んだ";
+	std::string p = "Player";
+	p += num;
+	p += pp;
+	if (!aliveFlag_)
+	{
+		DrawStringF(0, 160+(padNum_*10), p.c_str() , 0xffffff);
+	}
+
+
 
 	//DrawString(0,160,"%s", )
 	Vector2DFloat rayCenter = { pos - center_ };
@@ -535,6 +538,11 @@ bool Player::IsWall()
 void Player::Dead()
 {
 	aliveFlag_ = false;
+}
+
+void Player::Alive()
+{
+	aliveFlag_ = true;
 }
 
 

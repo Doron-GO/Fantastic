@@ -27,9 +27,9 @@ void Wire::Draw(Vector2DFloat cameraPos)
 
 	if (player_.padNum_ == 1)
 	{
-		DrawFormatStringF(0, 160, 0xffffff, "DiagonallyVecVec:x.%f,y.%f", player_.GetDiagonallyVecVec().x, player_.GetDiagonallyVecVec().y);
-		DrawFormatStringF(0, 200, 0xffffff, "Žx“_pos_:x%f:y%f", fulcrum_.x,fulcrum_.y);
-		DrawFormatStringF(0, 220, 0xffffff, "angle_:%f", angle_);
+		DrawFormatStringF(0, 200, 0xffffff, "DiagonallyVecVec:x.%f,y.%f", player_.GetDiagonallyVecVec().x, player_.GetDiagonallyVecVec().y);
+		DrawFormatStringF(0, 220, 0xffffff, "Žx“_pos_:x%f:y%f", fulcrum_.x,fulcrum_.y);
+		DrawFormatStringF(0, 240, 0xffffff, "angle_:%f", angle_);
 	}
 }
 

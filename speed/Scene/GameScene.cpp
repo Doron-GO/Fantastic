@@ -24,18 +24,19 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	new_Num_ = PLAYER_NUM::P_1;
 	old_Num_ = PLAYER_NUM::P_1;
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ƒJƒƒ‰‚ğ‰Šú‰»
-	outSide_ = std::make_unique<OutSide>(*camera_);
+	outSide_ = std::make_unique<OutSide>(*camera_, players_);
 }
 
 void GameScene::Update(Input& input)
 {
 	DecideOnTheBeginning();
 	camera_->Update();
-	outSide_->Update();
 	for (const auto& player : players_)
 	{
 		player->Update(input);
 	}
+	outSide_->Update();
+
 	DrawOwnScreen();
 }
 
@@ -75,7 +76,6 @@ void GameScene::DrawOwnScreen()
 	//auto worldArea = tmxObj_.GetWorldArea();
 	//const auto tileSize = tmxObj_.GetTileSize();
 	//auto mapData = tmxObj_.GetMapData();
-
 	//DrawString(50, 50, "GameScene", 0xffffff);
 
 	stage_->Draw(camera_->GetPos());
@@ -84,6 +84,7 @@ void GameScene::DrawOwnScreen()
 	{
 		player->Draw(camera_->GetPos());
 	}
+
 	outSide_->Draw();
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 }
