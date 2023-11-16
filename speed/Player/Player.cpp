@@ -19,7 +19,7 @@ Player::~Player()
 
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 404.0f-padNum_*20.0f,0.0f };
+	pos_ = { 404.0f-padNum_*-20.0f,0.0f };
 
 	center_ = { 0.0f,12.0f };
 	grndColList_ = colList;

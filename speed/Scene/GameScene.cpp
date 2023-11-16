@@ -47,7 +47,6 @@ void GameScene::Draw()
 
 void GameScene::DecideOnTheBeginning()
 {
-
 	//プレイヤーの人数分回す
 	for (int playerNum =0; playerNum <players_.size()-1; playerNum++)
 	{	
@@ -71,6 +70,24 @@ void GameScene::DecideOnTheBeginning()
 	old_Num_ = new_Num_;
 }
 
+void GameScene::DecideOnTheLastPerson()
+{
+		//プレイヤーの人数分回す
+	for (int playerNum = players_.size() - 1; playerNum >0; playerNum--)
+	{	
+		//プレイヤーnの座標が次のプレイヤーn+1よりも先を走っていたら
+		if (players_[playerNum]->GetPos().x < players_[playerNum - 1]->GetPos().x)
+		{
+			last_Num_ = static_cast<PLAYER_NUM>(playerNum - 1);
+		}
+		else
+		{
+			last_Num_ = static_cast<PLAYER_NUM>(playerNum);
+		}
+	}
+
+}
+
 void GameScene::DrawOwnScreen()
 {
 	//auto worldArea = tmxObj_.GetWorldArea();
@@ -87,4 +104,6 @@ void GameScene::DrawOwnScreen()
 
 	outSide_->Draw();
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
+	DrawFormatStringF(0, 180, 0xffffff, "最後尾は:%d", static_cast<int>(last_Num_)+1);
+	DrawFormatStringF(0, 220, 0xffffff, "先頭は:%d", static_cast<int>(new_Num_)+1);
 }

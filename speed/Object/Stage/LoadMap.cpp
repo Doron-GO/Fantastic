@@ -14,17 +14,17 @@ bool LoadMap::LoadTSX(std::string fileName)
 	std::string source;
 
 	//TSX.json‚É‘‚¢‚Ä‚¢‚é—v‘f‚ğ“Ç‚İ‚Ş
-	auto width = json_["width"].get<int>();
-	auto height = json_["height"].get<int>();
+	auto width = json_["imagewidth"].get<int>();
+	auto height = json_["imageheight"].get<int>();
 	auto tilewidth = json_["tilewidth"].get<int>();
 	auto tilecount = json_["tilecount"].get<int>();
 	auto tileheight = json_["tileheight"].get<int>();
 	auto columns = json_["columns"].get<int>();
-	source = json_["source"];
+	source = json_["image"];
 
 	mapKey_ = "mapChip";
 	//GetID‚Å‰æ‘m‚ğ“Ç‚İ‚Ş(“à•”‚ÅLoadDiveGraph)
-	lpImageMng.GetID("./Src/Img/" + source, mapKey_, { tilewidth, tileheight }, { columns ,tilecount / columns });
+	lpImageMng.GetID(source, mapKey_, { tilewidth, tileheight }, { columns ,tilecount / columns });
 	return true;
 
 }

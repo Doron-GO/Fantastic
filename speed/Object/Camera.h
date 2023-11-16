@@ -30,6 +30,8 @@ private:
 	void Switching();
 	//’Ç]‘ÎÛ•ÏX’†
 	void Follow();
+	//ƒY[ƒ€
+	void Zoom();
 
 	std::weak_ptr<Player> taeget_;
 	Vector2DFloat cameraPos_;

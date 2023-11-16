@@ -34,6 +34,7 @@ private:
     //一番先頭のプレイヤーに追従させる
     //ゲームシーンで先頭を決めて、カメラクラスに渡す
     void DecideOnTheBeginning();
+    void DecideOnTheLastPerson();
 
 
     std::shared_ptr<Player> player_;
@@ -46,5 +47,6 @@ private:
     int playerNum_;
 
     PLAYER_NUM old_Num_;
+    PLAYER_NUM last_Num_;
     PLAYER_NUM new_Num_;
 };

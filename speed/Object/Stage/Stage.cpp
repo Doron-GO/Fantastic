@@ -14,7 +14,7 @@ Stage::~Stage()
 void Stage::Init()
 {
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
-	loadMap_.LoadTSX("Src/Json/TSX.json");
+	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
 	loadMap_.LoadStage("Src/Json/stage_.json");
 
 }

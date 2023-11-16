@@ -1,6 +1,6 @@
  <?xml version= "1.0" encoding= "UTF-8"?>
  <actionList name ="Player1" virsion = "1.0">
-	<action name = "Run" source = "Src/Img/Run.png" divSizeX ="50" divSizeY ="37" divCntX = "1" divCntY = "6">
+	<action name = "Run" source = "Src/Img/PlayerImage/Run.png" divSizeX ="50" divSizeY ="37" divCntX = "1" divCntY = "6">
 		<anime loop ="-1" encoding = "csv">
 			0,5,0,0,49,37,
 			1,5,0,0,49,37,
@@ -11,7 +11,7 @@
 
 		</anime>
 	</action>
-	<action name = "Idle" source = "Src/Img/Idle.png" divSizeX ="50" divSizeY ="37" divCntX = "4" divCntY = "1">
+	<action name = "Idle" source = "Src/Img/PlayerImage/Idle.png" divSizeX ="50" divSizeY ="37" divCntX = "4" divCntY = "1">
 		<anime loop ="-1" encoding = "csv">
 			0,4,0,0,50,37,
 			1,4,0,0,50,37,
@@ -19,7 +19,7 @@
 			3,4,0,0,50,37
 		</anime>
 	</action>
-	<action name = "Jump" source = "Src/Img/jump.png" divSizeX ="50" divSizeY ="37" divCntX = "4" divCntY = "1">
+	<action name = "Jump" source = "Src/Img/PlayerImage/jump.png" divSizeX ="50" divSizeY ="37" divCntX = "4" divCntY = "1">
 		<anime loop ="0" encoding = "csv">
 			0,2,0,0,50,37,
 			1,2,0,0,50,37,
@@ -27,7 +27,7 @@
 			3,2,0,0,50,37
 		</anime>
 	</action>
-		<action name = "Fall" source = "Src/Img/fall.png" divSizeX ="50" divSizeY ="37" divCntX = "6" divCntY = "1">
+		<action name = "Fall" source = "Src/Img/PlayerImage/fall.png" divSizeX ="50" divSizeY ="37" divCntX = "6" divCntY = "1">
 		<anime loop ="0" encoding = "csv">
 			0,2,0,0,50,37,
 			1,2,0,0,50,37,
@@ -37,7 +37,7 @@
 			5,2,0,0,50,37
 		</anime>
 	</action>
-		<action name = "Slide" source = "Src/Img/slide.png" divSizeX ="50" divSizeY ="37" divCntX = "5" divCntY = "1">
+		<action name = "Slide" source = "Src/Img/PlayerImage/slide.png" divSizeX ="50" divSizeY ="37" divCntX = "5" divCntY = "1">
 		<anime loop ="0" encoding = "csv">
 			0,10,0,0,50,37,
 			1,10,0,0,50,37,
@@ -46,7 +46,7 @@
 			4,10,0,0,50,37
 		</anime>
 	</action>
-		<action name = "WallSlide" source = "Src/Img/wall-slide1.png" divSizeX ="50" divSizeY ="37" divCntX = "2" divCntY = "1">
+		<action name = "WallSlide" source = "Src/Img/PlayerImage/wall-slide1.png" divSizeX ="50" divSizeY ="37" divCntX = "2" divCntY = "1">
 		<anime loop ="-1" encoding = "csv">
 			0,10,0,0,50,37,
 			1,10,0,0,50,37

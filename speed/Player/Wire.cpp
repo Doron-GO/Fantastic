@@ -65,8 +65,8 @@ void Wire::StandbyPhase()
 
 void Wire::SwingJump()
 {
-	player_.movePow_.x = (vel_.x / 2.0f);
-	player_.movePow_.y = (vel_.y / 2.0f);
+	player_.movePow_.x = (vel_.x / 1.5f);
+	player_.movePow_.y = (vel_.y / 1.5f);
 	_phase = &Wire::EndSwingPhase;
 }
 
@@ -122,11 +122,11 @@ void Wire::SetSwingPalam()
 
 	if (player_.dir_LR_ == Player::DIR_LR::LEFT)
 	{
-		pow_ = 0.3f;
+		pow_ = 0.15f;
 	}
 	else
 	{
-		pow_ = -0.3f;
+		pow_ = -0.15f;
 	}
 	_phase = &Wire::SwingPhase;
 	player_.StartSwing();
