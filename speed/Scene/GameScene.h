@@ -47,6 +47,7 @@ private:
     int playerNum_;
 
     PLAYER_NUM old_Num_;
+    int comparison_NUM_;
     PLAYER_NUM last_Num_;
     PLAYER_NUM new_Num_;
 };

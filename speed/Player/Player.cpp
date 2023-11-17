@@ -467,7 +467,7 @@ void Player::MoveColision()
 
 bool Player::CollisionDown()
 {
-	Vector2DFloat rayCenter = { pos_-center_};
+	Vector2DFloat rayCenter = { pos_};
 	Vector2DFloat moveVec = { 0.0f,20.0f };
 	for (const auto& col : grndColList_)
 	{

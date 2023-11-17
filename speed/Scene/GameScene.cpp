@@ -54,6 +54,22 @@ void GameScene::DecideOnTheBeginning()
 		if (players_[playerNum]->GetPos().x < players_[playerNum + 1]->GetPos().x)
 		{
 			new_Num_ = static_cast<PLAYER_NUM>(playerNum + 1);
+			// 1 2 3
+			// 1 2 3
+		}
+		else
+		{
+			new_Num_ = static_cast<PLAYER_NUM>(playerNum);
+		}
+	}
+	for (int playerNum = players_.size() - 1; playerNum >0; playerNum--)
+	{	
+		//プレイヤーnの座標が次のプレイヤーn+1よりも先を走っていたら
+		if (players_[playerNum]->GetPos().x < players_[playerNum + 1]->GetPos().x)
+		{
+			new_Num_ = static_cast<PLAYER_NUM>(playerNum + 1);
+			// 1 2 3
+			// 1 2 3
 		}
 		else
 		{
@@ -104,6 +120,6 @@ void GameScene::DrawOwnScreen()
 
 	outSide_->Draw();
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
-	DrawFormatStringF(0, 180, 0xffffff, "最後尾は:%d", static_cast<int>(last_Num_)+1);
-	DrawFormatStringF(0, 220, 0xffffff, "先頭は:%d", static_cast<int>(new_Num_)+1);
+	DrawFormatStringF(0, 280, 0xffffff, "最後尾は:%d", static_cast<int>(last_Num_)+1);
+	DrawFormatStringF(0, 260, 0xffffff, "先頭は:%d", static_cast<int>(new_Num_)+1);
 }
