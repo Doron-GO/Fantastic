@@ -16,6 +16,7 @@ public:
 	constexpr Vector2DTemp Normalized(void)const;
 	constexpr T Dot(const Vector2DTemp& vec)const;
 	constexpr Vector2DTemp Cross(const Vector2DTemp& vec)const;
+	constexpr T distance(const Vector2DTemp& vec)const;
 
 	//‘ã“ü‰‰ŽZŽq
 	Vector2DTemp& operator=(const Vector2DTemp& vec);

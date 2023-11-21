@@ -34,8 +34,6 @@ private:
     //一番先頭のプレイヤーに追従させる
     //ゲームシーンで先頭を決めて、カメラクラスに渡す
     void DecideOnTheBeginning();
-    void DecideOnTheLastPerson();
-
 
     std::shared_ptr<Player> player_;
     std::vector<std::shared_ptr<Player>> players_;
@@ -44,10 +42,18 @@ private:
     std::unique_ptr<OutSide> outSide_;
 
     Vector2DFloat drawOffset_;
+    Vector2DFloat FirstPos_;
+
+    Vector2DFloat CheckPoint_;//向かうべき方向
+    std::vector<Vector2DFloat> CheckPoints_;
+
+    std::vector<float> distance_;
+
     int playerNum_;
 
     PLAYER_NUM old_Num_;
+    PLAYER_NUM new_Num_;
+
     int comparison_NUM_;
     PLAYER_NUM last_Num_;
-    PLAYER_NUM new_Num_;
 };

@@ -23,13 +23,17 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	camera_->ReConnect(players_[0]);
 	new_Num_ = PLAYER_NUM::P_1;
 	old_Num_ = PLAYER_NUM::P_1;
+	last_Num_ = PLAYER_NUM::P_1;
+	//FirstPos_ = players_[0]->GetPos();
+
+	CheckPoint_ = { 1600.0f,0.0f };
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//カメラを初期化
 	outSide_ = std::make_unique<OutSide>(*camera_, players_);
 }
 
 void GameScene::Update(Input& input)
 {
-	DecideOnTheBeginning();
+	DecideOnTheBeginning(); 
 	camera_->Update();
 	for (const auto& player : players_)
 	{
@@ -48,35 +52,41 @@ void GameScene::Draw()
 void GameScene::DecideOnTheBeginning()
 {
 	//プレイヤーの人数分回す
-	for (int playerNum =0; playerNum <players_.size()-1; playerNum++)
+	for (int playerNum =0; playerNum <players_.size(); playerNum++)
 	{	
-		//プレイヤーnの座標が次のプレイヤーn+1よりも先を走っていたら
-		if (players_[playerNum]->GetPos().x < players_[playerNum + 1]->GetPos().x)
-		{
-			new_Num_ = static_cast<PLAYER_NUM>(playerNum + 1);
-			// 1 2 3
-			// 1 2 3
-		}
-		else
-		{
-			new_Num_ = static_cast<PLAYER_NUM>(playerNum);
-		}
+		distance_.push_back(players_[playerNum]->GetPos().distance(CheckPoint_));
 	}
-	for (int playerNum = players_.size() - 1; playerNum >0; playerNum--)
-	{	
-		//プレイヤーnの座標が次のプレイヤーn+1よりも先を走っていたら
-		if (players_[playerNum]->GetPos().x < players_[playerNum + 1]->GetPos().x)
+	for (int playerNum = 0; playerNum < players_.size()-1 ; playerNum++)
+	{
+		if (distance_[playerNum] <= distance_[playerNum + 1])//
 		{
-			new_Num_ = static_cast<PLAYER_NUM>(playerNum + 1);
-			// 1 2 3
-			// 1 2 3
+			//最前を探す
+			if (distance_[static_cast<int>(new_Num_)] >= distance_[playerNum ])
+			{
+				new_Num_ = static_cast<PLAYER_NUM>(playerNum );
+			}
+			//最後尾を探さす
+			if (distance_[static_cast<int>(last_Num_)] <= distance_[playerNum+1])
+			{
+				last_Num_ = static_cast<PLAYER_NUM>(playerNum+1);
+			}
 		}
-		else
+		else 
 		{
-			new_Num_ = static_cast<PLAYER_NUM>(playerNum);
+			//最前を探す
+			if (  distance_[playerNum]<=distance_[static_cast<int>(new_Num_)])
+			{
+				new_Num_ = static_cast<PLAYER_NUM>(playerNum+1);
+			}
+			//最後を探す
+			if (  distance_[playerNum]>=distance_[static_cast<int>(last_Num_)])
+			{
+				last_Num_ = static_cast<PLAYER_NUM>(playerNum);
+			}
 		}
 	}
 
+	distance_.clear();
 	if (old_Num_!=new_Num_)
 	{
 		camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
@@ -86,33 +96,9 @@ void GameScene::DecideOnTheBeginning()
 	old_Num_ = new_Num_;
 }
 
-void GameScene::DecideOnTheLastPerson()
-{
-		//プレイヤーの人数分回す
-	for (int playerNum = players_.size() - 1; playerNum >0; playerNum--)
-	{	
-		//プレイヤーnの座標が次のプレイヤーn+1よりも先を走っていたら
-		if (players_[playerNum]->GetPos().x < players_[playerNum - 1]->GetPos().x)
-		{
-			last_Num_ = static_cast<PLAYER_NUM>(playerNum - 1);
-		}
-		else
-		{
-			last_Num_ = static_cast<PLAYER_NUM>(playerNum);
-		}
-	}
-
-}
-
 void GameScene::DrawOwnScreen()
 {
-	//auto worldArea = tmxObj_.GetWorldArea();
-	//const auto tileSize = tmxObj_.GetTileSize();
-	//auto mapData = tmxObj_.GetMapData();
-	//DrawString(50, 50, "GameScene", 0xffffff);
-
 	stage_->Draw(camera_->GetPos());
-
 	for (const auto& player : players_)
 	{
 		player->Draw(camera_->GetPos());

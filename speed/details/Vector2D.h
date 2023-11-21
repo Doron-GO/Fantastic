@@ -62,6 +62,13 @@ inline constexpr Vector2DTemp<T> Vector2DTemp<T>::Cross(const Vector2DTemp& vec)
 	return Vector2DTemp(x* vec.y - y * vec.x);
 }
 
+template<class T>
+inline constexpr T Vector2DTemp<T>::distance(const Vector2DTemp& vec) const
+{
+	return 	Vector2DTemp(x - vec.x, y - vec.y).Magnitude();
+
+}
+
 
 //‘ã“ü‰‰ŽZŽq
 
