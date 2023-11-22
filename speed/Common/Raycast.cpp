@@ -24,8 +24,16 @@ bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerP
     bool reslut = false;
     for (auto line : lines)
     {
-        reslut |=   CheckRay(ray,line, offset);
+        reslut |=   CheckRay(ray,line, playerPos);
     }
+    return reslut;
+}
+
+bool Raycast::CheckCollision(Collision collision, Vector2DFloat playerPos)
+{
+
+    bool reslut = false;
+    reslut |= CheckRectangle(collision, playerPos);
 
     return reslut;
 }
@@ -70,5 +78,15 @@ bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
       return true;
   }
 
+    return false;
+}
+
+bool Raycast::CheckRectangle(Collision collision, Vector2DFloat pos)
+{
+    if (collision.first.y < pos.y && collision.first.x<pos.x &&
+        collision.second.y>pos.y && collision.second.x > pos.x)
+    {
+        return true;
+    }
     return false;
 }

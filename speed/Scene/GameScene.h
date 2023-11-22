@@ -7,6 +7,7 @@
 #include"../Object/Stage/Stage.h"
 #include"../Player/Player.h"
 #include"../Input/Input.h"
+#include"../Object/Stage/CheckPoint.h"
 
 
 
@@ -40,6 +41,7 @@ private:
     std::unique_ptr<Stage> stage_;
     std::unique_ptr<Camera> camera_;
     std::unique_ptr<OutSide> outSide_;
+    std::unique_ptr<CheckPoint> checkPoint_;
 
     Vector2DFloat drawOffset_;
     Vector2DFloat FirstPos_;

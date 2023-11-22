@@ -158,6 +158,7 @@
     <ClCompile Include="Object\Manager\AnimMng.cpp" />
     <ClCompile Include="Object\Camera.cpp" />
     <ClCompile Include="Object\Manager\ImageMng.cpp" />
+    <ClCompile Include="Object\Stage\CheckPoint.cpp" />
     <ClCompile Include="Object\Stage\LoadMap.cpp" />
     <ClCompile Include="Object\OutSide.cpp" />
     <ClCompile Include="Object\Stage\Stage.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Object\Manager\AnimMng.h" />
     <ClInclude Include="Object\Camera.h" />
     <ClInclude Include="Object\Manager\ImageMng.h" />
+    <ClInclude Include="Object\Stage\CheckPoint.h" />
     <ClInclude Include="Object\Stage\LoadMap.h" />
     <ClInclude Include="Object\OutSide.h" />
     <ClInclude Include="Object\Stage\Stage.h" />

@@ -38,8 +38,6 @@ void OutSide::Draw()
 	//Œ©‚¹‚©‚¯‚Ì˜g
 	//DrawBox(min.x, min.y,
 	//	max.x, max.y , 0x0000ff, false);
-	DrawBox(minPos_.x, minPos_.y,
-		maxPos_.x, maxPos_.y , 0x0000ff, false);
 
 }
 

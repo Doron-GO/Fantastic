@@ -13,7 +13,11 @@ struct Raycast
 		Vector2DFloat end;//終点
 
 	};
+	//最後の引数trueでレイ、falseで矩形
 	bool CheckCollision(Ray ray, Collision collision ,Vector2DFloat playerPos);
+	bool CheckCollision( Collision collision ,Vector2DFloat playerPos);
 	bool CheckRay(Ray ray, Line line, Vector2DFloat offset);
+	bool CheckRectangle(Collision collision, Vector2DFloat pos);
+	//bool CheckRectangle(Ray ray, Collision collision, Vector2DFloat playerPos)
 };
 
