@@ -22,11 +22,15 @@ public:
 
 	bool IsCheckPoint(Vector2DFloat player);
 
+	Vector2DFloat GetCheckPoint()const; 
+
 private:
 	std::vector<std::shared_ptr<Player>>& players_;
-	std::list<Vector2DFloat> checkPoints_;
+	std::vector<Vector2DFloat> checkPoints_;
 	PointColList checkPointColList_;//チェックポイント当たり判定
 	Raycast rayCast_;
+
+	int currentPoint_;
 
 };
 

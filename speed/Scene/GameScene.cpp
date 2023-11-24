@@ -35,7 +35,6 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 
 void GameScene::Update(Input& input)
 {
-	DecideOnTheBeginning(); 
 	camera_->Update();
 	for (const auto& player : players_)
 	{
@@ -43,6 +42,8 @@ void GameScene::Update(Input& input)
 	}
 	outSide_->Update();
 	checkPoint_->Update();
+	DecideOnTheBeginning(); 
+
 	DrawOwnScreen();
 }
 
@@ -56,7 +57,7 @@ void GameScene::DecideOnTheBeginning()
 	//プレイヤーの人数分回す
 	for (int playerNum =0; playerNum <players_.size(); playerNum++)
 	{	
-		distance_.push_back(players_[playerNum]->GetPos().distance(CheckPoint_));
+		distance_.push_back(players_[playerNum]->GetPos().distance(checkPoint_->GetCheckPoint()));
 	}
 	for (int playerNum = 0; playerNum < players_.size()-1 ; playerNum++)
 	{
