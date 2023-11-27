@@ -6,7 +6,7 @@
 #include"../Common/Collision.h"
 #include"../Common/Raycast.h"
 #include"../Input/Input.h"
-#include"../Object/Camera.h"
+#include"../Object/Camera/Camera.h"
 
 class Wire;
 
@@ -24,7 +24,7 @@ public:
 		FALL,
 		JUMP,
 		MOVE,
-		WALLSLIDE,
+		WALLGRAB,
 		WALLJUMP,
 		SWING,
 		SWINGJUMP
@@ -57,7 +57,7 @@ public:
 	void StartSwing();
 	void Dead();
 	void Alive();
-
+	bool IsAlive();
 private:
 
 	PHASE phase_;
@@ -72,7 +72,7 @@ private:
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
 	void FallPhase(Input& input);//落下中
-	void WallSlidePhese(Input& input);//壁ずり落ち
+	void WallGrabPhese(Input& input);//壁ずり落ち
 	void WallJumpPhese(Input& input);//壁ジャンプ
 	void SwingPhese(Input& input);//スイング状態
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
@@ -85,7 +85,7 @@ private:
 	bool CollisionDown();
 	//足元から　true 当たってない:false 当たってる
 	bool CollisionVec(Vector2DFloat movevec);
-	bool ColWallSlide(Vector2DFloat movevec);
+	bool ColWallGrab(Vector2DFloat movevec);
 	bool IsWall();
 
 

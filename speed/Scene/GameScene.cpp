@@ -11,9 +11,8 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 
 	stage_->Init();
 	camera_ = std::make_unique<Camera>();
-	//tmxObj_.LoadTMX("./tmx/stage.tmx");
 	//playerNum = GetJoypadNum();
-
+	//postEfffect_ = std::make_unique<PostEfffect>(screenID_);
 	for (int playerNum = 1; playerNum <= GetJoypadNum(); playerNum++)
 	{
 		std::shared_ptr<Player> player;
@@ -38,12 +37,12 @@ void GameScene::Update(Input& input)
 	camera_->Update();
 	for (const auto& player : players_)
 	{
-		player->Update(input);
+			player->Update(input);
 	}
 	outSide_->Update();
-	checkPoint_->Update();
 	DecideOnTheBeginning(); 
-
+	checkPoint_->Update();
+	//postEfffect_->Update();
 	DrawOwnScreen();
 }
 
@@ -61,15 +60,15 @@ void GameScene::DecideOnTheBeginning()
 	}
 	for (int playerNum = 0; playerNum < players_.size()-1 ; playerNum++)
 	{
-		if (distance_[playerNum] <= distance_[playerNum + 1])//
+		if (distance_[playerNum] < distance_[playerNum + 1])//
 		{
 			//Å‘O‚ğ’T‚·
-			if (distance_[static_cast<int>(new_Num_)] >= distance_[playerNum ])
+			if (distance_[static_cast<int>(new_Num_)] > distance_[playerNum ])
 			{
 				new_Num_ = static_cast<PLAYER_NUM>(playerNum );
 			}
 			//ÅŒã”ö‚ğ’T‚³‚·
-			if (distance_[static_cast<int>(last_Num_)] <= distance_[playerNum+1])
+			if (distance_[static_cast<int>(last_Num_)] < distance_[playerNum+1])
 			{
 				last_Num_ = static_cast<PLAYER_NUM>(playerNum+1);
 			}
@@ -77,7 +76,11 @@ void GameScene::DecideOnTheBeginning()
 		else 
 		{
 			//Å‘O‚ğ’T‚·
-			if (  distance_[playerNum]<=distance_[static_cast<int>(new_Num_)])
+			if (  distance_[playerNum]<distance_[static_cast<int>(new_Num_)])
+			{
+				new_Num_ = static_cast<PLAYER_NUM>(playerNum);
+			}
+			else if(distance_[playerNum+1] < distance_[static_cast<int>(new_Num_)])
 			{
 				new_Num_ = static_cast<PLAYER_NUM>(playerNum+1);
 			}
@@ -104,12 +107,16 @@ void GameScene::DrawOwnScreen()
 	stage_->Draw(camera_->GetPos());
 	for (const auto& player : players_)
 	{
-		player->Draw(camera_->GetPos());
+			player->Draw(camera_->GetPos());
 	}
 
 	outSide_->Draw();
 	checkPoint_->Draw(camera_->GetPos());
+	//postEfffect_->Draw();
+
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 	DrawFormatStringF(0, 280, 0xffffff, "ÅŒã”ö‚Í:%d", static_cast<int>(last_Num_)+1);
 	DrawFormatStringF(0, 260, 0xffffff, "æ“ª‚Í:%d", static_cast<int>(new_Num_)+1);
+
+
 }

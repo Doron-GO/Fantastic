@@ -112,7 +112,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 	{
 		DrawString(0, 80, "床に当たった", 0xffffff);
 	}
-	if (!ColWallSlide(moveVec_))
+	if (!ColWallGrab(moveVec_))
 	{
 		DrawString(0, 60, "ジャンプ壁に当たった", test);
 	}
@@ -128,6 +128,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawStringF(0, 160+(padNum_*10), p.c_str() , 0xffffff);
 	}
 
+	DrawFormatStringF(0, 200 + padNum_*70+70, 0xffffff, padNum_+ "pos_(x:%f,y%f)", pos_.x, pos_.y);
 
 
 	//DrawString(0,160,"%s", )
@@ -181,7 +182,7 @@ void Player::DebugPhaseCheck()
 	case Player::PHASE::MOVE:
 		now_ = "MovePhase";
 		break;
-	case Player::PHASE::WALLSLIDE:
+	case Player::PHASE::WALLGRAB:
 		now_ = "WallSlidePhase";
 		break;
 	case Player::PHASE::WALLJUMP:
@@ -259,9 +260,9 @@ void Player::FallPhase(Input& input)
 	}
 }
 
-void Player::WallSlidePhese(Input& input)
+void Player::WallGrabPhese(Input& input)
 {
-	phase_ = Player::PHASE::WALLSLIDE;
+	phase_ = Player::PHASE::WALLGRAB;
 
 	diagonallyVec_ = { moveVec_.x,slideY_ };
 	Jump(input);
@@ -283,7 +284,7 @@ void Player::WallSlidePhese(Input& input)
 		movePow_.y = 0.0f;
 	}
 	//もし地面に足がついたら
-	if (!CollisionDown() || !CollisionVec(movecec))
+	if ( !CollisionVec(movecec))
 	{
 		movePow_.y = 0.0f;
 		_phase = &Player::MovePhase;
@@ -320,7 +321,7 @@ void Player::WallJumpPhese(Input& input)
 	if (IsWall())
 	{
 		movePow_.x = 0.0f;
-		_phase = &Player::WallSlidePhese;
+		_phase = &Player::WallGrabPhese;
 	}
 }
 
@@ -331,11 +332,11 @@ void Player::SwingPhese(Input& input)
 	//壁に当たったら加速度を０にする 1:自分の前方 2:上斜め前 
 	diagonallyVec_ = { moveVec_.x,slideY_ };
 	Vector2DFloat tt = { movePow_.x,0.0f };
-	if (!ColWallSlide(tt) || !ColWallSlide(diagonallyVec_))
+	if (!ColWallGrab(tt) || !ColWallGrab(diagonallyVec_))
 	{
 		movePow_.y =0.0f;
 		movePow_.x = 0.0f;
-		_phase = &Player::WallSlidePhese;
+		_phase = &Player::WallGrabPhese;
 		wire_->ChangeStandby();
 	}
 	if (!CollisionVec(moveVec_) || !CollisionVec(diagonallyVec_))
@@ -421,7 +422,7 @@ void Player::MoveColision()
 	diagonallyVec_ = { moveVec_.x,slideY_ };
 
 	//壁つかまり状態の判定
-	if (!(_phase == &Player::MovePhase) && !(_phase == &Player::WallSlidePhese))
+	if (!(_phase == &Player::MovePhase) && !(_phase == &Player::WallGrabPhese))
 	{
 		if (IsWall() && CollisionDown())
 		{
@@ -430,7 +431,7 @@ void Player::MoveColision()
 				movePow_.y = -abs(movePow_.x / 1.5f);
 			}
 			movePow_.x = 0.0f;
-			_phase = &Player::WallSlidePhese;
+			_phase = &Player::WallGrabPhese;
 		}
 	}
 
@@ -454,11 +455,11 @@ void Player::MoveColision()
 		movePow_.x = -(backVec.x / 11.0f);
 	}
 	//壁ジャンプのできる壁と背中側との当たり判定
-	if (!ColWallSlide(backVec))
+	if (!ColWallGrab(backVec))
 	{
 		movePow_.x = -(backVec.x / 11.0f);
 	}
-	if (!ColWallSlide(backVec))
+	if (!ColWallGrab(backVec))
 	{
 		movePow_.x = -(backVec.x / 11.0f);
 	}
@@ -505,7 +506,7 @@ bool Player::CollisionVec(Vector2DFloat movevec)
 	return true;
 }
 
-bool Player::ColWallSlide(Vector2DFloat movevec)
+bool Player::ColWallGrab(Vector2DFloat movevec)
 {
 	float wallX=0.0f;
 	Vector2DFloat rayCenter = { pos_ - center_ };
@@ -532,7 +533,7 @@ bool Player::ColWallSlide(Vector2DFloat movevec)
 
 bool Player::IsWall()
 {
-	return (!ColWallSlide(moveVec_) || !ColWallSlide(diagonallyVec_));
+	return (!ColWallGrab(moveVec_) || !ColWallGrab(diagonallyVec_));
 }
 
 void Player::Dead()
@@ -543,6 +544,12 @@ void Player::Dead()
 void Player::Alive()
 {
 	aliveFlag_ = true;
+}
+
+bool Player::IsAlive()
+{
+
+	return aliveFlag_;
 }
 
 
@@ -659,7 +666,7 @@ void Player::Anchoring(Input& input)
 		{
 			if (CollisionDown() && CollisionVec(moveVec_) && CollisionVec(diagonallyVec_))
 			{
-				if (!(_phase == &Player::SwingPhese) && !(_phase == &Player::WallSlidePhese))
+				if (!(_phase == &Player::SwingPhese) && !(_phase == &Player::WallGrabPhese))
 				{
 					lpAnimMng.SetAnime(animeStr_, "Jump");
 
@@ -703,7 +710,7 @@ void Player::Jump(Input& input)
 		lpAnimMng.SetAnime(animeStr_, "Jump");
 		movePow_.y = 0.0f;
 		//壁すり状態なら壁ジャンプ
-		if ((_phase == &Player::WallSlidePhese))
+		if ((_phase == &Player::WallGrabPhese))
 		{
 			moveVec_ = (-moveVec_);
 			if (moveVec_.x > 0.0f)

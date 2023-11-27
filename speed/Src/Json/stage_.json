@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"stage_.json"
+        }
+    },
  "height":60,
  "infinite":false,
  "layers":[
@@ -49,8 +57,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":3168,
-                 "x":832,
+                 "width":3200,
+                 "x":800,
                  "y":1600
                 }, 
                 {
@@ -82,12 +90,12 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":512,
-                 "x":32,
+                 "width":544,
+                 "x":0,
                  "y":1344
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":29,
                  "name":"",
                  "rotation":0,
@@ -95,7 +103,7 @@
                  "visible":true,
                  "width":32,
                  "x":512,
-                 "y":1376
+                 "y":1344
                 }, 
                 {
                  "height":32,
@@ -104,12 +112,12 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":96,
-                 "x":544,
+                 "width":128,
+                 "x":512,
                  "y":1408
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":31,
                  "name":"",
                  "rotation":0,
@@ -117,7 +125,7 @@
                  "visible":true,
                  "width":32,
                  "x":608,
-                 "y":1440
+                 "y":1408
                 }, 
                 {
                  "height":32,
@@ -126,12 +134,12 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":64,
-                 "x":640,
+                 "width":96,
+                 "x":608,
                  "y":1472
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":33,
                  "name":"",
                  "rotation":0,
@@ -139,7 +147,7 @@
                  "visible":true,
                  "width":32,
                  "x":672,
-                 "y":1504
+                 "y":1472
                 }, 
                 {
                  "height":32,
@@ -148,8 +156,8 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":64,
-                 "x":704,
+                 "width":96,
+                 "x":672,
                  "y":1536
                 }, 
                 {
@@ -291,7 +299,7 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":352,
+                 "width":384,
                  "x":2816,
                  "y":1088
                 }, 

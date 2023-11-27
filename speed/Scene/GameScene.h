@@ -2,12 +2,13 @@
 #include "Scene.h"
 #include<memory>
 #include<vector>
-#include"../Object/OutSide.h"
-#include"../Object/Camera.h"
+#include"../Object/Camera/OutSide.h"
+#include"../Object/Camera/Camera.h"
 #include"../Object/Stage/Stage.h"
 #include"../Player/Player.h"
 #include"../Input/Input.h"
 #include"../Object/Stage/CheckPoint.h"
+#include"../Object/Shader/PostEfffect.h"
 
 
 
@@ -42,6 +43,7 @@ private:
     std::unique_ptr<Camera> camera_;
     std::unique_ptr<OutSide> outSide_;
     std::unique_ptr<CheckPoint> checkPoint_;
+    //std::unique_ptr<PostEfffect> postEfffect_;
 
     Vector2DFloat drawOffset_;
     Vector2DFloat FirstPos_;
