@@ -94,8 +94,6 @@ private:
 	void Move(Input& input);	//左右移動
 	void Anchoring(Input& input);//フックを飛ばす:進行方向の斜め上
 	void Jump(Input& input);
-
-	std::map<std::string, int> imgkey_;
 	
 	AnimStr animeStr_;
 	Input input_;

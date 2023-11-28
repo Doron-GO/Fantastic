@@ -37,7 +37,12 @@ void GameScene::Update(Input& input)
 	camera_->Update();
 	for (const auto& player : players_)
 	{
+		if (player->IsAlive())
+		{
 			player->Update(input);
+
+		}
+		
 	}
 	outSide_->Update();
 	DecideOnTheBeginning(); 
@@ -107,10 +112,13 @@ void GameScene::DrawOwnScreen()
 	stage_->Draw(camera_->GetPos());
 	for (const auto& player : players_)
 	{
+		if (player->IsAlive())
+		{
 			player->Draw(camera_->GetPos());
+		}
 	}
 
-	outSide_->Draw();
+	outSide_->Draw(camera_->GetPos());
 	checkPoint_->Draw(camera_->GetPos());
 	//postEfffect_->Draw();
 

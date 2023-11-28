@@ -3,96 +3,176 @@
 #include"Camera.h"
 #include"../../Player/Player.h"
 
+
 OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >>& players) :camera_(camera), players_(players),
-minPos_({0.0f,0.0f}), maxPos_({160.0f, 100.0f})
+minPos_({ 0.0f,0.0f }), maxPos_({ 1600.0f, 1000.0f })
 {
-	_phase = &OutSide::ExplosionUpdate;
-
+	LoadDivGraph("Src/Img/Explosion.png",11, 11, 1, 32, 31, bombImg_);
+	//bombImg_ = LoadGraph("Src/Img/Explosion.png");
 }
-
 OutSide::~OutSide()
 {
 }
 
 void OutSide::Update()
 {
-	//minPos_ .x+= 0.5f;
-	//minPos_ .y+= 0.5f;
-	//maxPos_.x -= 0.5f;
-	//maxPos_.y -= 0.5f;
-
 	IsDead();
-
-	(this->*_phase)();
 }
 
 void OutSide::ExplosionUpdate()
 {
-	if (upperPos_.y >= 0)
-	{
-		upperVec_.y = -4.0f;
-	}
-
-
-
 
 }
 
-void OutSide::Draw()
+void OutSide::Draw(Vector2DFloat offset)
 {
 	auto target = camera_.GetTargetPos();
-
-	//auto min = minPos_ - (maxPos_ /2.0f);
-	//auto max = maxPos_+ maxPos_/2.0f;
-	//auto min = minPos_ ;
-	//auto max = maxPos_;
+	DrawFormatStringF(0.0f, 400.0f, 0xffffff, "upperPos_:x %f, y %f,", upperPos_.x, upperPos_.y);
+	DrawFormatStringF(0.0f, 440.0f, 0xffffff, "lowerPos_:x %f, y %f,", lowerPos_.x, lowerPos_.y);
 
 	minPos_ =target + Vector2DFloat{-800.0f,-500.0f};
 	maxPos_ = target + Vector2DFloat{ 800.0f,500.0f };
 
-	//Œ©‚¹‚©‚¯‚Ì˜g
-	//DrawBox(min.x, min.y,
-	//	max.x, max.y , 0x0000ff, false);
 
 	if (isExploding_)
 	{
+		if (upperVec_.y < 0 && upperPos_.y <= 0)
+		{
+			upperVec_ = { 20.0f,0.0f };
+		}
+
+		if (upperVec_.x> 0 && upperPos_.x >= 1600.0f)
+		{
+			upperVec_ = { 0.0f,20.0f };
+		}
+		if (upperVec_.y > 0 && upperPos_.y >= 1000.0f)
+		{
+			upperVec_ = {-20.0f ,0.0f};
+		}	
+
+		upperPos_ += upperVec_;
+
+		if (lowerVec_.y > 0 && lowerPos_.y >= 1000.0f)
+		{
+			lowerVec_ = { 20.0f ,0.0f };
+		}
+		if (lowerVec_.x > 0 && lowerPos_.x >= 1600.0f)
+		{
+			lowerVec_ = { 0.0f,-20.0f };
+		}
+		if (lowerVec_.y < 0 && lowerPos_.y<= 0.0f)
+		{
+			lowerVec_ = { -20.0f ,0.0f };
+		}
+
+		lowerPos_ += lowerVec_;
+
+		//ˆê’èŽžŠÔ‚²‚Æ‚É”š”­‚³‚¹‚é
+		if (frame_ % 5 == 0)
+		{
+			bombs_.emplace_back(upperPos_);
+			bombs_.emplace_back(lowerPos_);
+		}
+
+		//ã‚©‚ç‚Ì”š’e‚Æ‰º‚©‚ç‚Ì”š’e‚ªd‚È‚Á‚½‚ç‚Ç‚Á‚¿‚àÁ‚·
+		if(upperPos_ ==lowerPos_)
+		{
+			bombs_.clear();
+			isExploding_ = false;
+		}
+		frame_++;
+	}
+
+	if (isExploding_)
+	{
+		DrawRotaGraph2F(upperPos_.x, upperPos_.y,
+			17.5, 16.0f,
+			3.5, 0.0,
+			bombImg_[frame_ / 2],
+			true, 0, 0);
+
+		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
+			17.5, 16.0f,
+			3.5, 0.0,
+			bombImg_[frame_ / 2],
+			true, 0, 0);
+
+		for (auto& b : bombs_)
+		{
+			DrawRotaGraph2F(b.pos_.x, b.pos_.y,
+				17.5, 16.0f,
+				3.5, 0.0,
+				bombImg_[b.frame_/2],
+				true, 0, 0);
+
+		}
 		for (auto& b : bombs_)
 		{
 			b.frame_++;
-			if (frame_>60)
+			if (frame_>220)
 			{
 				b.isDead = true;
 			}
 		}
 		bombs_.remove_if([](const Bomb& b)
-			{
-				return b.isDead;
-			});
+		{
+			return b.isDead;
+		});
 	}
-
-
 }
 
 void OutSide::IsDead()
 {
  	for (const auto& player : players_)
 	{
-		if (!IsOutSide(player->GetPos()))
+		if (player->IsAlive())
 		{
-			player->Dead();
-			upperPos_ = player->GetPos();
-			lowerPos_ = player->GetPos();
-		}
-		else
-		{
-			player->Alive();
+			if (IsOutSide(player->GetPos()))
+			{
+
+			}
+			else
+			{
+				if (UpDownORLeftRight(player->GetPos()))
+				{
+					upperPos_ = { player->GetPos().x ,0.0f};
+					upperVec_ = { -20.0f,0.0f };
+					lowerPos_ = {player->GetPos().x, 0.0f };
+					lowerVec_ = {20.0f ,0.0f };
+					player->Dead();
+					isExploding_ = true;
+					frame_ = 0;
+
+				}
+				else
+				{
+					upperPos_ = {0.0f,player->GetPos().y};
+					upperVec_ = { 20.0f,0.0f };
+					lowerPos_ = { 0.0f,player->GetPos().y };
+					lowerVec_ = { -20.0f,0.0f };
+					player->Dead();
+					isExploding_ = true;
+					frame_ = 0;
+				}
+			}
 		}
 	}
 }
 
 bool OutSide::IsOutSide(Vector2DFloat pos)
 {
+	return (minPos_.x < pos.x && pos.y> minPos_.y&&
+		maxPos_.x>pos.x && maxPos_.y>pos.y);
+}
 
-	return (minPos_.x <= pos.x && pos.y>= minPos_.y&&
-		maxPos_.x>=pos.x && maxPos_.y>=pos.y);
+bool OutSide::UpDownORLeftRight(Vector2DFloat pos)
+{
+	if (minPos_.x > pos.x || maxPos_.x<pos.x)
+	{
+		return false; 
+	}
+	else if (pos.y < minPos_.y || maxPos_.y < pos.y)
+	{
+		return true;
+	}
 }

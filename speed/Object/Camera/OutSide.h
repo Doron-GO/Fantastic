@@ -27,14 +27,15 @@ public:
 
 	void Update();
 	void ExplosionUpdate();
-	void Draw();
+	void Draw(Vector2DFloat offset);
 
 	//画面外かどうかを判定
 	void IsDead();
 	bool IsOutSide(Vector2DFloat pos);
 
-	void (OutSide::* _phase)();
-
+	//画面からはみ出した時、上下から出たのか左右から出たのか
+	//true:上下　false: 左右
+	bool UpDownORLeftRight(Vector2DFloat pos);
 
 private:
 
@@ -43,7 +44,6 @@ private:
 	Vector2DFloat minPos_;
 	Vector2DFloat maxPos_;
 
-
 	Vector2DFloat upperPos_;
 	Vector2DFloat upperVec_;
 	Vector2DFloat lowerPos_;
@@ -51,6 +51,7 @@ private:
 	std::list<Bomb> bombs_;
 
 	bool isExploding_ = false;
+	int bombImg_[11];
 	int frame_;
 
 };

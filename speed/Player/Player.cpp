@@ -19,7 +19,7 @@ Player::~Player()
 
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 404.0f-padNum_*-20.0f,0.0f };
+	pos_ = { 404.0f-padNum_*-20.0f,30.0f };
 
 	center_ = { 0.0f,12.0f };
 	grndColList_ = colList;
@@ -32,6 +32,7 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 	 act +=".list";					 //	•¶Žš—ñ‚ð˜AŒ‹
 
 	lpAnimMng.LoadAnime(act.c_str());
+	lpAnimMng.LoadAnime("Src/Img/Explosion.list");
 
 	std::string objID = "Player";
 	objID += num;
@@ -128,7 +129,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawStringF(0, 160+(padNum_*10), p.c_str() , 0xffffff);
 	}
 
-	DrawFormatStringF(0, 200 + padNum_*70+70, 0xffffff, padNum_+ "pos_(x:%f,y%f)", pos_.x, pos_.y);
+	DrawFormatStringF(0.0f, 200.0f + (padNum_*70.0f), 0xffffff, padNum_+"pos_(x:%f,y%f)", pos_.x, pos_.y);
 
 
 	//DrawString(0,160,"%s", )
@@ -548,7 +549,6 @@ void Player::Alive()
 
 bool Player::IsAlive()
 {
-
 	return aliveFlag_;
 }
 
