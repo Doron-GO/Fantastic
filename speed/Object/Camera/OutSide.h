@@ -35,7 +35,9 @@ public:
 
 	//画面からはみ出した時、上下から出たのか左右から出たのか
 	//true:上下　false: 左右
-	bool UpDownORLeftRight(Vector2DFloat pos);
+	void UpDownORLeftRight(Vector2DFloat pos);
+	void UpORDown(Vector2DFloat pos);
+	void LeftORRight(Vector2DFloat pos);
 
 private:
 
@@ -51,8 +53,11 @@ private:
 	std::list<Bomb> bombs_;
 
 	bool isExploding_ = false;
+	bool bigExploding_ = false;
 	int bombImg_[11];
+	int bigBombImg_[8];
 	int frame_;
+	int bigFrame_;
 
 };
 

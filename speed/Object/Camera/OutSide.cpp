@@ -3,11 +3,13 @@
 #include"Camera.h"
 #include"../../Player/Player.h"
 
+Vector2DFloat screenSize ={1600.0f,1000.0f};
 
 OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >>& players) :camera_(camera), players_(players),
 minPos_({ 0.0f,0.0f }), maxPos_({ 1600.0f, 1000.0f })
 {
 	LoadDivGraph("Src/Img/Explosion.png",11, 11, 1, 32, 31, bombImg_);
+	LoadDivGraph("Src/Img/BigExplosion.png",8, 8, 1, 32, 32, bigBombImg_);
 	//bombImg_ = LoadGraph("Src/Img/Explosion.png");
 }
 OutSide::~OutSide()
@@ -41,28 +43,36 @@ void OutSide::Draw(Vector2DFloat offset)
 			upperVec_ = { 20.0f,0.0f };
 		}
 
-		if (upperVec_.x> 0 && upperPos_.x >= 1600.0f)
+		if (upperVec_.x> 0 && upperPos_.x >= screenSize.x)
 		{
 			upperVec_ = { 0.0f,20.0f };
 		}
-		if (upperVec_.y > 0 && upperPos_.y >= 1000.0f)
+		if (upperVec_.y > 0 && upperPos_.y >= screenSize.y)
 		{
 			upperVec_ = {-20.0f ,0.0f};
 		}	
+		if (upperVec_.x < 0 && upperPos_.x <= 0.0f)
+		{
+			upperVec_ = { 0.0f ,-20.0f };
+		}
+
 
 		upperPos_ += upperVec_;
-
-		if (lowerVec_.y > 0 && lowerPos_.y >= 1000.0f)
+		if (lowerVec_.y > 0 && lowerPos_.y >= screenSize.y)
 		{
 			lowerVec_ = { 20.0f ,0.0f };
 		}
-		if (lowerVec_.x > 0 && lowerPos_.x >= 1600.0f)
+		if (lowerVec_.x > 0 && lowerPos_.x >= screenSize.x)
 		{
 			lowerVec_ = { 0.0f,-20.0f };
 		}
 		if (lowerVec_.y < 0 && lowerPos_.y<= 0.0f)
 		{
 			lowerVec_ = { -20.0f ,0.0f };
+		}
+		if (lowerVec_.x < 0 && lowerPos_.x<= 0.0f)
+		{
+			lowerVec_ = { 0.0f ,20.0f };
 		}
 
 		lowerPos_ += lowerVec_;
@@ -79,6 +89,8 @@ void OutSide::Draw(Vector2DFloat offset)
 		{
 			bombs_.clear();
 			isExploding_ = false;
+			bigExploding_ = true;
+			bigFrame_ = 0;
 		}
 		frame_++;
 	}
@@ -102,7 +114,7 @@ void OutSide::Draw(Vector2DFloat offset)
 			DrawRotaGraph2F(b.pos_.x, b.pos_.y,
 				17.5, 16.0f,
 				3.5, 0.0,
-				bombImg_[b.frame_/2],
+				bombImg_[(b.frame_/2)],
 				true, 0, 0);
 
 		}
@@ -119,6 +131,22 @@ void OutSide::Draw(Vector2DFloat offset)
 			return b.isDead;
 		});
 	}
+
+	if (bigExploding_)
+	{
+
+		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
+			16.0f, 16.0f,
+			8.5, 0.0,
+			bigBombImg_[bigFrame_ / 4],
+			true, 0, 0);
+		bigFrame_++;
+	}
+	if (bigFrame_ > 360)
+	{
+		bigExploding_ =false;
+	}
+
 }
 
 void OutSide::IsDead()
@@ -127,33 +155,12 @@ void OutSide::IsDead()
 	{
 		if (player->IsAlive())
 		{
-			if (IsOutSide(player->GetPos()))
+			if (!IsOutSide(player->GetPos()))
 			{
-
-			}
-			else
-			{
-				if (UpDownORLeftRight(player->GetPos()))
-				{
-					upperPos_ = { player->GetPos().x ,0.0f};
-					upperVec_ = { -20.0f,0.0f };
-					lowerPos_ = {player->GetPos().x, 0.0f };
-					lowerVec_ = {20.0f ,0.0f };
-					player->Dead();
-					isExploding_ = true;
-					frame_ = 0;
-
-				}
-				else
-				{
-					upperPos_ = {0.0f,player->GetPos().y};
-					upperVec_ = { 20.0f,0.0f };
-					lowerPos_ = { 0.0f,player->GetPos().y };
-					lowerVec_ = { -20.0f,0.0f };
-					player->Dead();
-					isExploding_ = true;
-					frame_ = 0;
-				}
+				UpDownORLeftRight(player->GetPos());
+				player->Dead();
+				isExploding_ = true;
+				frame_ = 0;
 			}
 		}
 	}
@@ -165,14 +172,71 @@ bool OutSide::IsOutSide(Vector2DFloat pos)
 		maxPos_.x>pos.x && maxPos_.y>pos.y);
 }
 
-bool OutSide::UpDownORLeftRight(Vector2DFloat pos)
+//bool OutSide::UpDownORLeftRight(Vector2DFloat pos)
+//{
+//	if (minPos_.x > pos.x || maxPos_.x<pos.x)
+//	{
+//		return false; 
+//	}
+//	else if (pos.y < minPos_.y || maxPos_.y < pos.y)
+//	{
+//		return true;
+//	}
+//}
+void OutSide::UpDownORLeftRight(Vector2DFloat pos)
 {
-	if (minPos_.x > pos.x || maxPos_.x<pos.x)
+	if (pos.y < minPos_.y || maxPos_.y < pos.y)
 	{
-		return false; 
+		UpORDown(pos);
 	}
-	else if (pos.y < minPos_.y || maxPos_.y < pos.y)
+	else if (minPos_.x > pos.x || maxPos_.x<pos.x)
 	{
-		return true;
+		LeftORRight(pos);
 	}
+}
+
+void OutSide::UpORDown(Vector2DFloat pos)
+{
+	Vector2DFloat up;
+	Vector2DFloat low;
+
+	if (pos.y < minPos_.y )
+	{
+		up = { pos.x ,0.0f };
+		upperVec_ = { 20.0f,0.0f };
+		low = { pos.x, 0.0f };
+		lowerVec_ = { -20.0f ,0.0f };
+	}
+	else if(maxPos_.y < pos.y)
+	{
+		up = { pos.x ,1000.0f };
+		upperVec_ = { 20.0f,0.0f };
+		low = { pos.x, 1000.0f };
+		lowerVec_ = { -20.0f ,0.0f };
+	}
+	upperPos_ = up;
+	lowerPos_ = low;
+}
+
+void OutSide::LeftORRight(Vector2DFloat pos)
+{
+	Vector2DFloat up;
+	Vector2DFloat low;
+
+	if (pos.x >= maxPos_.x)
+	{
+		up = { screenSize.x ,pos.y };
+		upperVec_ = { 0.0f,-20.0f };
+		low = { screenSize.x, pos.y };
+		lowerVec_ = { 0.0f ,20.0f };
+	}
+	else if (minPos_.x >= pos.x)
+	{
+		up = { 0.0f ,pos.y };
+		upperVec_ = { 0.0f,-20.0f };
+		low = {0.0f, pos.y };
+		lowerVec_ = { 0.0f ,20.0f };
+	}
+	upperPos_ = up;
+	lowerPos_ = low;
 }
