@@ -10,6 +10,7 @@ minPos_({ 0.0f,0.0f }), maxPos_({ 1600.0f, 1000.0f })
 {
 	LoadDivGraph("Src/Img/Explosion.png",11, 11, 1, 32, 31, bombImg_);
 	LoadDivGraph("Src/Img/BigExplosion.png",8, 8, 1, 32, 32, bigBombImg_);
+	ExplosionSound_ = LoadSoundMem("Src/Sound/Explosion.mp3");
 	//bombImg_ = LoadGraph("Src/Img/Explosion.png");
 }
 OutSide::~OutSide()
@@ -23,21 +24,19 @@ void OutSide::Update()
 
 void OutSide::ExplosionUpdate()
 {
-
 }
 
 void OutSide::Draw(Vector2DFloat offset)
 {
 	auto target = camera_.GetTargetPos();
-	DrawFormatStringF(0.0f, 400.0f, 0xffffff, "upperPos_:x %f, y %f,", upperPos_.x, upperPos_.y);
-	DrawFormatStringF(0.0f, 440.0f, 0xffffff, "lowerPos_:x %f, y %f,", lowerPos_.x, lowerPos_.y);
-
+	DrawFormatStringF(0.0f, 430.0f, 0xffffff, "upperPos_:x %f, y %f,", upperPos_.x, upperPos_.y);
+	DrawFormatStringF(0.0f, 450.0f, 0xffffff, "lowerPos_:x %f, y %f,", lowerPos_.x, lowerPos_.y);
 	minPos_ =target + Vector2DFloat{-800.0f,-500.0f};
 	maxPos_ = target + Vector2DFloat{ 800.0f,500.0f };
 
-
 	if (isExploding_)
 	{
+
 		if (upperVec_.y < 0 && upperPos_.y <= 0)
 		{
 			upperVec_ = { 20.0f,0.0f };
@@ -55,7 +54,6 @@ void OutSide::Draw(Vector2DFloat offset)
 		{
 			upperVec_ = { 0.0f ,-20.0f };
 		}
-
 
 		upperPos_ += upperVec_;
 		if (lowerVec_.y > 0 && lowerPos_.y >= screenSize.y)
@@ -77,12 +75,13 @@ void OutSide::Draw(Vector2DFloat offset)
 
 		lowerPos_ += lowerVec_;
 
-		//ˆê’èŽžŠÔ‚²‚Æ‚É”š”­‚³‚¹‚é
-		if (frame_ % 5 == 0)
+		//ˆê’èŽžŠÔ‚²‚Æ‚É”š”­‚³‚¹‚éA‚ ‚Æ‰¹‚ào‚·
+		if (frame_ % 4 == 0)
 		{
 			bombs_.emplace_back(upperPos_);
 			bombs_.emplace_back(lowerPos_);
-		}
+			PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
+		}	
 
 		//ã‚©‚ç‚Ì”š’e‚Æ‰º‚©‚ç‚Ì”š’e‚ªd‚È‚Á‚½‚ç‚Ç‚Á‚¿‚àÁ‚·
 		if(upperPos_ ==lowerPos_)
@@ -91,6 +90,7 @@ void OutSide::Draw(Vector2DFloat offset)
 			isExploding_ = false;
 			bigExploding_ = true;
 			bigFrame_ = 0;
+			//StartJoypadVibration(padNum_, 1000, 400. - 1);
 		}
 		frame_++;
 	}
@@ -98,16 +98,19 @@ void OutSide::Draw(Vector2DFloat offset)
 	if (isExploding_)
 	{
 		DrawRotaGraph2F(upperPos_.x, upperPos_.y,
-			17.5, 16.0f,
+			16.0f, 16.0f,
 			3.5, 0.0,
 			bombImg_[frame_ / 2],
 			true, 0, 0);
 
+		DrawCircleAA(upperPos_.x, upperPos_.y, 10.0f, 20.0f, 0xffaaaa);
+
 		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
-			17.5, 16.0f,
+			16.0f, 16.0f,
 			3.5, 0.0,
 			bombImg_[frame_ / 2],
 			true, 0, 0);
+		DrawCircleAA(lowerPos_.x, lowerPos_.y, 10.0f, 20.0f, 0xffaaaa);
 
 		for (auto& b : bombs_)
 		{
@@ -116,12 +119,11 @@ void OutSide::Draw(Vector2DFloat offset)
 				3.5, 0.0,
 				bombImg_[(b.frame_/2)],
 				true, 0, 0);
-
 		}
 		for (auto& b : bombs_)
 		{
 			b.frame_++;
-			if (frame_>220)
+			if (frame_>240)
 			{
 				b.isDead = true;
 			}
@@ -134,7 +136,6 @@ void OutSide::Draw(Vector2DFloat offset)
 
 	if (bigExploding_)
 	{
-
 		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
 			16.0f, 16.0f,
 			8.5, 0.0,
@@ -142,11 +143,14 @@ void OutSide::Draw(Vector2DFloat offset)
 			true, 0, 0);
 		bigFrame_++;
 	}
-	if (bigFrame_ > 360)
+	if (bigFrame_ > 100)
 	{
 		bigExploding_ =false;
-	}
+		upperPos_ = { 0.0f,0.0f };
+		lowerPos_ = { 0.0f,0.0f };
+		bigFrame_ = 0;
 
+	}
 }
 
 void OutSide::IsDead()
@@ -159,8 +163,11 @@ void OutSide::IsDead()
 			{
 				UpDownORLeftRight(player->GetPos());
 				player->Dead();
+				padNum_ = player->padNum_;
 				isExploding_ = true;
 				frame_ = 0;
+				//StartJoypadVibration(padNum_, 500, 300);
+
 			}
 		}
 	}
@@ -172,17 +179,6 @@ bool OutSide::IsOutSide(Vector2DFloat pos)
 		maxPos_.x>pos.x && maxPos_.y>pos.y);
 }
 
-//bool OutSide::UpDownORLeftRight(Vector2DFloat pos)
-//{
-//	if (minPos_.x > pos.x || maxPos_.x<pos.x)
-//	{
-//		return false; 
-//	}
-//	else if (pos.y < minPos_.y || maxPos_.y < pos.y)
-//	{
-//		return true;
-//	}
-//}
 void OutSide::UpDownORLeftRight(Vector2DFloat pos)
 {
 	if (pos.y < minPos_.y || maxPos_.y < pos.y)
@@ -191,7 +187,7 @@ void OutSide::UpDownORLeftRight(Vector2DFloat pos)
 	}
 	else if (minPos_.x > pos.x || maxPos_.x<pos.x)
 	{
-		LeftORRight(pos);
+		LeftOrRight(pos);
 	}
 }
 
@@ -218,19 +214,19 @@ void OutSide::UpORDown(Vector2DFloat pos)
 	lowerPos_ = low;
 }
 
-void OutSide::LeftORRight(Vector2DFloat pos)
+void OutSide::LeftOrRight(Vector2DFloat pos)
 {
 	Vector2DFloat up;
 	Vector2DFloat low;
 
-	if (pos.x >= maxPos_.x)
+	if (pos.x > maxPos_.x)
 	{
 		up = { screenSize.x ,pos.y };
 		upperVec_ = { 0.0f,-20.0f };
 		low = { screenSize.x, pos.y };
 		lowerVec_ = { 0.0f ,20.0f };
 	}
-	else if (minPos_.x >= pos.x)
+	else if (minPos_.x > pos.x)
 	{
 		up = { 0.0f ,pos.y };
 		upperVec_ = { 0.0f,-20.0f };

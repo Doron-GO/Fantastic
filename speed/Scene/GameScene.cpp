@@ -8,11 +8,9 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	SetDrawScreen(DX_SCREEN_BACK);
 	screenID_ = MakeScreen(1600.0f, 1000.0f, true);
 	stage_ = std::make_unique<Stage>();
-
 	stage_->Init();
+
 	camera_ = std::make_unique<Camera>();
-	//playerNum = GetJoypadNum();
-	//postEfffect_ = std::make_unique<PostEfffect>(screenID_);
 	for (int playerNum = 1; playerNum <= GetJoypadNum(); playerNum++)
 	{
 		std::shared_ptr<Player> player;
@@ -25,7 +23,6 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	new_Num_ = PLAYER_NUM::P_1;
 	old_Num_ = PLAYER_NUM::P_1;
 	last_Num_ = PLAYER_NUM::P_1;
-	//FirstPos_ = players_[0]->GetPos();
 
 	CheckPoint_ = { 1600.0f,1000.0f };
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ƒJƒƒ‰‚ð‰Šú‰»
@@ -40,20 +37,16 @@ void GameScene::Update(Input& input)
 		if (player->IsAlive())
 		{
 			player->Update(input);
-
-		}
-		
+		}	
 	}
 	outSide_->Update();
 	DecideOnTheBeginning(); 
 	checkPoint_->Update();
-	//postEfffect_->Update();
 	DrawOwnScreen();
 }
 
 void GameScene::Draw()
 {
-	
 }
 
 void GameScene::DecideOnTheBeginning()
@@ -96,7 +89,6 @@ void GameScene::DecideOnTheBeginning()
 			}
 		}
 	}
-
 	distance_.clear();
 	if (old_Num_!=new_Num_)
 	{

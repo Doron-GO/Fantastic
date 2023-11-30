@@ -157,6 +157,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object\Camera\Camera.cpp" />
     <ClCompile Include="Object\Camera\OutSide.cpp" />
+    <ClCompile Include="Object\Item\ItemBase.cpp" />
+    <ClCompile Include="Object\Item\ItemBox.cpp" />
     <ClCompile Include="Object\Manager\AnimMng.cpp" />
     <ClCompile Include="Object\Manager\ImageMng.cpp" />
     <ClCompile Include="Object\Shader\PostEfffect.cpp" />
@@ -181,6 +183,8 @@
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Object\Camera\Camera.h" />
     <ClInclude Include="Object\Camera\OutSide.h" />
+    <ClInclude Include="Object\Item\ItemBase.h" />
+    <ClInclude Include="Object\Item\ItemBox.h" />
     <ClInclude Include="Object\Manager\AnimMng.h" />
     <ClInclude Include="Object\Manager\ImageMng.h" />
     <ClInclude Include="Object\Shader\PostEfffect.h" />

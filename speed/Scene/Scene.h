@@ -16,6 +16,8 @@ public:
 	virtual void Update(Input& input) = 0;
 	virtual void DrawOwnScreen(void) = 0;
 	virtual void Draw() ;
+
+
 protected:
 	int screenID_;
 	Vector2DFloat drawOffset_;

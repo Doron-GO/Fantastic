@@ -37,7 +37,7 @@ public:
 	//true:è„â∫Å@false: ç∂âE
 	void UpDownORLeftRight(Vector2DFloat pos);
 	void UpORDown(Vector2DFloat pos);
-	void LeftORRight(Vector2DFloat pos);
+	void LeftOrRight(Vector2DFloat pos);
 
 private:
 
@@ -54,6 +54,9 @@ private:
 
 	bool isExploding_ = false;
 	bool bigExploding_ = false;
+
+	int ExplosionSound_;
+	int padNum_;
 	int bombImg_[11];
 	int bigBombImg_[8];
 	int frame_;

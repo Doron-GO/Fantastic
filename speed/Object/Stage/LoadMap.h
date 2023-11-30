@@ -26,8 +26,7 @@ public:
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);
 	const std::string& GetMapKey(void);
-
-private:
+	s
 	Vector2D layerSize_;
 	Vector2D WorldArea_;	//	世界の大きさ
 	Vector2D tileSize_;
@@ -39,6 +38,5 @@ private:
 	MapData mapData;//マップにストリングはあまり使わない方がいいenumの方がいい
 
 	json json_;
-
 };
 
