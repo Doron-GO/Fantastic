@@ -26,7 +26,7 @@ public:
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);
 	const std::string& GetMapKey(void);
-	s
+	
 	Vector2D layerSize_;
 	Vector2D WorldArea_;	//	¢ŠE‚Ì‘å‚«‚³
 	Vector2D tileSize_;

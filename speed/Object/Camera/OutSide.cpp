@@ -85,12 +85,12 @@ void OutSide::Draw(Vector2DFloat offset)
 
 		//ã‚©‚ç‚Ì”š’e‚Æ‰º‚©‚ç‚Ì”š’e‚ªd‚È‚Á‚½‚ç‚Ç‚Á‚¿‚àÁ‚·
 		if(upperPos_ ==lowerPos_)
-		{
+		{			
+			StartJoypadVibration(padNum_, 1000, 400);
 			bombs_.clear();
 			isExploding_ = false;
 			bigExploding_ = true;
 			bigFrame_ = 0;
-			//StartJoypadVibration(padNum_, 1000, 400. - 1);
 		}
 		frame_++;
 	}
@@ -166,8 +166,7 @@ void OutSide::IsDead()
 				padNum_ = player->padNum_;
 				isExploding_ = true;
 				frame_ = 0;
-				//StartJoypadVibration(padNum_, 500, 300);
-
+				StartJoypadVibration(padNum_, 400, 300);
 			}
 		}
 	}

@@ -23,8 +23,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	sceneManager.ChangeScene(make_shared<GameScene>(sceneManager));
 	Input input;
 
-
-
 	while (ProcessMessage() != -1)
 	{
 
