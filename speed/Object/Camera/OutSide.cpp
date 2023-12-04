@@ -2,15 +2,17 @@
 #include "OutSide.h"
 #include"Camera.h"
 #include"../../Player/Player.h"
+#include"DangerZoneSmaller.h"
 
 Vector2DFloat screenSize ={1600.0f,1000.0f};
 
 OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >>& players) :camera_(camera), players_(players),
-minPos_({ 0.0f,0.0f }), maxPos_({ 1600.0f, 1000.0f })
+minPos_({ 0.0f,0.0f }), maxPos_({ 1600.0f, 1000.0f }),minScale_({ -800.0f,-500.0f }), maxScale_({ 800.0f,500.0f })
 {
 	LoadDivGraph("Src/Img/Explosion.png",11, 11, 1, 32, 31, bombImg_);
 	LoadDivGraph("Src/Img/BigExplosion.png",8, 8, 1, 32, 32, bigBombImg_);
 	ExplosionSound_ = LoadSoundMem("Src/Sound/Explosion.mp3");
+	dangerZone_ = std::make_unique<DangerZoneSmaller>(maxScale_, minScale_);
 	//bombImg_ = LoadGraph("Src/Img/Explosion.png");
 }
 OutSide::~OutSide()
@@ -20,6 +22,8 @@ OutSide::~OutSide()
 void OutSide::Update()
 {
 	IsDead();
+	dangerZone_->Update();
+	TestSmaller();
 }
 
 void OutSide::ExplosionUpdate()
@@ -31,8 +35,19 @@ void OutSide::Draw(Vector2DFloat offset)
 	auto target = camera_.GetTargetPos();
 	DrawFormatStringF(0.0f, 430.0f, 0xffffff, "upperPos_:x %f, y %f,", upperPos_.x, upperPos_.y);
 	DrawFormatStringF(0.0f, 450.0f, 0xffffff, "lowerPos_:x %f, y %f,", lowerPos_.x, lowerPos_.y);
-	minPos_ =target + Vector2DFloat{-800.0f,-500.0f};
-	maxPos_ = target + Vector2DFloat{ 800.0f,500.0f };
+	DrawFormatStringF(0.0f, 480.0f, 0xffffff, "maxPos_:x %f, y %f,", maxPos_.x, maxPos_.y);
+	DrawFormatStringF(0.0f, 510.0f, 0xffffff, "minPos_:x %f, y %f,", minPos_.x, minPos_.y);
+	Vector2DFloat min = target+minScale_;
+	Vector2DFloat max = target+ maxScale_;
+	// minPos_ =target + Vector2DFloat { -((minScale_.x/ 2.0f)),-(minScale_.y / 2.0f)};
+	 //maxPos_ = target + Vector2DFloat{ (maxScale_.x / 2.0f),(maxScale_.y / 2.0f) };
+
+	minPos_ =target + minScale_;
+	maxPos_ = target + maxScale_;
+	DrawBoxAA(min.x, min.y, max.x, max.y, 0x00ffaa, false);
+	DrawBoxAA(minPos_.x, minPos_.y , maxPos_.x, maxPos_.y, 0x00ffaa, false);
+
+
 
 	if (isExploding_)
 	{
@@ -80,13 +95,13 @@ void OutSide::Draw(Vector2DFloat offset)
 		{
 			bombs_.emplace_back(upperPos_);
 			bombs_.emplace_back(lowerPos_);
-			PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
+			//PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
 		}	
 
 		//ã‚©‚ç‚Ì”š’e‚Æ‰º‚©‚ç‚Ì”š’e‚ªd‚È‚Á‚½‚ç‚Ç‚Á‚¿‚àÁ‚·
 		if(upperPos_ ==lowerPos_)
 		{			
-			StartJoypadVibration(padNum_, 1000, 400);
+			//StartJoypadVibration(padNum_, 1000, 400);
 			bombs_.clear();
 			isExploding_ = false;
 			bigExploding_ = true;
@@ -166,7 +181,7 @@ void OutSide::IsDead()
 				padNum_ = player->padNum_;
 				isExploding_ = true;
 				frame_ = 0;
-				StartJoypadVibration(padNum_, 400, 300);
+				//StartJoypadVibration(padNum_, 400, 300);
 			}
 		}
 	}
@@ -234,4 +249,12 @@ void OutSide::LeftOrRight(Vector2DFloat pos)
 	}
 	upperPos_ = up;
 	lowerPos_ = low;
+}
+
+void OutSide::TestSmaller()
+{
+	if (CheckHitKey(KEY_INPUT_U))
+	{
+		dangerZone_->Activated();
+	}
 }

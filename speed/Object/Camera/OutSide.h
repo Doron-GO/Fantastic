@@ -6,6 +6,7 @@
 #include<memory>
 
 class Camera;
+class DangerZoneSmaller;
 class Player;
 
 
@@ -39,12 +40,19 @@ public:
 	void UpORDown(Vector2DFloat pos);
 	void LeftOrRight(Vector2DFloat pos);
 
+	void TestSmaller();
+
 private:
 
 	Camera& camera_;
+
+	std::unique_ptr<DangerZoneSmaller> dangerZone_;
 	std::vector<std::shared_ptr<Player>>& players_;
 	Vector2DFloat minPos_;
 	Vector2DFloat maxPos_;
+
+	Vector2DFloat minScale_;
+	Vector2DFloat maxScale_;
 
 	Vector2DFloat upperPos_;
 	Vector2DFloat upperVec_;
