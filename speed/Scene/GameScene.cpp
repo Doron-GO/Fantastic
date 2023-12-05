@@ -39,8 +39,8 @@ void GameScene::Update(Input& input)
 			player->Update(input);
 		}	
 	}
+	DecideOnTheBeginning();
 	outSide_->Update();
-	DecideOnTheBeginning(); 
 	checkPoint_->Update();
 	DrawOwnScreen();
 }
@@ -104,10 +104,7 @@ void GameScene::DrawOwnScreen()
 	stage_->Draw(camera_->GetPos());
 	for (const auto& player : players_)
 	{
-		if (player->IsAlive())
-		{
 			player->Draw(camera_->GetPos());
-		}
 	}
 
 	outSide_->Draw(camera_->GetPos());
@@ -115,8 +112,8 @@ void GameScene::DrawOwnScreen()
 	//postEfffect_->Draw();
 
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
-	DrawFormatStringF(0, 280, 0xffffff, "ÅŒã”ö‚Í:%d", static_cast<int>(last_Num_)+1);
-	DrawFormatStringF(0, 260, 0xffffff, "æ“ª‚Í:%d", static_cast<int>(new_Num_)+1);
+	DrawFormatStringF(0, 580, 0xffffff, "ÅŒã”ö‚Í:%d", static_cast<int>(last_Num_)+1);
+	DrawFormatStringF(0, 560, 0xffffff, "æ“ª‚Í:%d", static_cast<int>(new_Num_)+1);
 
 
 }

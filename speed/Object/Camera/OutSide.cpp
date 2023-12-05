@@ -21,8 +21,12 @@ OutSide::~OutSide()
 
 void OutSide::Update()
 {
-	IsDead();
+	auto target = camera_.GetTargetPos();
+	minPos_ = target + minScale_;
+	maxPos_ = target + maxScale_;
+
 	dangerZone_->Update();
+	IsDead();
 	TestSmaller();
 }
 
@@ -32,62 +36,65 @@ void OutSide::ExplosionUpdate()
 
 void OutSide::Draw(Vector2DFloat offset)
 {
-	auto target = camera_.GetTargetPos();
+	auto camera= camera_.GetPos();
+	auto min = (minPos_ + camera);
+	auto max = (maxPos_ + camera);
+	DrawBoxAA( min.x, min.y, max.x, max.y, 0x00ffaa, false);
+
+
 	DrawFormatStringF(0.0f, 430.0f, 0xffffff, "upperPos_:x %f, y %f,", upperPos_.x, upperPos_.y);
 	DrawFormatStringF(0.0f, 450.0f, 0xffffff, "lowerPos_:x %f, y %f,", lowerPos_.x, lowerPos_.y);
+	//枠の座標の最大値
 	DrawFormatStringF(0.0f, 480.0f, 0xffffff, "maxPos_:x %f, y %f,", maxPos_.x, maxPos_.y);
+	//枠の座標の最小値
 	DrawFormatStringF(0.0f, 510.0f, 0xffffff, "minPos_:x %f, y %f,", minPos_.x, minPos_.y);
-	Vector2DFloat min = target+minScale_;
-	Vector2DFloat max = target+ maxScale_;
-	// minPos_ =target + Vector2DFloat { -((minScale_.x/ 2.0f)),-(minScale_.y / 2.0f)};
-	 //maxPos_ = target + Vector2DFloat{ (maxScale_.x / 2.0f),(maxScale_.y / 2.0f) };
-
-	minPos_ =target + minScale_;
-	maxPos_ = target + maxScale_;
-	DrawBoxAA(min.x, min.y, max.x, max.y, 0x00ffaa, false);
-	DrawBoxAA(minPos_.x, minPos_.y , maxPos_.x, maxPos_.y, 0x00ffaa, false);
-
-
+	//実際の枠
 
 	if (isExploding_)
 	{
-
-		if (upperVec_.y < 0 && upperPos_.y <= 0)
+		//画面左上になったら右に行く
+		if (upperPos_.y < 0.0f && upperPos_.x <= 0.0f)
 		{
 			upperVec_ = { 20.0f,0.0f };
 		}
-
-		if (upperVec_.x> 0 && upperPos_.x >= screenSize.x)
+		//画面右上になったら下に行く
+		if (upperPos_.x>= screenSize.x && upperPos_.y <=0.0f)
 		{
 			upperVec_ = { 0.0f,20.0f };
 		}
-		if (upperVec_.y > 0 && upperPos_.y >= screenSize.y)
+		//画面右下になったら左に行く
+		if (upperPos_.y >= screenSize.y && upperPos_.x >= screenSize.x)
 		{
 			upperVec_ = {-20.0f ,0.0f};
-		}	
-		if (upperVec_.x < 0 && upperPos_.x <= 0.0f)
+		}
+		//画面左下に行ったら上に行く
+		if (upperPos_.x <= 0.0f && upperPos_.y >= screenSize.y)
 		{
 			upperVec_ = { 0.0f ,-20.0f };
 		}
-
 		upperPos_ += upperVec_;
-		if (lowerVec_.y > 0 && lowerPos_.y >= screenSize.y)
-		{
-			lowerVec_ = { 20.0f ,0.0f };
-		}
-		if (lowerVec_.x > 0 && lowerPos_.x >= screenSize.x)
-		{
-			lowerVec_ = { 0.0f,-20.0f };
-		}
-		if (lowerVec_.y < 0 && lowerPos_.y<= 0.0f)
+		
+		//lowerは左回り
+		//画面右上だったら左に行く
+		if (lowerPos_.y <= 0.0f&& lowerPos_.x >= screenSize.x)
 		{
 			lowerVec_ = { -20.0f ,0.0f };
 		}
-		if (lowerVec_.x < 0 && lowerPos_.x<= 0.0f)
+		//画面右下なら上に行く
+		if ( lowerPos_.x >= screenSize .x&& lowerPos_.y>= screenSize.y)
+		{
+			lowerVec_ = { 0.0f,-20.0f };
+		}
+		//画面左下なら右に行く
+		if (  lowerPos_.y>= screenSize.y&& lowerPos_.x <=0.0f)
+		{
+			lowerVec_ = { 20.0f ,0.0f };
+		}
+		//画面左上なら下に行く
+		if (lowerPos_.y <= 0.0f && lowerPos_.x <= 0.0f)
 		{
 			lowerVec_ = { 0.0f ,20.0f };
 		}
-
 		lowerPos_ += lowerVec_;
 
 		//一定時間ごとに爆発させる、あと音も出す
@@ -148,7 +155,6 @@ void OutSide::Draw(Vector2DFloat offset)
 			return b.isDead;
 		});
 	}
-
 	if (bigExploding_)
 	{
 		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
@@ -210,7 +216,7 @@ void OutSide::UpORDown(Vector2DFloat pos)
 	Vector2DFloat up;
 	Vector2DFloat low;
 
-	if (pos.y < minPos_.y )
+	if (pos.y <minPos_.y )
 	{
 		up = { pos.x ,0.0f };
 		upperVec_ = { 20.0f,0.0f };
@@ -220,9 +226,9 @@ void OutSide::UpORDown(Vector2DFloat pos)
 	else if(maxPos_.y < pos.y)
 	{
 		up = { pos.x ,1000.0f };
-		upperVec_ = { 20.0f,0.0f };
+		upperVec_ = { -20.0f,0.0f };
 		low = { pos.x, 1000.0f };
-		lowerVec_ = { -20.0f ,0.0f };
+		lowerVec_ = { 20.0f ,0.0f };
 	}
 	upperPos_ = up;
 	lowerPos_ = low;
@@ -232,13 +238,12 @@ void OutSide::LeftOrRight(Vector2DFloat pos)
 {
 	Vector2DFloat up;
 	Vector2DFloat low;
-
 	if (pos.x > maxPos_.x)
 	{
 		up = { screenSize.x ,pos.y };
-		upperVec_ = { 0.0f,-20.0f };
+		upperVec_ = { 0.0f,20.0f };
 		low = { screenSize.x, pos.y };
-		lowerVec_ = { 0.0f ,20.0f };
+		lowerVec_ = { 0.0f ,-20.0f };
 	}
 	else if (minPos_.x > pos.x)
 	{

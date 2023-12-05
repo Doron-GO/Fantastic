@@ -20,8 +20,8 @@ private:
 	Vector2DFloat scaleMin_;
 	Vector2DFloat scaleMax_;
 
-	Vector2DFloat& outSideMax_;
-	Vector2DFloat& outSideMin_;
+	Vector2DFloat& outSideMax_;//死亡エリアの座標の最大値
+	Vector2DFloat& outSideMin_;//死亡エリアの座標の最小値
 
 	int count_;
 

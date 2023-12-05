@@ -52,23 +52,24 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 void Player::Update(Input& input)
 {
 	lpAnimMng.UpdateAnime(animeStr_);
+
 	input_.Update(padNum_);
-	
-	Anchoring(input_);
 
-	Move(input_);
-	wire_->Update();
-
-	(this->*_phase)(input_);
-
-	if (!(_phase == &Player::SwingPhese))
+	if (aliveFlag_)
 	{
-		pos_.y += movePow_.y;
+		Anchoring(input_);
+		Move(input_);
+		wire_->Update();
+		(this->*_phase)(input_);
 
-		//壁に当たっていたら横移動させない
-		if (CollisionVec(moveVec_))
+		if (!(_phase == &Player::SwingPhese))
 		{
-			pos_.x += movePow_.x;
+			pos_.y += movePow_.y;
+			//壁に当たっていたら横移動させない
+			if (CollisionVec(moveVec_))
+			{
+				pos_.x += movePow_.x;
+			}
 		}
 	}
 
@@ -76,25 +77,25 @@ void Player::Update(Input& input)
 
 void Player::Draw(Vector2DFloat cameraPos)
 {
-
 	auto pos = pos_ + cameraPos;
+	if (aliveFlag_)
+	{
+		//デバッグ用の実際のキャラの座標を表示
+		DrawRotaGraph2F(pos_.x, pos_.y ,
+				24.0f, 35.0f,
+				1.5, 0.0,
+				lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+				true, static_cast<int>(dir_LR_), 0);
 
-	//デバッグ用の実際のキャラの座標を表示
-
-	DrawRotaGraph2F(pos_.x, pos_.y ,
+		//見せかけのキャラクター描画
+		DrawCircle(pos.x, pos.y, 5.0f, 0xffffff);
+		DrawCircle(cameraPos.x, cameraPos.y, 5.0f, 0x00ff00);
+		DrawRotaGraph2F(pos.x, pos.y,
 			24.0f, 35.0f,
 			1.5, 0.0,
 			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
 			true, static_cast<int>(dir_LR_), 0);
-
-	//見せかけのキャラクター描画
-	DrawCircle(pos.x, pos.y, 5.0f, 0xffffff);
-	DrawCircle(cameraPos.x, cameraPos.y, 5.0f, 0x00ff00);
-	DrawRotaGraph2F(pos.x, pos.y,
-		24.0f, 35.0f,
-		1.5, 0.0,
-		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-		true, static_cast<int>(dir_LR_), 0);
+	}
 	if (padNum_ == 1)
 	{
 		DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
@@ -102,46 +103,43 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
 		DebugPhaseCheck();
 		DrawString(0, 120, now_.c_str(), 0xffffff);
-
 		DrawLine(pos.x-center_.x, pos.y - center_.y,
 			pos.x + center_.x, pos.y + center_.y, 0xff0000);
-	if (!CollisionVec(moveVec_))
-	{
-		DrawString(0, 100, "壁に当たった", 0xffffff);
-	}
-	if (!CollisionDown())
-	{
-		DrawString(0, 80, "床に当たった", 0xffffff);
-	}
-	if (!ColWallGrab(moveVec_))
-	{
-		DrawString(0, 60, "ジャンプ壁に当たった", test);
-	}
-
+		if (!CollisionVec(moveVec_))
+		{
+			DrawString(0, 100, "壁に当たった", 0xffffff);
+		}
+		if (!CollisionDown())
+		{
+			DrawString(0, 80, "床に当たった", 0xffffff);
+		}
+		if (!ColWallGrab(moveVec_))
+		{
+			DrawString(0, 60, "ジャンプ壁に当たった", test);
+		}
 	}
 	char num= '0' + padNum_;
-	std::string pp ="死んだ";
-	std::string p = "Player";
-	p += num;
-	p += pp;
-	if (!aliveFlag_)
+	std::string dead="死んだ";
+	std::string alive="生きている";
+	std::string player="Player";
+	if (aliveFlag_)
 	{
-		DrawStringF(0, 160+(padNum_*10), p.c_str() , 0xffffff);
+		player +=num;
+		player += alive;
 	}
+	else
+	{
+		player += num;
+		player += dead;
+	}
+	DrawString(0, 320 + (padNum_ * 20),player.c_str(), 0xffffff);
 
-	DrawFormatStringF(0.0f, 200.0f + (padNum_*70.0f), 0xffffff, padNum_+"pos_(x:%f,y%f)", pos_.x, pos_.y);
 
-
-	//DrawString(0,160,"%s", )
 	Vector2DFloat rayCenter = { pos - center_ };
 	Vector2DFloat diagonallyVec = { moveVec_.x,slideY_ };
-
-
 	Vector2DFloat moveVec = { 0.0f,27.0f };
-
 	DrawLine(rayCenter.x, rayCenter.y,
 		rayCenter.x + moveVec.x, rayCenter.y + moveVec.y, 0x00ff00);
-
 	wire_->Draw(cameraPos);
 }
 

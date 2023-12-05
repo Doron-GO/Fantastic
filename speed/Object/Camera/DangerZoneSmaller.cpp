@@ -8,8 +8,8 @@ DangerZoneSmaller::DangerZoneSmaller(Vector2DFloat& max, Vector2DFloat& min)
 {
 	Min = { 200.0f,200.0f };
 	Max = { 1400.0f,800.0f };
-	scaleMin_ = {-600.0f,-300.0f};
-	scaleMax_ = {600.0f,300.0f};
+	scaleMin_ = {-200.0f,-150.0f};
+	scaleMax_ = {200.0f,150.0f};
 	_update = &DangerZoneSmaller::UpdateWait;
 
 }
@@ -23,13 +23,14 @@ void DangerZoneSmaller::Smaller()
 {
 	if (outSideMax_ >= scaleMax_&& outSideMin_<= scaleMin_)
 	{
-		Vector2DFloat Vec = { 0.8f, 0.5f };
-		scaleMax_ -= Vec;
-		scaleMin_ += Vec;
-		outSideMax_-= Vec;
-		outSideMin_ += Vec;
+		Vector2DFloat Vec = { 0.2f, 0.13f };
+		//if (count_ % 5 == 0)
+		{
+			outSideMax_-= Vec;
+			outSideMin_ += Vec;
+		}
+		count_++;
 	}
-
 }
 
 void DangerZoneSmaller::Update()
