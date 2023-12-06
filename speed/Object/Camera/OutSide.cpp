@@ -6,8 +6,8 @@
 
 Vector2DFloat screenSize ={1600.0f,1000.0f};
 
-OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >>& players) :camera_(camera), players_(players),
-minPos_({ 0.0f,0.0f }), maxPos_({ 1600.0f, 1000.0f }),minScale_({ -800.0f,-500.0f }), maxScale_({ 800.0f,500.0f })
+OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >>& players, int playerCount) :camera_(camera), players_(players),
+playerCount_(playerCount), minPos_({0.0f,0.0f}), maxPos_({1600.0f, 1000.0f}), minScale_({-800.0f,-500.0f}), maxScale_({800.0f,500.0f})
 {
 	LoadDivGraph("Src/Img/Explosion.png",11, 11, 1, 32, 31, bombImg_);
 	LoadDivGraph("Src/Img/BigExplosion.png",8, 8, 1, 32, 32, bigBombImg_);
@@ -187,6 +187,7 @@ void OutSide::IsDead()
 				padNum_ = player->padNum_;
 				isExploding_ = true;
 				frame_ = 0;
+				playerCount_--;
 				//StartJoypadVibration(padNum_, 400, 300);
 			}
 		}
@@ -262,4 +263,9 @@ void OutSide::TestSmaller()
 	{
 		dangerZone_->Activated();
 	}
+}
+
+const int OutSide::NumberOfSurvivors()
+{
+	return playerCount_;
 }

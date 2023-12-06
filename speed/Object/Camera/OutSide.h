@@ -23,7 +23,7 @@ class OutSide
 {
 public:
 	
-	OutSide(Camera& camera,std::vector< std::shared_ptr<Player >>& players);
+	OutSide(Camera& camera,std::vector< std::shared_ptr<Player >>& players, int playerCount);
 	~OutSide();
 
 	void Update();
@@ -40,7 +40,8 @@ public:
 	void UpORDown(Vector2DFloat pos);
 	void LeftOrRight(Vector2DFloat pos);
 
-	void TestSmaller();
+	void TestSmaller(); 
+	const int NumberOfSurvivors();
 
 private:
 
@@ -69,6 +70,8 @@ private:
 	int bigBombImg_[8];
 	int frame_;
 	int bigFrame_;
+
+	int playerCount_;
 
 };
 

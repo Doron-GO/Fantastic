@@ -24,9 +24,8 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	old_Num_ = PLAYER_NUM::P_1;
 	last_Num_ = PLAYER_NUM::P_1;
 
-	CheckPoint_ = { 1600.0f,1000.0f };
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//カメラを初期化
-	outSide_ = std::make_unique<OutSide>(*camera_, players_);
+	outSide_ = std::make_unique<OutSide>(*camera_, players_, GetJoypadNum());
 }
 
 void GameScene::Update(Input& input)
@@ -39,9 +38,10 @@ void GameScene::Update(Input& input)
 			player->Update(input);
 		}	
 	}
-	DecideOnTheBeginning();
+	//DecideOnTheBeginning();
 	outSide_->Update();
 	checkPoint_->Update();
+	TestDecideOnTheBeginning();
 	DrawOwnScreen();
 }
 
@@ -90,12 +90,62 @@ void GameScene::DecideOnTheBeginning()
 		}
 	}
 	distance_.clear();
+	distance_.resize(outSide_->NumberOfSurvivors());
 	if (old_Num_!=new_Num_)
 	{
 		camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
 		camera_->PhaseChanging(static_cast<int>(new_Num_));
 	}
 	//camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
+	old_Num_ = new_Num_;
+}
+
+void GameScene::TestDecideOnTheBeginning()
+{
+
+	for (auto& p :players_)
+	{
+		//生きていたら
+		if (p->IsAlive())
+		{
+			iD_.first = (p->padNum_)-1.0f;
+			iD_.second = players_[(p->padNum_) - 1.0f]->GetPos().distance(checkPoint_->GetCheckPoint());
+			testDistance_.push_back(iD_);
+		}
+		else
+		{
+			auto p = 0;
+		}
+	}
+	for (int num = 0; num < testDistance_.size(); num++)
+	{
+		for (int num2 = testDistance_.size()-1 ;num2>=0;num2--)
+		{
+			if (!(num ==num2))
+			{
+				if (testDistance_[num].second < testDistance_[num2].second)
+				{	//最前を探す
+					if (testDistance_[num].second < testDistance_[static_cast<int>(new_Num_)].second)
+					{
+						new_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
+					}
+				}
+				else
+				{	//最後尾を探さす  ここでエラーが出る、lastNum_のプレイヤーがもう脱落していた時に発生
+					if (testDistance_[static_cast<int>(last_Num_)].second < testDistance_[num ].second)
+					{
+						last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
+					}
+				}
+			}
+		}
+	}
+	testDistance_.clear();
+	if (old_Num_ != new_Num_)
+	{
+		camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
+		camera_->PhaseChanging(static_cast<int>(new_Num_));
+	}
 	old_Num_ = new_Num_;
 }
 
