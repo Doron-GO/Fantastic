@@ -472,7 +472,6 @@ bool Player::CollisionDown()
 	for (const auto& col : grndColList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec};
-
 		if (rayCast_.CheckCollision(ray, col,pos_))
 		{
 			//TRACE("ìñÇΩÇ¡ÇΩ\n");
@@ -486,7 +485,6 @@ bool Player::CollisionVec(Vector2DFloat movevec)
 {
 	Vector2DFloat rayCenter = { pos_ };
 	//é¿ç€ÇÃìñÇΩÇËîªíËÉåÉCÇÃï`âÊ
-	
 	//_dbgDrawLine(
 	//	rayCenter.x, rayCenter.y,
 	//	rayCenter.x + movevec.x, rayCenter.y + movevec.y,
@@ -496,7 +494,6 @@ bool Player::CollisionVec(Vector2DFloat movevec)
 	for (const auto& col : grndColList_)
 	{
 		Raycast::Ray ray = { rayCenter,movevec };
-
 		if (rayCast_.CheckCollision(ray, col, pos_ ))
 		{
 			return false;
@@ -512,7 +509,6 @@ bool Player::ColWallGrab(Vector2DFloat movevec)
 	for (const auto& col : wallcolList_)
 	{
 		Raycast::Ray ray = { rayCenter,movevec };
-
 		if (rayCast_.CheckCollision(ray, col, pos_))
 		{		
 			wallX = (col.first.x)+32.0f ;
@@ -537,6 +533,7 @@ bool Player::IsWall()
 
 void Player::Dead()
 {
+	pos_ = { 0.0f,0.0f };
 	aliveFlag_ = false;
 }
 

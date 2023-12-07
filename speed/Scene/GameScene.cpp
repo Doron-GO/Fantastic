@@ -19,11 +19,11 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 		players_.push_back(player);
 	}
 	checkPoint_ = std::make_unique<CheckPoint>(players_);
-	camera_->ReConnect(players_[0]);
-	new_Num_ = PLAYER_NUM::P_1;
-	old_Num_ = PLAYER_NUM::P_1;
+	new_LeadNum_ = PLAYER_NUM::P_1;
+	old_LeadNum_ = PLAYER_NUM::P_1;
 	last_Num_ = PLAYER_NUM::P_1;
 
+	camera_->ReConnect(players_[0]);
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//カメラを初期化
 	outSide_ = std::make_unique<OutSide>(*camera_, players_, GetJoypadNum());
 }
@@ -38,10 +38,9 @@ void GameScene::Update(Input& input)
 			player->Update(input);
 		}	
 	}
-	//DecideOnTheBeginning();
 	outSide_->Update();
 	checkPoint_->Update();
-	TestDecideOnTheBeginning();
+	DecideOnTheBeginning();
 	DrawOwnScreen();
 }
 
@@ -49,104 +48,74 @@ void GameScene::Draw()
 {
 }
 
+
 void GameScene::DecideOnTheBeginning()
-{
-	//プレイヤーの人数分回す
-	for (int playerNum =0; playerNum <players_.size(); playerNum++)
-	{	
-		distance_.push_back(players_[playerNum]->GetPos().distance(checkPoint_->GetCheckPoint()));
-	}
-	for (int playerNum = 0; playerNum < players_.size()-1 ; playerNum++)
-	{
-		if (distance_[playerNum] < distance_[playerNum + 1])//
-		{
-			//最前を探す
-			if (distance_[static_cast<int>(new_Num_)] > distance_[playerNum ])
-			{
-				new_Num_ = static_cast<PLAYER_NUM>(playerNum );
-			}
-			//最後尾を探さす
-			if (distance_[static_cast<int>(last_Num_)] < distance_[playerNum+1])
-			{
-				last_Num_ = static_cast<PLAYER_NUM>(playerNum+1);
-			}
-		}
-		else 
-		{
-			//最前を探す
-			if (  distance_[playerNum]<distance_[static_cast<int>(new_Num_)])
-			{
-				new_Num_ = static_cast<PLAYER_NUM>(playerNum);
-			}
-			else if(distance_[playerNum+1] < distance_[static_cast<int>(new_Num_)])
-			{
-				new_Num_ = static_cast<PLAYER_NUM>(playerNum+1);
-			}
-			//最後を探す
-			if (  distance_[playerNum]>=distance_[static_cast<int>(last_Num_)])
-			{
-				last_Num_ = static_cast<PLAYER_NUM>(playerNum);
-			}
-		}
-	}
-	distance_.clear();
-	distance_.resize(outSide_->NumberOfSurvivors());
-	if (old_Num_!=new_Num_)
-	{
-		camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
-		camera_->PhaseChanging(static_cast<int>(new_Num_));
-	}
-	//camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
-	old_Num_ = new_Num_;
-}
-
-void GameScene::TestDecideOnTheBeginning()
-{
-
+{		
+	testDistance_.clear();
 	for (auto& p :players_)
 	{
-		//生きていたら
-		if (p->IsAlive())
-		{
-			iD_.first = (p->padNum_)-1.0f;
-			iD_.second = players_[(p->padNum_) - 1.0f]->GetPos().distance(checkPoint_->GetCheckPoint());
-			testDistance_.push_back(iD_);
-		}
-		else
-		{
-			auto p = 0;
-		}
+		iD_.first = (p->padNum_)-1;
+		iD_.second = players_[(p->padNum_) - 1]->GetPos().distance(checkPoint_->GetCheckPoint());
+		testDistance_.push_back(iD_);
 	}
-	for (int num = 0; num < testDistance_.size(); num++)
+	//for (int num = 0; num < testDistance_.size(); num++)
+	//{
+	//	for (int num2 = testDistance_.size()-1 ;num2>=0;num2--)
+	//	{
+	//		if (!(num ==num2))
+	//		{
+	//			if (testDistance_[num].second < testDistance_[num2].second)
+	//			{	//最前を探す//ここでエラーが出る一人でも脱落するとnew_Num_とtestDistance_の数字がずれる
+	//				if (testDistance_[num].second < testDistance_[static_cast<int>(new_Num_)].second)
+	//				{
+	//					new_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
+	//				}
+	//			}
+	//			else
+	//			{	
+	//				////最後尾を探さす  ここでエラーが出る、lastNum_のプレイヤーがもう脱落していた時に発生
+	//				//if (testDistance_[static_cast<int>(last_Num_)].second < testDistance_[num ].second)
+	//				//{
+	//				//	last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
+	//				//}
+	//			}
+	//		}
+	//	}
+	//}
+	for (auto& p1 : players_)
 	{
-		for (int num2 = testDistance_.size()-1 ;num2>=0;num2--)
+		for (auto& p2 : players_)
 		{
-			if (!(num ==num2))
+			////自分自身とは比較しない
+				//if (!(p1->padNum_== p2->padNum_))
+				//{
+				//}
+			if (p1->IsAlive()&&p2->IsAlive())
 			{
-				if (testDistance_[num].second < testDistance_[num2].second)
-				{	//最前を探す
-					if (testDistance_[num].second < testDistance_[static_cast<int>(new_Num_)].second)
+				auto num1 = (p1->padNum_) - 1;
+				auto num2 = (p2->padNum_) - 1;
+				if (testDistance_[num1].second < testDistance_[num2].second)
+				{
+					if (testDistance_[num1].second < testDistance_[static_cast<int>(new_LeadNum_)].second)
 					{
-						new_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
+						new_LeadNum_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
 					}
 				}
-				else
-				{	//最後尾を探さす  ここでエラーが出る、lastNum_のプレイヤーがもう脱落していた時に発生
-					if (testDistance_[static_cast<int>(last_Num_)].second < testDistance_[num ].second)
-					{
-						last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
-					}
+				else 
+				{
+					last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
+				
 				}
 			}
-		}
+		}	
 	}
-	testDistance_.clear();
-	if (old_Num_ != new_Num_)
+
+	if (old_LeadNum_ != new_LeadNum_)
 	{
-		camera_->ReConnect(players_[static_cast<int>(new_Num_)]);
-		camera_->PhaseChanging(static_cast<int>(new_Num_));
+		camera_->ReConnect(players_[static_cast<int>(new_LeadNum_)]);
+		camera_->PhaseChanging(static_cast<int>(new_LeadNum_));
 	}
-	old_Num_ = new_Num_;
+	old_LeadNum_ = new_LeadNum_;
 }
 
 void GameScene::DrawOwnScreen()
@@ -154,16 +123,14 @@ void GameScene::DrawOwnScreen()
 	stage_->Draw(camera_->GetPos());
 	for (const auto& player : players_)
 	{
+		if (player->IsAlive())
+		{
 			player->Draw(camera_->GetPos());
+		}
 	}
-
 	outSide_->Draw(camera_->GetPos());
 	checkPoint_->Draw(camera_->GetPos());
-	//postEfffect_->Draw();
-
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
-	DrawFormatStringF(0, 580, 0xffffff, "最後尾は:%d", static_cast<int>(last_Num_)+1);
-	DrawFormatStringF(0, 560, 0xffffff, "先頭は:%d", static_cast<int>(new_Num_)+1);
-
-
+	DrawFormatStringF(0, 580, 0xffffff, "最後尾は:%d", static_cast<int>(last_Num_));
+	DrawFormatStringF(0, 560, 0xffffff, "先頭は:%d", static_cast<int>(new_LeadNum_));
 }

@@ -35,7 +35,6 @@ private:
     //一番先頭のプレイヤーに追従させる
     //ゲームシーンで先頭を決めて、カメラクラスに渡す
     void DecideOnTheBeginning();
-    void TestDecideOnTheBeginning();
 
     std::shared_ptr<Player> player_;
     std::vector<std::shared_ptr<Player>> players_;
@@ -44,8 +43,8 @@ private:
     std::unique_ptr<OutSide> outSide_;
     std::unique_ptr<CheckPoint> checkPoint_;
 
-    PLAYER_NUM old_Num_;//1フレーム前の最前列のプレイヤー
-    PLAYER_NUM new_Num_;//最新の最前列のプレイヤー
+    PLAYER_NUM old_LeadNum_;//1フレーム前の最前列のプレイヤー
+    PLAYER_NUM new_LeadNum_;//最新の最前列のプレイヤー
     PLAYER_NUM last_Num_;//最後尾のプレイヤー
 
     std::vector<float> distance_;

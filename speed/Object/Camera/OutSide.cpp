@@ -24,7 +24,6 @@ void OutSide::Update()
 	auto target = camera_.GetTargetPos();
 	minPos_ = target + minScale_;
 	maxPos_ = target + maxScale_;
-
 	dangerZone_->Update();
 	IsDead();
 	TestSmaller();
@@ -188,6 +187,7 @@ void OutSide::IsDead()
 				isExploding_ = true;
 				frame_ = 0;
 				playerCount_--;
+
 				//StartJoypadVibration(padNum_, 400, 300);
 			}
 		}

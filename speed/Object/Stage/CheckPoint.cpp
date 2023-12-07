@@ -8,13 +8,10 @@ CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>>& players):players_(p
 	checkPoints_.push_back({ 3739.0f,157.0f });
 	checkPoints_.push_back({ 690.0f,153.0f });
 
-
 	checkPointColList_.push_back(Collision(vec{ 0.0f,1000.0f }, vec{ 800.0f,1500.0f }));
 	checkPointColList_.push_back(Collision(vec{ 2172.0f,520.0f }, vec{ 2454.0f,1600.0f }));
 	checkPointColList_.push_back(Collision(vec{ 3566.0f,0.0f }, vec{ 4014,155.0f }));
 	checkPointColList_.push_back(Collision(vec{ 0.0f,0.0f }, vec{ 864.0f,155.0f }));
-
-
 
 	currentPoint_ = 0;
 }
@@ -50,9 +47,12 @@ void CheckPoint::Draw(Vector2DFloat pos)
 {
 	for (const auto& player : players_)
 	{
-		if (rayCast_.CheckCollision(checkPointColList_[currentPoint_], player->pos_))
+		if (player->IsAlive())
 		{
-			DrawStringF(0.0f, 290.0f, "チェックポイントをに接触",0xff0000);
+			if (rayCast_.CheckCollision(checkPointColList_[currentPoint_], player->pos_))
+			{
+				DrawStringF(0.0f, 290.0f, "チェックポイントをに接触", 0xff0000);
+			}
 		}
 	}
 	DrawBoxAA(checkPointColList_[currentPoint_].first.x+ pos.x, checkPointColList_[currentPoint_].first.y + pos.y,
