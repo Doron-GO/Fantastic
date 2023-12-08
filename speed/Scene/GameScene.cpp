@@ -86,10 +86,6 @@ void GameScene::DecideOnTheBeginning()
 	{
 		for (auto& p2 : players_)
 		{
-			////Ž©•ªŽ©g‚Æ‚Í”äŠr‚µ‚È‚¢
-				//if (!(p1->padNum_== p2->padNum_))
-				//{
-				//}
 			if (p1->IsAlive()&&p2->IsAlive())
 			{
 				auto num1 = (p1->padNum_) - 1;
@@ -103,13 +99,11 @@ void GameScene::DecideOnTheBeginning()
 				}
 				else 
 				{
-					last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
-				
+					last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);			
 				}
 			}
 		}	
 	}
-
 	if (old_LeadNum_ != new_LeadNum_)
 	{
 		camera_->ReConnect(players_[static_cast<int>(new_LeadNum_)]);
