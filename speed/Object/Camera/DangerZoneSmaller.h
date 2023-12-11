@@ -13,6 +13,9 @@ public:
 	void UpdateWait();
 	void (DangerZoneSmaller::* _update)();
 	void Activated();
+	void ResetCounter();
+
+	int count_;
 
 private:
 
@@ -22,8 +25,6 @@ private:
 
 	Vector2DFloat& outSideMax_;//死亡エリアの座標の最大値
 	Vector2DFloat& outSideMin_;//死亡エリアの座標の最小値
-
-	int count_;
 
 };
 

@@ -16,6 +16,7 @@ void Stage::Init()
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
 	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
 	loadMap_.LoadStage("Src/Json/stage_.json");
+	itemBox_ = std::make_unique<ItemBox>(loadMap_.itemBoxGetColList());
 
 }
 

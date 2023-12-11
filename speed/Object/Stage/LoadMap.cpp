@@ -106,6 +106,11 @@ const ColList& LoadMap::WireGetColList(void)
 	return WireCollList_;
 }
 
+const ColList& LoadMap::itemBoxGetColList(void)
+{
+	return itemBoxCollList_;
+}
+
 const Vector2D& LoadMap::GetWorldArea(void)
 {
 	return  WorldArea_;

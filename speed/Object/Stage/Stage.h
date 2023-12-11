@@ -1,6 +1,10 @@
 #pragma once
+#include<memory>
 #include"LoadMap.h"
 #include"../../Vector2D.h"
+#include"../../Object/Item/ItemBox.h"
+
+class ItemBox;
 
 class Stage
 {
@@ -27,6 +31,6 @@ public:
 private:
 
 	LoadMap loadMap_;
-
+	std::unique_ptr<ItemBox> itemBox_;
 };
 

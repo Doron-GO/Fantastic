@@ -22,17 +22,20 @@ public:
 	const ColList& GetColList(void);
 	const ColList& WallGetColList(void);
 	const ColList& WireGetColList(void);
+	const ColList& itemBoxGetColList(void);
 	const Vector2D& GetWorldArea(void);
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);
 	const std::string& GetMapKey(void);
 	
+private:
 	Vector2D layerSize_;
 	Vector2D WorldArea_;	//	世界の大きさ
 	Vector2D tileSize_;
 	ColList colList_;
 	ColList WallCollList_;
 	ColList WireCollList_;
+	ColList itemBoxCollList_;
 
 	std::string mapKey_;
 	MapData mapData;//マップにストリングはあまり使わない方がいいenumの方がいい

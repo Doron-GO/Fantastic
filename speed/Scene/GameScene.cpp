@@ -15,7 +15,8 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	{
 		std::shared_ptr<Player> player;
 		player = std::make_shared<Player>(playerNum);
-		player->Init(stage_->GetColList(), stage_->GetWallColList(), stage_->GetWireColList());
+		player->Init(stage_->GetColList(),stage_->GetWallColList(),
+						stage_->GetWireColList());
 		players_.push_back(player);
 	}
 	checkPoint_ = std::make_unique<CheckPoint>(players_);
@@ -48,48 +49,25 @@ void GameScene::Draw()
 {
 }
 
-
 void GameScene::DecideOnTheBeginning()
-{		
+{
 	testDistance_.clear();
-	for (auto& p :players_)
+	//プレイヤーとチェックポイントとの距離を格納している。
+	for (auto& p : players_)
 	{
-		iD_.first = (p->padNum_)-1;
+		iD_.first = (p->padNum_) - 1;
 		iD_.second = players_[(p->padNum_) - 1]->GetPos().distance(checkPoint_->GetCheckPoint());
 		testDistance_.push_back(iD_);
 	}
-	//for (int num = 0; num < testDistance_.size(); num++)
-	//{
-	//	for (int num2 = testDistance_.size()-1 ;num2>=0;num2--)
-	//	{
-	//		if (!(num ==num2))
-	//		{
-	//			if (testDistance_[num].second < testDistance_[num2].second)
-	//			{	//最前を探す//ここでエラーが出る一人でも脱落するとnew_Num_とtestDistance_の数字がずれる
-	//				if (testDistance_[num].second < testDistance_[static_cast<int>(new_Num_)].second)
-	//				{
-	//					new_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
-	//				}
-	//			}
-	//			else
-	//			{	
-	//				////最後尾を探さす  ここでエラーが出る、lastNum_のプレイヤーがもう脱落していた時に発生
-	//				//if (testDistance_[static_cast<int>(last_Num_)].second < testDistance_[num ].second)
-	//				//{
-	//				//	last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num].first);
-	//				//}
-	//			}
-	//		}
-	//	}
-	//}
 	for (auto& p1 : players_)
 	{
 		for (auto& p2 : players_)
 		{
-			if (p1->IsAlive()&&p2->IsAlive())
+			if (p1->IsAlive() && p2->IsAlive())
 			{
 				auto num1 = (p1->padNum_) - 1;
 				auto num2 = (p2->padNum_) - 1;
+				//プレイヤーNがプレイヤーN+1より前だったら、プレイヤーNを先頭にする。 
 				if (testDistance_[num1].second < testDistance_[num2].second)
 				{
 					if (testDistance_[num1].second < testDistance_[static_cast<int>(new_LeadNum_)].second)
@@ -97,13 +75,24 @@ void GameScene::DecideOnTheBeginning()
 						new_LeadNum_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
 					}
 				}
-				else 
-				{
-					last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);			
+				else
+				{//最後尾のプレイヤーが脱落していたらとりあえず別のプレイヤーを最後尾扱いにする
+					if (!(players_[static_cast<int>(last_Num_)]->IsAlive()))
+					{
+						last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
+					}
+					//前最後尾のプレイヤーより後ろだったら
+					if (testDistance_[static_cast<int>(last_Num_)].second <
+						testDistance_[static_cast<int>(num1)].second)
+					{
+						last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
+					}
 				}
 			}
-		}	
+		}
 	}
+	//前のフレームの先頭プレイヤーと今の先頭プレイヤーが違っていたら、
+	//カメラ追従対象を変更する。
 	if (old_LeadNum_ != new_LeadNum_)
 	{
 		camera_->ReConnect(players_[static_cast<int>(new_LeadNum_)]);

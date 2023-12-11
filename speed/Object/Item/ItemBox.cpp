@@ -1,6 +1,6 @@
 #include "ItemBox.h"
 
-ItemBox::ItemBox()
+ItemBox::ItemBox(ColList itemBoxCol):itemBoxColList_(itemBoxCol)
 {
 	
 }

@@ -47,7 +47,7 @@ void OutSide::Draw(Vector2DFloat offset)
 	DrawFormatStringF(0.0f, 480.0f, 0xffffff, "maxPos_:x %f, y %f,", maxPos_.x, maxPos_.y);
 	//枠の座標の最小値
 	DrawFormatStringF(0.0f, 510.0f, 0xffffff, "minPos_:x %f, y %f,", minPos_.x, minPos_.y);
-	//実際の枠
+	DrawFormatStringF(0.0f, 530.0f, 0xffffff, "画面が狭まるカウント%d", dangerZone_->count_);
 
 	if (isExploding_)
 	{
@@ -186,6 +186,7 @@ void OutSide::IsDead()
 				padNum_ = player->padNum_;
 				isExploding_ = true;
 				frame_ = 0;
+				dangerZone_->ResetCounter();
 				playerCount_--;
 
 				//StartJoypadVibration(padNum_, 400, 300);
