@@ -5,6 +5,7 @@
 #include"../../Object/Item/ItemBox.h"
 
 class ItemBox;
+class Player;
 
 class Stage
 {
@@ -16,9 +17,10 @@ public:
 
 	};
 
-	Stage();
+	Stage(std::vector<std::shared_ptr<Player>>& players);
 	~Stage();
 	void Init();
+	void Update();
 	void Draw(Vector2DFloat cameraPos);
 
 	const  Vector2D& GetWorldArea();
@@ -32,5 +34,7 @@ private:
 
 	LoadMap loadMap_;
 	std::unique_ptr<ItemBox> itemBox_;
+	std::vector<std::shared_ptr<Player>>& players_;
+
 };
 

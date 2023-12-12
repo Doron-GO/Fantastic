@@ -1,10 +1,12 @@
 #include <DxLib.h>
 #include "Stage.h"
 #include"../Manager/ImageMng.h"
-
-Stage::Stage()
-{
-
+#include "../../Player/Player.h"
+Stage::Stage(std::vector<std::shared_ptr<Player>>& players)
+	: players_(players)
+{	
+	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
+	loadMap_.LoadStage("Src/Json/stage_.json");
 }
 
 Stage::~Stage()
@@ -14,10 +16,12 @@ Stage::~Stage()
 void Stage::Init()
 {
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
-	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
-	loadMap_.LoadStage("Src/Json/stage_.json");
-	itemBox_ = std::make_unique<ItemBox>(loadMap_.itemBoxGetColList());
+	itemBox_ = std::make_unique<ItemBox>(loadMap_,players_);
+}
 
+void Stage::Update()
+{
+	itemBox_->Update();
 }
 
 void Stage::Draw(Vector2DFloat cameraPos)
@@ -25,12 +29,8 @@ void Stage::Draw(Vector2DFloat cameraPos)
 	auto &worldArea = loadMap_.GetWorldArea();
 	const auto &tileSize = loadMap_.GetTileSize();
 	auto& mapData = loadMap_.GetMapData();
-
-	Vector2DFloat view = { 1200.0f, 800.0f };
-	auto offset = (view / 4.0f) - cameraPos;
-
-	for (const auto& layer : loadMap_.GetMapData()) {
-
+	for (const auto& layer : loadMap_.GetMapData()) 
+	{
 		for (int y = 0; y < worldArea.y; y++)
 		{
 			for (int x = 0; x < worldArea.x; x++)
@@ -38,26 +38,22 @@ void Stage::Draw(Vector2DFloat cameraPos)
 				if (x + y * worldArea.x < layer.second.size())
 				{
 					auto gid = layer.second[x + y * worldArea.x];
-
 					if (gid >= 0)
 					{
-						auto& a = loadMap_.GetMapKey();
-
 						DrawGraph(x * tileSize.x+ cameraPos.x,
 							(y * tileSize.y + cameraPos.y),
 							lpImageMng.GetID(loadMap_.GetMapKey())
 							[gid], true);
 					}
 				}
-
 			}
 		}
 	}
+	itemBox_->Draw(cameraPos);
 	for ( auto& line : loadMap_.GetColList())
 	{
 		auto first = line.first;
 		auto second = line.second;
-
 		Line lines[4] = {
 			//è„ÇÃï”   
 			{first + cameraPos,
@@ -72,7 +68,6 @@ void Stage::Draw(Vector2DFloat cameraPos)
 			{first + Vector2DFloat{0,second.y} + cameraPos ,
 			first + cameraPos }
 		};
-
 		for (auto line : lines)
 		{
 			DrawLine(line.p.x, line.p.y, line.end.x, line.end.y, 0x00ff00);

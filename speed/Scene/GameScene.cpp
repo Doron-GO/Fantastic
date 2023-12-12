@@ -7,10 +7,8 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 {
 	SetDrawScreen(DX_SCREEN_BACK);
 	screenID_ = MakeScreen(1600.0f, 1000.0f, true);
-	stage_ = std::make_unique<Stage>();
-	stage_->Init();
-
-	camera_ = std::make_unique<Camera>();
+	camera_ = std::make_unique<Camera>();	
+	stage_ = std::make_unique<Stage>(players_);
 	for (int playerNum = 1; playerNum <= GetJoypadNum(); playerNum++)
 	{
 		std::shared_ptr<Player> player;
@@ -19,11 +17,12 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 						stage_->GetWireColList());
 		players_.push_back(player);
 	}
+	stage_->Init();
+
 	checkPoint_ = std::make_unique<CheckPoint>(players_);
 	new_LeadNum_ = PLAYER_NUM::P_1;
 	old_LeadNum_ = PLAYER_NUM::P_1;
 	last_Num_ = PLAYER_NUM::P_1;
-
 	camera_->ReConnect(players_[0]);
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ƒJƒƒ‰‚ğ‰Šú‰»
 	outSide_ = std::make_unique<OutSide>(*camera_, players_, GetJoypadNum());
