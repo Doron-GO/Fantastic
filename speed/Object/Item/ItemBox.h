@@ -7,6 +7,7 @@
 
 class LoadMap;
 class Player;
+
 class ItemBox
 {
 public:

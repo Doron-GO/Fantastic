@@ -18,7 +18,6 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 		players_.push_back(player);
 	}
 	stage_->Init();
-
 	checkPoint_ = std::make_unique<CheckPoint>(players_);
 	new_LeadNum_ = PLAYER_NUM::P_1;
 	old_LeadNum_ = PLAYER_NUM::P_1;
