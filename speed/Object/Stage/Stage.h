@@ -17,9 +17,9 @@ public:
 
 	};
 
-	Stage(std::vector<std::shared_ptr<Player>>& players);
+	Stage();
 	~Stage();
-	void Init();
+	void Init(std::vector<std::shared_ptr<Player>> players);
 	void Update();
 	void Draw(Vector2DFloat cameraPos);
 
@@ -34,7 +34,6 @@ private:
 
 	LoadMap loadMap_;
 	std::unique_ptr<ItemBox> itemBox_;
-	std::vector<std::shared_ptr<Player>>& players_;
 
 };
 

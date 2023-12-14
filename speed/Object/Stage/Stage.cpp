@@ -2,8 +2,7 @@
 #include "Stage.h"
 #include"../Manager/ImageMng.h"
 #include "../../Player/Player.h"
-Stage::Stage(std::vector<std::shared_ptr<Player>>& players)
-	: players_(players)
+Stage::Stage() 
 {	
 	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
 	loadMap_.LoadStage("Src/Json/stage_.json");
@@ -13,10 +12,10 @@ Stage::~Stage()
 {
 }
 
-void Stage::Init()
+void Stage::Init(std::vector<std::shared_ptr<Player>> players) 
 {
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
-	itemBox_ = std::make_unique<ItemBox>(loadMap_,players_);
+	itemBox_ = std::make_unique<ItemBox>(loadMap_, players);
 }
 
 void Stage::Update()

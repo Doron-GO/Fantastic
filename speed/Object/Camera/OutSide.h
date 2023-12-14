@@ -23,7 +23,7 @@ class OutSide
 {
 public:
 	
-	OutSide(Camera& camera,std::vector< std::shared_ptr<Player >>& players, int playerCount);
+	OutSide(Camera& camera,std::vector< std::shared_ptr<Player >> players, int playerCount);
 	~OutSide();
 
 	void Update();
@@ -48,7 +48,7 @@ private:
 	Camera& camera_;
 
 	std::unique_ptr<DangerZoneSmaller> dangerZone_;
-	std::vector<std::shared_ptr<Player>>& players_;
+	const std::vector<std::shared_ptr<Player>> players_;
 	Vector2DFloat minPos_;
 	Vector2DFloat maxPos_;
 

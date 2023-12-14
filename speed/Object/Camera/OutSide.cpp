@@ -6,7 +6,7 @@
 
 Vector2DFloat screenSize ={1600.0f,1000.0f};
 
-OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >>& players, int playerCount) :camera_(camera), players_(players),
+OutSide::OutSide(Camera& camera, std::vector< std::shared_ptr<Player >> players, int playerCount) :camera_(camera), players_(players),
 playerCount_(playerCount), minPos_({0.0f,0.0f}), maxPos_({1600.0f, 1000.0f}), minScale_({-800.0f,-500.0f}), maxScale_({800.0f,500.0f})
 {
 	LoadDivGraph("Src/Img/Explosion.png",11, 11, 1, 32, 31, bombImg_);
@@ -17,6 +17,7 @@ playerCount_(playerCount), minPos_({0.0f,0.0f}), maxPos_({1600.0f, 1000.0f}), mi
 }
 OutSide::~OutSide()
 {
+
 }
 
 void OutSide::Update()

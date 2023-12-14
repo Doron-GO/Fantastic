@@ -34,6 +34,7 @@ private:
 	void Zoom();
 
 	std::weak_ptr<Player> taeget_;
+	Vector2DFloat targetPos_;
 	Vector2DFloat cameraPos_;
 	Vector2DFloat oldPos_;
 	RECT moveArea_;

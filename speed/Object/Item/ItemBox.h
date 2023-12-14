@@ -11,7 +11,7 @@ class Player;
 class ItemBox
 {
 public:
-	ItemBox( LoadMap& loadMap, std::vector<std::shared_ptr<Player>>& players);
+	ItemBox( LoadMap& loadMap, std::vector<std::shared_ptr<Player>> players);
 	~ItemBox();
 	void Draw(Vector2DFloat offset );
 	void Update();
@@ -19,7 +19,7 @@ private:
 	
 	Raycast rayCast_;
 	std::vector<Vector2DFloat> boxPos_;
-	std::vector<std::shared_ptr<Player>>& players_;
+	std::vector<std::shared_ptr<Player>> players_;
 
 	bool IsBox(Vector2DFloat pos);
 	ColList itemBoxColList_;

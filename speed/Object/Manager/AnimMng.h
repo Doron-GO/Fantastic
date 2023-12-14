@@ -42,8 +42,6 @@ public:
 	{
 		static AnimeMng s_Instance;
 		return s_Instance;
-
-
 	}
 	std::string LoadAnime(std::string fileName);
 	bool UpdateAnime(AnimStr& animCacha);

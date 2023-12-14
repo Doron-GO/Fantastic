@@ -27,7 +27,6 @@ void Camera::Switching()
     Vector2DFloat offset;
     offset.x = (view.x / 4.0f) * 2.0f - taeget_.lock()->GetPos().x;
     offset.y = (view.y / 2.0f) - (taeget_.lock()->GetPos().y);
-
     if (time <= 60.0f){time++;}
     cameraPos_.x = oldPos_.x * (1.0f - time / 60.0f) + offset.x * time / 60.0f;
     cameraPos_.y = oldPos_.y * (1.0f - time / 60.0f) + offset.y * time / 60.0f;
@@ -50,6 +49,8 @@ void Camera::Follow()
     Vector2DFloat offset;
     offset.x = (view.x / 4.0f) * 2.0f - taeget_.lock()->GetPos().x;
     offset.y = (view.y / 2.0f) - taeget_.lock()->GetPos().y;
+
+
     cameraPos_ = offset;
     oldPos_ = cameraPos_;
 }
@@ -64,6 +65,7 @@ bool Camera::ReConnect(std::weak_ptr<Player> actor)
     taeget_ = actor;
     return true;
 }
+
 
 const Vector2DFloat& Camera::GetPos(void) const
 {

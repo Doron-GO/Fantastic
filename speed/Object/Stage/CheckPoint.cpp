@@ -1,7 +1,7 @@
 #include "CheckPoint.h"
 #include "../../Player/Player.h"
 
-CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>>& players):players_(players)
+CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>> players):players_(players)
 {
 	checkPoints_.push_back({ 0.0f,1600.0f });
 	checkPoints_.push_back({ 2433.0f,1700.0f });

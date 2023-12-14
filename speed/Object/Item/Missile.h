@@ -8,5 +8,7 @@ public:
     virtual void Draw(Vector2DFloat offset)override;
 
 private:
+
+
 };
 

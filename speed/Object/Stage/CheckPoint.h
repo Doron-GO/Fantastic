@@ -13,7 +13,7 @@ class CheckPoint
 {
 public:
 
-	CheckPoint(std::vector<std::shared_ptr<Player>>& players);
+	CheckPoint(std::vector<std::shared_ptr<Player>> players);
 	~CheckPoint();
 
 	void Update();
@@ -21,7 +21,7 @@ public:
 	Vector2DFloat GetCheckPoint()const; 
 
 private:
-	std::vector<std::shared_ptr<Player>>& players_;
+	std::vector<std::shared_ptr<Player>> players_;
 	std::vector<Vector2DFloat> checkPoints_;
 	PointColList checkPointColList_;//チェックポイント当たり判定
 	Raycast rayCast_;

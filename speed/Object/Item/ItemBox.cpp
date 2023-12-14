@@ -4,7 +4,7 @@
 #include"../Manager/ImageMng.h"
 #include"../../Player/Player.h"
 
-ItemBox::ItemBox(LoadMap& loadMap,std::vector<std::shared_ptr<Player>>& players)
+ItemBox::ItemBox(LoadMap& loadMap,std::vector<std::shared_ptr<Player>> players)
 	:loadMap_(loadMap),players_(players),count_(0)
 {
 	LoadDivGraph("Src/Img/Explosion.png", 11, 11, 1, 32, 31, itemBoxImg_);

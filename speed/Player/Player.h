@@ -30,6 +30,12 @@ public:
 		SWINGJUMP
 	};
 
+	enum class ItemList
+	{
+		NON,
+		MISSILE,
+	};
+
 	 Player(int playerNum);
 	 ~Player();
 	 void Init(ColList colList, ColList wallColList, ColList wireColList);
