@@ -7,12 +7,21 @@
 #include"../Common/Raycast.h"
 #include"../Input/Input.h"
 #include"../Object/Camera/Camera.h"
+#include"../Object/Item/ItemManager.h"
+#include"../Object/Item/ItemBase.h"
+#include"../Object/Item/Missile.h"
+
 
 class Wire;
 
 class Player
 {
 public:
+	enum class ItemList
+	{
+		NON,
+		MISSILE
+	};
 
 	enum class DIR_LR
 	{
@@ -30,11 +39,6 @@ public:
 		SWINGJUMP
 	};
 
-	enum class ItemList
-	{
-		NON,
-		MISSILE,
-	};
 
 	 Player(int playerNum);
 	 ~Player();
@@ -43,7 +47,6 @@ public:
 
 	//これにオフセット値を渡し描画をずらすようにする
 	 void Draw(Vector2DFloat cameraPos);
-
 
 	ColList grndColList_;//特にギミックのない当たり判定
 	ColList wallcolList_;//壁ジャンプができる当たり判定
@@ -64,6 +67,9 @@ public:
 	void Dead();
 	void Alive();
 	bool IsAlive();
+	ItemList IsItem();
+	void SetItemList(int itemNum);
+	void SetItem(ItemBase item);
 private:
 
 	PHASE phase_;
@@ -84,7 +90,6 @@ private:
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
 	void AnchoringPhese(Input& input);//スイングジャンプ状態
 
-
 	//当たり判定系
 	void MoveColision();
 	//自分の中心から true 当たってない:false 当たってる
@@ -94,10 +99,9 @@ private:
 	bool ColWallGrab(Vector2DFloat movevec);
 	bool IsWall();
 
-
-
 	//プレイヤーのアクション
 	void Move(Input& input);	//左右移動
+	void ItemUse();
 	void Anchoring(Input& input);//フックを飛ばす:進行方向の斜め上
 	void Jump(Input& input);
 	
@@ -119,5 +123,10 @@ private:
 
 	float slideY_ = -35.0f;	
 	int test= 0xffffff;
+
+	ItemBase item_;
+	ItemList itemList_;
+	 
+
 };
 

@@ -4,12 +4,13 @@
 class ItemBase
 {
 public:
-	ItemBase();
+	 ItemBase();
+	 ~ItemBase();
 
-	virtual void Update() = 0;
-	virtual void Draw(Vector2DFloat offset) = 0;
+	virtual void Update();
+	virtual void Draw(Vector2DFloat offset);
+	virtual void Use(Vector2DFloat pos);
 
-	
 
 protected:
 

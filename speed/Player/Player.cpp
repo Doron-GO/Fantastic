@@ -45,7 +45,7 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 	movePow_ = { 0.0f,0.0f };
 	up_ = { 0.0f,-50.0f };
 	_phase = &Player::FallPhase;
-	
+	itemList_ = ItemList::NON;
 	wire_ = std::make_unique<Wire>(*this, wireColList);
 }
 
@@ -61,7 +61,7 @@ void Player::Update(Input& input)
 		Move(input_);
 		wire_->Update();
 		(this->*_phase)(input_);
-
+		item_.Update();
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;
@@ -71,6 +71,11 @@ void Player::Update(Input& input)
 				pos_.x += movePow_.x;
 			}
 		}
+		if (!(itemList_ == ItemList::NON))
+		{
+			item_.Update();
+		}
+
 	}
 
 }
@@ -95,6 +100,10 @@ void Player::Draw(Vector2DFloat cameraPos)
 			1.5, 0.0,
 			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
 			true, static_cast<int>(dir_LR_), 0);
+		if (!(itemList_ ==ItemList::NON))
+		{
+			item_.Draw(cameraPos);
+		}
 	}
 	if (padNum_ == 1)
 	{
@@ -527,6 +536,21 @@ bool Player::IsAlive()
 	return aliveFlag_;
 }
 
+Player:: ItemList Player::IsItem()
+{
+	return itemList_;
+}
+
+void Player::SetItemList(int itemNum)
+{
+	itemList_ = (ItemList)itemNum;
+}
+
+void Player::SetItem(ItemBase item)
+{
+	item_ = item;
+}
+
 
 void Player::Move(Input& input)
 {
@@ -630,6 +654,12 @@ void Player::Move(Input& input)
 		}
 		else{ slideY_ = -35.0f; }
 	}
+}
+
+void Player::ItemUse()
+{
+
+	itemList_ =ItemList::NON;
 }
 
 void Player::Anchoring(Input& input)
