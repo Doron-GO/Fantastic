@@ -55,7 +55,7 @@ void ItemBox::Draw(Vector2DFloat offset)
 				{
 					player->SetItemList(1);
 					 missile_ =  Missile();
-					player->SetItem(missile_);
+					player->SetItem(&missile_);
 
 				}
 				DrawStringF(0.0f, 590.0f, "アイテムボックスに接触", 0xff0000);

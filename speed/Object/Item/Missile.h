@@ -13,5 +13,6 @@ public:
 
 private:
 
+    Vector2DFloat test;
 };
 

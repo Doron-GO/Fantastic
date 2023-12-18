@@ -1,5 +1,6 @@
 #include "PlayerManager.h"
 #include "Player.h"
+#include"../Object/Item/ItemBase.h"
 
 PlayerManager::PlayerManager():new_LeadNum_(PLAYER_NUM::P_1), old_LeadNum_(PLAYER_NUM::P_1), last_Num_(PLAYER_NUM::P_1)
 {
@@ -14,6 +15,7 @@ void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList w
 {
 	for (int Num = 1; Num <= playerNum; Num++)
 	{
+		
 		std::shared_ptr<Player> player;
 		player = std::make_shared<Player>(Num);
 		player->Init(gruound, Wall, wire);

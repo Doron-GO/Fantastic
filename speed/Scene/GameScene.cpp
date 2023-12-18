@@ -53,13 +53,6 @@ void GameScene::DecideOnTheBeginning()
 void GameScene::DrawOwnScreen()
 {
 	stage_->Draw(camera_->GetPos());
-	//for (const auto& player : players_)
-	//{
-	//	if (player->IsAlive())
-	//	{
-	//		player->Draw(camera_->GetPos());
-	//	}
-	//}
 	playerManager_->Draw(camera_->GetPos());
 	outSide_->Draw(camera_->GetPos());
 	checkPoint_->Draw(camera_->GetPos());

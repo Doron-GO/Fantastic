@@ -69,11 +69,15 @@ public:
 	bool IsAlive();
 	ItemList IsItem();
 	void SetItemList(int itemNum);
-	void SetItem(ItemBase item);
+	void SetItem(ItemBase* item);
+
+	void TesItemDraw( Vector2DFloat cameraPos);
+
 private:
 
 	PHASE phase_;
 	std::string now_;
+	std::string now_Item_;
 
 	void DebugPhaseCheck();
 
@@ -122,9 +126,9 @@ private:
 	bool aliveFlag_;
 
 	float slideY_ = -35.0f;	
-	int test= 0xffffff;
+ 	int test= 0xffffff;
 
-	ItemBase item_;
+	ItemBase *item_;
 	ItemList itemList_;
 	 
 

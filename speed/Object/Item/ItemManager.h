@@ -2,6 +2,7 @@
 #include<vector>
 #include<memory>
 #include"../../Vector2D.h"
+#include"ItemBase.h"
 #include"Missile.h"
 class ItemManager
 {
@@ -12,7 +13,7 @@ public:
 		MISSILE,
 	};
 
-	ItemManager();
+	ItemManager(ItemBase item);
 	~ItemManager();
 
 	void Update();

@@ -1,6 +1,6 @@
 #include "ItemManager.h"
 
-ItemManager::ItemManager()
+ItemManager::ItemManager(ItemBase item)
 {
 }
 

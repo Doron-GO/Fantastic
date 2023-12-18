@@ -48,8 +48,13 @@ Input::Input()
 							{InputType::gamepad,PAD_INPUT_A} //padのA　プレステの□
 							};
 
+	////攻撃
+	//inputTable_["hook"] = {
+	//						{ InputType::keybord, KEY_INPUT_X} ,
+	//						{InputType::gamepad,PAD_INPUT_B} //プレステの×
+	//						};
 	//攻撃
-	inputTable_["hook"] = {
+	inputTable_["item"] = {
 							{ InputType::keybord, KEY_INPUT_X} ,
 							{InputType::gamepad,PAD_INPUT_B} //プレステの×
 							};
@@ -82,13 +87,6 @@ Input::Input()
 							{InputType::gamepad,PAD_INPUT_X} //padのA　プレステの△
 
 	};
-	////フック
-	//inputTable_["hook"] = {
-	//						{ InputType::keybord, KEY_INPUT_R} ,
-	//						{InputType::gamepad,PAD_INPUT_G} //padのA
-
-	//};
-	
 	//キーコンフィグ
 	inputTable_["keyconfig"] = {
 							{ InputType::keybord, KEY_INPUT_K} ,

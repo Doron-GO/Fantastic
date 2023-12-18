@@ -10,7 +10,6 @@ Player::Player(int playerNum):dir_LR_(DIR_LR::RIGHT),phase_(PHASE::FALL),
 aliveFlag_(true), padNum_(playerNum)
 {
 	AnchoringFlag_ = false;
-
 }
 
 Player::~Player()
@@ -19,7 +18,7 @@ Player::~Player()
 
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 404.0f-padNum_*-20.0f,30.0f };
+	pos_ = { 200.0f-padNum_*-20.0f,30.0f };
 
 	center_ = { 0.0f,12.0f };
 	grndColList_ = colList;
@@ -59,9 +58,13 @@ void Player::Update(Input& input)
 	{
 		Anchoring(input_);
 		Move(input_);
+		if (input_.IsPrassed("item"))
+		{
+			ItemUse();
+		}
 		wire_->Update();
 		(this->*_phase)(input_);
-		item_.Update();
+
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;
@@ -73,7 +76,7 @@ void Player::Update(Input& input)
 		}
 		if (!(itemList_ == ItemList::NON))
 		{
-			item_.Update();
+			item_->Update();
 		}
 
 	}
@@ -100,10 +103,8 @@ void Player::Draw(Vector2DFloat cameraPos)
 			1.5, 0.0,
 			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
 			true, static_cast<int>(dir_LR_), 0);
-		if (!(itemList_ ==ItemList::NON))
-		{
-			item_.Draw(cameraPos);
-		}
+
+		TesItemDraw(cameraPos);
 	}
 	if (padNum_ == 1)
 	{
@@ -112,6 +113,19 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
 		DebugPhaseCheck();
 		DrawString(0, 120, now_.c_str(), 0xffffff);
+
+		switch (itemList_)
+		{
+		case Player::ItemList::NON:
+			now_Item_ = "NON";
+			break;
+		case Player::ItemList::MISSILE:
+			now_Item_ = "MISSILS";
+
+			break;
+		}
+		DrawString(0, 180, now_Item_.c_str(), 0xffffff);
+
 		DrawLine(pos.x-center_.x, pos.y - center_.y,
 			pos.x + center_.x, pos.y + center_.y, 0xff0000);
 		if (!CollisionVec(moveVec_))
@@ -546,9 +560,18 @@ void Player::SetItemList(int itemNum)
 	itemList_ = (ItemList)itemNum;
 }
 
-void Player::SetItem(ItemBase item)
+void Player::SetItem(ItemBase* item)
 {
 	item_ = item;
+}
+
+void Player::TesItemDraw(Vector2DFloat cameraPos)
+{
+	if (!(itemList_ == ItemList::NON))
+	{
+		item_->Draw(cameraPos);
+	}
+
 }
 
 
@@ -658,9 +681,13 @@ void Player::Move(Input& input)
 
 void Player::ItemUse()
 {
+	if (!(itemList_ == ItemList::NON))
+	{
+		itemList_ = ItemList::NON;
 
-	itemList_ =ItemList::NON;
+	}
 }
+
 
 void Player::Anchoring(Input& input)
 {
