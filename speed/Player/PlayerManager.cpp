@@ -33,6 +33,8 @@ void PlayerManager::Update(Input& input)
 			player->Update(input);
 		}
 	}
+	HormingTargrt();
+
 }
 
 void PlayerManager::Draw(Vector2DFloat cameraPos)
@@ -58,13 +60,13 @@ const Players PlayerManager::GetPlayers()
 
 void PlayerManager::DecideOnTheBeginning(Vector2DFloat checkPoint)
 {
-	testDistance_.clear();
+	leadDistance_.clear();
 	//プレイヤーとチェックポイントとの距離を格納している。
 	for (auto& p : players_)
 	{
 		iD_.first = (p->padNum_) - 1;
 		iD_.second = players_[(p->padNum_) - 1]->GetPos().distance(checkPoint);
-		testDistance_.push_back(iD_);
+		leadDistance_.push_back(iD_);
 	}
 	for (auto& p1 : players_)
 	{
@@ -75,30 +77,54 @@ void PlayerManager::DecideOnTheBeginning(Vector2DFloat checkPoint)
 				auto num1 = (p1->padNum_) - 1;
 				auto num2 = (p2->padNum_) - 1;
 				//プレイヤーNがプレイヤーN+1より前だったら、プレイヤーNを先頭にする。 
-				if (testDistance_[num1].second < testDistance_[num2].second)
+				if (leadDistance_[num1].second < leadDistance_[num2].second)
 				{
-					if (testDistance_[num1].second < testDistance_[(int)new_LeadNum_].second)
+					if (leadDistance_[num1].second < leadDistance_[(int)new_LeadNum_].second)
 					{
-						new_LeadNum_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
+						new_LeadNum_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
 					}
 				}
 				else
 				{//最後尾のプレイヤーが脱落していたらとりあえず別のプレイヤーを最後尾扱いにする
 					if (!(players_[(int)last_Num_]->IsAlive()))
 					{
-						last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
+						last_Num_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
 					}
 					//前最後尾のプレイヤーより後ろだったら
-					if (testDistance_[(int)last_Num_].second <
-						testDistance_[num1].second)
+					if (leadDistance_[(int)last_Num_].second <
+						leadDistance_[num1].second)
 					{
-						last_Num_ = static_cast<PLAYER_NUM>(testDistance_[num1].first);
+						last_Num_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
 					}
 				}
 			}
 		}
 	}
 
+}
+
+void PlayerManager::HormingTargrt()
+{
+	for (auto& player1 : players_)
+	{
+		if (!player1->IsAlive())
+		{
+			leadDistance_.clear();
+			continue;
+		}
+		for (auto& player2 : players_)
+		{
+			if (player1->padNum_ == player2->padNum_) { continue; }
+			iD_.second = (player2->padNum_) - 1;
+			iD_.first = players_[(player1->padNum_) - 1]->GetPos().distance(player2->GetPos());
+			TTleadDistance_.push_back(iD_);
+		}
+		auto pp = std::min_element(TTleadDistance_.begin(), TTleadDistance_.end());
+		player1->SetTarget(players_[pp->second]->GetPos());
+		TTleadDistance_.clear();
+
+	}
+	 
 }
 
 const PlayerManager:: PLAYER_NUM PlayerManager::GetOldLeadNum()

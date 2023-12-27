@@ -1,6 +1,7 @@
 #pragma once
 #include<memory>
 #include<vector>
+#include<algorithm>
 #include"../Vector2D.h"
 #include"../Common/Collision.h"
 #include"../Input/Input.h"
@@ -29,7 +30,10 @@ public:
 	void Draw(Vector2DFloat cameraPos);
 	const Vector2DFloat& GetPlayerPos(int playerNum);
 	const Players GetPlayers();
+	//先頭を探すよ
 	void DecideOnTheBeginning(Vector2DFloat checkPoint);
+
+	void HormingTargrt();
 
 	const PLAYER_NUM GetOldLeadNum();
 	const PLAYER_NUM GetNewLeadNum();
@@ -37,8 +41,9 @@ public:
 	void SetOld();
 private:
 	Players players_;
-	std::vector<float> distance_;
-	std::vector< std::pair<int, float>> testDistance_;//firstはパッドナンバー:secondはdistance
+	std::vector< std::pair<int, float>> leadDistance_;//firstはパッドナンバー:secondはdistance
+	std::vector< std::pair<float, int>> TTleadDistance_;//firstはパッドナンバー:secondはdistance
+	std::vector<float> Distance_;
 	std::pair<int, float> iD_;
 
 	PLAYER_NUM old_LeadNum_;//1フレーム前の最前列のプレイヤー

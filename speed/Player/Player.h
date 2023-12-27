@@ -69,9 +69,10 @@ public:
 	bool IsAlive();
 	ItemList IsItem();
 	void SetItemList(int itemNum);
-	void SetItem(ItemBase* item);
+	void SetItem(std::shared_ptr <ItemBase> item);
 
 	void TesItemDraw( Vector2DFloat cameraPos);
+	void SetTarget (Vector2DFloat targetPos);
 
 private:
 
@@ -124,13 +125,12 @@ private:
 
 	bool AnchoringFlag_;
 	bool aliveFlag_;
-
 	float slideY_ = -35.0f;	
  	int test= 0xffffff;
+	Vector2DFloat targetPos_;
 
-	ItemBase *item_;
+	std::shared_ptr<ItemBase>item_;
 	ItemList itemList_;
 	 
-
 };
 

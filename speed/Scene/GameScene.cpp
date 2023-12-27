@@ -39,7 +39,6 @@ void GameScene::DecideOnTheBeginning()
 	playerManager_->DecideOnTheBeginning(checkPoint_->GetCheckPoint());
 	auto newLeder= playerManager_->GetNewLeadNum();
 	auto oldLeder =playerManager_->GetOldLeadNum();
-	auto Last =playerManager_->GetLastLeadNum();
 	//前のフレームの先頭プレイヤーと今の先頭プレイヤーが違っていたら、
 	//カメラ追従対象を変更する。
 	if (oldLeder != newLeder)

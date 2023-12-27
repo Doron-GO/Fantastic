@@ -60,7 +60,9 @@ void Player::Update(Input& input)
 		Move(input_);
 		if (input_.IsPrassed("item"))
 		{
+			item_->SetPos(targetPos_);
 			ItemUse();
+
 		}
 		wire_->Update();
 		(this->*_phase)(input_);
@@ -124,7 +126,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 
 			break;
 		}
-		DrawString(0, 180, now_Item_.c_str(), 0xffffff);
+		DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
 
 		DrawLine(pos.x-center_.x, pos.y - center_.y,
 			pos.x + center_.x, pos.y + center_.y, 0xff0000);
@@ -560,7 +562,7 @@ void Player::SetItemList(int itemNum)
 	itemList_ = (ItemList)itemNum;
 }
 
-void Player::SetItem(ItemBase* item)
+void Player::SetItem(std::shared_ptr <ItemBase> item)
 {
 	item_ = item;
 }
@@ -572,6 +574,11 @@ void Player::TesItemDraw(Vector2DFloat cameraPos)
 		item_->Draw(cameraPos);
 	}
 
+}
+
+void Player::SetTarget(Vector2DFloat targetPos)
+{
+	targetPos_ = targetPos;
 }
 
 
@@ -683,7 +690,7 @@ void Player::ItemUse()
 {
 	if (!(itemList_ == ItemList::NON))
 	{
-		itemList_ = ItemList::NON;
+		//itemList_ = ItemList::NON;
 
 	}
 }

@@ -11,6 +11,7 @@ public:
     virtual void Update() override;
     virtual void Draw(Vector2DFloat offset)override;
 
+
 private:
 
     Vector2DFloat test;

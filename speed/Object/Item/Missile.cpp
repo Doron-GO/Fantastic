@@ -20,3 +20,4 @@ void Missile::Draw(Vector2DFloat offset)
 {
 	DrawCircle(itemPos_.x+offset.x, itemPos_.y + offset.y, 20, 0xff0000);
 }
+

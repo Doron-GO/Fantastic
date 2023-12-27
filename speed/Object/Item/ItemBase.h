@@ -10,6 +10,7 @@ public:
 	virtual void Update();
 	virtual void Draw(Vector2DFloat offset);
 
+	virtual void SetPos(Vector2DFloat pos);
 
 protected:
 

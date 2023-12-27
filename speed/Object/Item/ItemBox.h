@@ -27,6 +27,6 @@ private:
 	LoadMap& loadMap_;
 	int itemBoxImg_[11];
 	int count_;
-	Missile missile_;
+	std::shared_ptr<Missile> missile_;
 };
 

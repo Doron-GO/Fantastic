@@ -53,9 +53,9 @@ void ItemBox::Draw(Vector2DFloat offset)
 			{
 				if (player->IsItem() == Player::ItemList::NON)
 				{
-					player->SetItemList(1);
-					 missile_ =  Missile();
-					player->SetItem(&missile_);
+					player->SetItemList(1);	
+					auto ii = std::make_shared<Missile>();
+					player->SetItem(ii);
 
 				}
 				DrawStringF(0.0f, 590.0f, "アイテムボックスに接触", 0xff0000);
