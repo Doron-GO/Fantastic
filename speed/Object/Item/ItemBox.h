@@ -5,6 +5,7 @@
 #include"../../Common/Raycast.h"
 #include"../../Common/Collision.h"
 #include"Missile.h"
+#include"Laser.h"
 
 class LoadMap;
 class Player;
@@ -27,6 +28,5 @@ private:
 	LoadMap& loadMap_;
 	int itemBoxImg_[11];
 	int count_;
-	std::shared_ptr<Missile> missile_;
 };
 

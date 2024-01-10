@@ -20,7 +20,8 @@ public:
 	enum class ItemList
 	{
 		NON,
-		MISSILE
+		MISSILE,
+		LASER
 	};
 
 	enum class DIR_LR
@@ -39,6 +40,12 @@ public:
 		SWINGJUMP
 	};
 
+	struct COL
+	{
+		Vector2DFloat min_ ;
+		Vector2DFloat max_;
+
+	};
 
 	 Player(int playerNum);
 	 ~Player();
@@ -74,6 +81,10 @@ public:
 	void TesItemDraw( Vector2DFloat cameraPos);
 	void SetTarget (Vector2DFloat targetPos);
 
+	bool TestItem();
+	const std::shared_ptr<ItemBase> GetItem();	
+	void Damage(ItemBase::ITEM_TYPE type);
+	COL col_;
 private:
 
 	PHASE phase_;
@@ -94,6 +105,13 @@ private:
 	void SwingPhese(Input& input);//スイング状態
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
 	void AnchoringPhese(Input& input);//スイングジャンプ状態
+
+
+	void (Player::* _damage)();
+	//プレイヤーダメージ
+	void Nothing();
+	void DamageMissile();
+
 
 	//当たり判定系
 	void MoveColision();
@@ -129,8 +147,9 @@ private:
  	int test= 0xffffff;
 	Vector2DFloat targetPos_;
 
+
 	std::shared_ptr<ItemBase>item_;
-	ItemList itemList_;
-	 
+	ItemList itemList_;	 
+	bool testItemFlag;
 };
 

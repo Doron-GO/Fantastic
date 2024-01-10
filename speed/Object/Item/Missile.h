@@ -10,10 +10,21 @@ public:
 
     virtual void Update() override;
     virtual void Draw(Vector2DFloat offset)override;
+    virtual void Activate(Vector2DFloat playerpos) override;
+    virtual bool IsEnd()override;
+
+    void ActivateUpdate();
+    void WaitUpdate();
+
+    void ExplosionDraw(Vector2DFloat offset);
+    void MissileDraw(Vector2DFloat offset);
 
 
 private:
 
-    Vector2DFloat test;
+    void (Missile::* _update)();
+    void (Missile::* _draw)(Vector2DFloat offset);
+
+    Vector2DFloat vel_;
 };
 

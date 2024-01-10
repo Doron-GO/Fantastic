@@ -29,7 +29,7 @@ void ItemBox::Draw(Vector2DFloat offset)
 				if (x + y * worldArea.x < layer.second.size())
 				{
 					auto gid = layer.second[x + y * worldArea.x];
-					if (gid == 2)
+					if (gid == 0)
 					{
 						DrawGraph(x * tileSize.x + offset.x,
 							(y * tileSize.y + offset.y),
@@ -53,9 +53,19 @@ void ItemBox::Draw(Vector2DFloat offset)
 			{
 				if (player->IsItem() == Player::ItemList::NON)
 				{
-					player->SetItemList(1);	
-					auto ii = std::make_shared<Missile>();
-					player->SetItem(ii);
+					if (player->TestItem())
+					{
+						player->SetItemList(1);	
+						auto ii = std::make_shared<Missile>();
+						player->SetItem(ii);
+					}
+					else
+					{
+						player->SetItemList(2);
+						auto ii = std::make_shared<Laser>();
+						player->SetItem(ii);
+
+					}
 
 				}
 				DrawStringF(0.0f, 590.0f, "アイテムボックスに接触", 0xff0000);

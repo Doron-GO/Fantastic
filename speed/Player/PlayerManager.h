@@ -9,7 +9,7 @@
 class Player;
 
 using Players = std::vector<std::shared_ptr<Player>>;
-
+using Vec = Vector2DFloat;
 class PlayerManager
 {
 public:
@@ -35,10 +35,23 @@ public:
 
 	void HormingTargrt();
 
+	//アイテムとの当たり判定をプレイヤー人数ぶん回す関数
+	void ItemCol();
+
 	const PLAYER_NUM GetOldLeadNum();
 	const PLAYER_NUM GetNewLeadNum();
 	const PLAYER_NUM GetLastLeadNum();
 	void SetOld();
+
+	//当たり判定をする関数
+	bool IsItemCollision(Vec pMin, Vec pMax, Vec iMin, Vec iMax);
+	//アイテムとの当たり判定上からの条件
+	bool TopSide(Vec Max,Vec Min);
+	bool DownSide(Vec Max,Vec Min);
+	bool LeftSide(Vec Max,Vec Min);
+	bool RightSide(Vec Max,Vec Min);
+
+
 private:
 	Players players_;
 	std::vector< std::pair<int, float>> leadDistance_;//firstはパッドナンバー:secondはdistance

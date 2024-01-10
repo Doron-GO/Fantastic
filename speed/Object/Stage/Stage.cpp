@@ -5,7 +5,7 @@
 Stage::Stage() 
 {	
 	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
-	loadMap_.LoadStage("Src/Json/stage_.json");
+	loadMap_.LoadStage("Src/Json/stage_2.json");
 }
 
 Stage::~Stage()

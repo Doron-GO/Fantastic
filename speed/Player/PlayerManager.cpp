@@ -34,7 +34,7 @@ void PlayerManager::Update(Input& input)
 		}
 	}
 	HormingTargrt();
-
+	ItemCol();
 }
 
 void PlayerManager::Draw(Vector2DFloat cameraPos)
@@ -122,9 +122,27 @@ void PlayerManager::HormingTargrt()
 		auto pp = std::min_element(TTleadDistance_.begin(), TTleadDistance_.end());
 		player1->SetTarget(players_[pp->second]->GetPos());
 		TTleadDistance_.clear();
+	}	 
+}
 
+void PlayerManager::ItemCol()
+{
+	for (auto& player1 :players_)
+	{
+		if (!(player1->GetItem()->IsActivate())) { continue; }
+		for (auto& player2 : players_)
+		{
+			if (player1->padNum_ == player2->padNum_) { continue; }
+			auto item = player1->GetItem();
+			auto iCol = item->col_;
+			auto pCol = player2->col_;
+			if (IsItemCollision(pCol.min_, pCol.max_, iCol.min_, iCol.max_))
+			{
+				item->End();
+				player2->Damage(item->type_);
+			}
+		}
 	}
-	 
 }
 
 const PlayerManager:: PLAYER_NUM PlayerManager::GetOldLeadNum()
@@ -145,5 +163,35 @@ const PlayerManager:: PLAYER_NUM PlayerManager::GetLastLeadNum()
 void PlayerManager::SetOld()
 {
 	old_LeadNum_ = new_LeadNum_;
-
 }
+
+bool PlayerManager::IsItemCollision(Vec pMin, Vec pMax, Vec iMin, Vec iMax)
+{
+	if (RightSide(pMax, iMin)&& LeftSide(iMax, pMin)&&
+		TopSide(pMax, iMin)&& DownSide(iMax, pMin))
+	{	
+		return true;
+	}
+	return false;
+}
+
+bool PlayerManager::TopSide(Vec Max, Vec Min)
+{
+	return (Max.y<=Min.y);
+}
+
+bool PlayerManager::DownSide(Vec Max, Vec Min)
+{
+	return (Max.y <= Min.y);
+}
+
+bool PlayerManager::LeftSide(Vec Max, Vec Min)
+{
+	return (Min.x <= Max.x);
+}
+ 
+bool PlayerManager::RightSide(Vec Max, Vec Min)
+{
+	return (Min.x <= Max.x);
+}
+
