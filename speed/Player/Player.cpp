@@ -283,7 +283,14 @@ void Player::JumpPhese(Input& input)
 	lpAnimMng.SetAnime(animeStr_, "Jump");	
 
 	//ジャンプ高度が最大に達したもしくは、頭をぶつけたら
-	if((movePow_.y<=-6.0f)||!(CollisionVec(up_)))
+	 if(!(CollisionVec(up_)))
+	{
+		//ｙの移動量0にしてフォールを呼ぶ
+		movePow_.y = 0.0f;
+		_phase = &Player::FallPhase;
+	}
+
+	 else if((movePow_.y<=-6.0f))
 	{
 		//ｙの移動量0にしてフォールを呼ぶ
 		//movePow_.y = 0.0f;
@@ -298,24 +305,28 @@ void Player::JumpPhese(Input& input)
 }
 
 void Player::FallPhase(Input& input)
-{
-	phase_ = Player::PHASE::FALL;
-	lpAnimMng.SetAnime(animeStr_, "Fall");	
-	Vector2DFloat movecec = { 0.0f,movePow_.y };
-	//床と当たっていなかったら
-	if (!CollisionVec(movecec))
-	{
-		movePow_.y = 0.0f;
-		_phase = &Player::MovePhase;
-	}
-	else
-	{
-		movePow_.y += 0.2f;
-	}
+{	
 	//落下速度が一定を超えたら決まった値にする
 	if (movePow_.y >= 8.0f)
 	{
 		movePow_.y = 8.0f;
+	}
+	phase_ = Player::PHASE::FALL;
+	lpAnimMng.SetAnime(animeStr_, "Fall");	
+	Vector2DFloat movecec = { 0.0f,movePow_.y+0.1f };
+	//床と当たっていなかったら
+	if (!CollisionVec(up_))
+	{
+		movePow_.y = 0.2f;
+	}
+	if (!CollisionVec(movecec))
+	{
+		_phase = &Player::MovePhase;
+		movePow_.y = 0.0f;
+	}
+	else
+	{
+		movePow_.y += 0.2f;
 	}
 }
 

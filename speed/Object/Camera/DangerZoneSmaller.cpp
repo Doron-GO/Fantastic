@@ -40,7 +40,7 @@ void DangerZoneSmaller::UpdateWait()
 	{
 		Activated();
 	}
-	else{count_++;}
+	//else{count_++;}
 }
 void DangerZoneSmaller::Activated()
 {
