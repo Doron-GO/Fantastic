@@ -34,6 +34,7 @@ private:
 
 	LoadMap loadMap_;
 	std::unique_ptr<ItemBox> itemBox_;
+	int backImg_;
 
 };
 

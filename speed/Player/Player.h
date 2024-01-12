@@ -151,5 +151,6 @@ private:
 	std::shared_ptr<ItemBase>item_;
 	ItemList itemList_;	 
 	bool testItemFlag;
+	bool doubleJump_;
 };
 

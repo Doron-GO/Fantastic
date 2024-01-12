@@ -16,6 +16,7 @@ void Stage::Init(std::vector<std::shared_ptr<Player>> players)
 {
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
 	itemBox_ = std::make_unique<ItemBox>(loadMap_, players);
+	backImg_ = LoadGraph("Src/Img/Stageimage/siro.png");
 }
 
 void Stage::Update()
@@ -24,7 +25,11 @@ void Stage::Update()
 }
 
 void Stage::Draw(Vector2DFloat cameraPos)
-{
+{	
+	DrawRotaGraph2F(0 + cameraPos.x, 0 + cameraPos.y,
+		0.0f, 0.0f,
+		10.0, 0.0,backImg_, 0);
+
 	auto &worldArea = loadMap_.GetWorldArea();
 	const auto &tileSize = loadMap_.GetTileSize();
 	auto& mapData = loadMap_.GetMapData();
@@ -48,6 +53,7 @@ void Stage::Draw(Vector2DFloat cameraPos)
 			}
 		}
 	}
+
 	itemBox_->Draw(cameraPos);
 	for ( auto& line : loadMap_.GetColList())
 	{

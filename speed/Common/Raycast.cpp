@@ -90,3 +90,4 @@ bool Raycast::CheckRectangle(Collision collision, Vector2DFloat pos)
     }
     return false;
 }
+

@@ -65,8 +65,8 @@ void Wire::StandbyPhase()
 
 void Wire::SwingJump()
 {
-	player_.movePow_.x = (vel_.x / 1.5f);
-	player_.movePow_.y = (vel_.y / 1.5f);
+	player_.movePow_.x = (vel_.x / 1.1f);
+	player_.movePow_.y = (vel_.y / 1.1f);
 	_phase = &Wire::EndSwingPhase;
 }
 

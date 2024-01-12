@@ -91,10 +91,10 @@ bool LoadMap::SetMap()
 			col.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{x+w,y+h} });
 		}
 	};
-	auto & col = json_["layers"][2]["objects"];
-	auto& wallCol = json_["layers"][3]["objects"];
-	auto& wireCol = json_["layers"][4]["objects"];
-	auto& itemBoxCol = json_["layers"][5]["objects"];
+	auto & col = json_["layers"][1]["objects"];
+	auto& wallCol = json_["layers"][2]["objects"];
+	auto& wireCol = json_["layers"][3]["objects"];
+	auto& itemBoxCol = json_["layers"][4]["objects"];
 
 	LoadCol(col, colList_);
 	LoadCol(wallCol, WallCollList_);
