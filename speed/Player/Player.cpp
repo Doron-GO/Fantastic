@@ -19,7 +19,7 @@ Player::~Player()
 
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 200.0f-padNum_*-20.0f,30.0f };
+	pos_ = { 400.0f-padNum_*-20.0f,2710.0f };
 
 	center_ = { 0.0f,12.0f };
 	grndColList_ = colList;
@@ -247,7 +247,7 @@ void Player::MovePhase(Input& input)
 	phase_ = Player::PHASE::MOVE;
 	//Move(input);
 	//もし床がなかったらフォールにする
-	Vector2DFloat movevec = { 0.0f,15.2f };
+	Vector2DFloat movevec = { 0.0f,1.0f };
 	if (CollisionDown())
 	{
 		_phase = &Player::FallPhase;
@@ -303,8 +303,23 @@ void Player::JumpPhese(Input& input)
 }
 
 void Player::FallPhase(Input& input)
-{	
+{		
+	Vector2DFloat movecec = { 0.0f,movePow_.y+0.1f };
 	Jump(input);
+	if (!CollisionVec(up_))
+	{
+		movePow_.y = 0.2f;
+	}
+	if (movePow_.y>0.0f&&!CollisionVec(movecec))
+	{
+		movePow_.y = 0.0f;
+		doubleJump_ = true;
+		_phase = &Player::MovePhase;
+	}
+	else
+	{
+		movePow_.y += 0.2f;
+	}
 	//落下速度が一定を超えたら決まった値にする
 	if (movePow_.y >= 12.0f)
 	{
@@ -312,22 +327,7 @@ void Player::FallPhase(Input& input)
 	}
 	phase_ = Player::PHASE::FALL;
 	lpAnimMng.SetAnime(animeStr_, "Fall");	
-	Vector2DFloat movecec = { 0.0f,movePow_.y+0.1f };
 	//床と当たっていなかったら
-	if (!CollisionVec(up_))
-	{
-		movePow_.y = 0.2f;
-	}
-	if (!CollisionVec(movecec))
-	{
-		_phase = &Player::MovePhase;
-		movePow_.y = 0.0f;
-		doubleJump_ = true;
-	}
-	else
-	{
-		movePow_.y += 0.2f;
-	}
 }
 
 void Player::WallGrabPhese(Input& input)
@@ -437,7 +437,8 @@ void Player::SwingPhese(Input& input)
 			}
 		}
 	}
-	if (!CollisionDown())
+	Vector2DFloat movevec = { 0.0f,0.1f };
+	if (!CollisionVec(movevec))
 	{			
 		_phase = &Player::MovePhase;
 		wire_->ChangeStandby();
@@ -809,7 +810,7 @@ void Player::Anchoring(Input& input)
 			}
 			else
 			{
-				_phase = &Player::MovePhase;//これのせいでジャンプ中にフックボタン連打でふんわりジャンプする
+				//_phase = &Player::MovePhase;//これのせいでジャンプ中にフックボタン連打でふんわりジャンプする
 				AnchoringFlag_ = false;
 				wire_->ChangeStandby();
 			}
