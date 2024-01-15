@@ -74,8 +74,9 @@ void Player::Update(Input& input)
 				item_->SetPos(targetPos_);
 				item_->Update();
 			}
-				wire_->Update();
-				(this->*_phase)(input_);
+			wire_->Update();
+			(this->*_phase)(input_);
+
 
 		}
 
@@ -89,9 +90,9 @@ void Player::Update(Input& input)
 				pos_.x += movePow_.x;
 			}
 		}
+
 	}
 	lpAnimMng.UpdateAnime(animeStr_);
-
 	col_.min_ = { pos_.x-10.0f,pos_.y };
 	col_.max_ = { pos_.x + 15.0f,pos_.y - 40.0f };
 }
@@ -109,17 +110,13 @@ void Player::Draw(Vector2DFloat cameraPos)
 				true, static_cast<int>(dir_LR_), 0);
 
 		//見せかけのキャラクター描画
-		DrawCircle(pos.x, pos.y, 5.0f, 0xffffff);
-		DrawCircle(cameraPos.x, cameraPos.y, 5.0f, 0x00ff00);
-		DrawRotaGraph2F(pos.x, pos.y,
+		DrawRotaGraph2F(pos.x, pos.y+0.2f,
 			24.0f, 35.0f,
 			1.5, 0.0,
 			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
 			true, static_cast<int>(dir_LR_), 0);
 
 		TesItemDraw(cameraPos);
-		auto c = item_.use_count();
-		DrawFormatStringF(pos.x-20, pos.y-80.0f, 0xffffff, "%d", c);
 		DrawBox(col_.min_.x + cameraPos.x, col_.min_.y + cameraPos.y, col_.max_.x + cameraPos.x, col_.max_.y + cameraPos.y, 0xffaaff, false);
 		DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
 	}
@@ -128,8 +125,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 		DrawFormatStringF(0, 20, 0xffffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
 		DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
-		DebugPhaseCheck();
-		DrawString(0, 120, now_.c_str(), 0xffffff);
+		//DrawString(0, 120, now_.c_str(), 0xffffff);
 
 		if (!CollisionVec(moveVec_))
 		{
@@ -156,8 +152,10 @@ void Player::Draw(Vector2DFloat cameraPos)
 		now_Item_ = "LASER";
 		break;
 	}
-
+	DebugPhaseCheck();
 	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
+	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
+
 
 	char num= '0' + padNum_;
 	std::string dead="死んだ";
@@ -175,13 +173,19 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	DrawString(0, 320 + (padNum_ * 20),player.c_str(), 0xffffff);
 
-
 	Vector2DFloat rayCenter = { pos  };
 	Vector2DFloat movecec = { 0.0f,movePow_.y + 0.1f };
+	if (movePow_.y <= 0.0f)
+	{
+		movecec.y = 0.2f;
+	}
+
 	wire_->Draw(cameraPos);
 
 	DrawLine(rayCenter.x, rayCenter.y,
-		rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0x00ff00);
+		rayCenter.x + diagonallyVec_.x, rayCenter.y + diagonallyVec_.y, 0x00ff00,2.0f);
+	DrawLine(rayCenter.x, rayCenter.y,
+		rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0xff0000,3.0f);
 }
 
 const Vector2DFloat Player::GetPos()
@@ -232,7 +236,7 @@ void Player::DebugPhaseCheck()
 		now_ = "SwingPhase";
 		break;
 	case Player::PHASE::SWINGJUMP:
-		now_ = "SwingFallPhase";
+		now_ = "SwingJumpPhase";
 		break;
 	}
 }
@@ -247,7 +251,6 @@ void Player::MovePhase(Input& input)
 	phase_ = Player::PHASE::MOVE;
 	//Move(input);
 	//もし床がなかったらフォールにする
-	Vector2DFloat movevec = { 0.0f,1.0f };
 	if (CollisionDown())
 	{
 		_phase = &Player::FallPhase;
@@ -261,7 +264,7 @@ void Player::Nothing()
 
 void Player::DamageMissile()
 {
-	if ((movePow_.y <= -6.0f) || !(CollisionVec(up_)))
+	if ((movePow_.y <= -7.0f) || !(CollisionVec(up_)))
 	{
 		//ｙの移動量0にしてフォールを呼ぶ
 		//movePow_.y = 0.0f;
@@ -297,29 +300,37 @@ void Player::JumpPhese(Input& input)
 	//でなければyの移動量を加算する
 	else
 	{
-		movePow_.y += -0.2f;
-		movePow_.y += -0.3f;
+		//movePow_.y += -0.2f;
+		movePow_.y += -0.5f;
 	}
 }
 
 void Player::FallPhase(Input& input)
 {		
-	Vector2DFloat movecec = { 0.0f,movePow_.y+0.1f };
 	Jump(input);
+	Vector2DFloat movecec = { 0.0f,movePow_.y+0.2f };
+	if (movePow_.y<=0.0f)
+	{
+		movecec.y = 0.2f;
+	}
+	if (!CollisionVec(movecec))
+	{		
+		_phase = &Player::MovePhase;
+		movePow_.y = 0.0f;
+		doubleJump_ = true;
+	}
+	else	//床と当たっていなかったら
+
+	{
+		movePow_.y += 0.25f;
+	}
+
 	if (!CollisionVec(up_))
 	{
 		movePow_.y = 0.2f;
 	}
-	if (movePow_.y>0.0f&&!CollisionVec(movecec))
-	{
-		movePow_.y = 0.0f;
-		doubleJump_ = true;
-		_phase = &Player::MovePhase;
-	}
-	else
-	{
-		movePow_.y += 0.2f;
-	}
+
+	//CollisionDown
 	//落下速度が一定を超えたら決まった値にする
 	if (movePow_.y >= 12.0f)
 	{
@@ -327,7 +338,6 @@ void Player::FallPhase(Input& input)
 	}
 	phase_ = Player::PHASE::FALL;
 	lpAnimMng.SetAnime(animeStr_, "Fall");	
-	//床と当たっていなかったら
 }
 
 void Player::WallGrabPhese(Input& input)
@@ -380,8 +390,7 @@ void Player::WallJumpPhese(Input& input)
 	//でなければyの移動量を加算する
 	else
 	{
-		movePow_.y += -0.2f;
-		movePow_.y += -0.3f;
+		movePow_.y += -0.5f;
 		movePow_.x = (moveVec_.x / 2.0f);
 	}
 	if (IsWall())
@@ -411,6 +420,15 @@ void Player::SwingPhese(Input& input)
 		_phase = &Player::FallPhase;
 		wire_->ChangeStandby();
 	}
+	Vector2DFloat movevec = { 0.0f,1.0f };
+	if (!CollisionVec(movevec))
+	{
+		movePow_.y = 0.0f;
+
+		_phase = &Player::MovePhase;
+		wire_->ChangeStandby();
+		wire_->EndSwing();
+	}
 
 	Vector2DFloat up = { 0.0f,-60.0f };
 	//地面もしくは天井に当たったらスイングをやめる
@@ -437,14 +455,6 @@ void Player::SwingPhese(Input& input)
 			}
 		}
 	}
-	Vector2DFloat movevec = { 0.0f,0.1f };
-	if (!CollisionVec(movevec))
-	{			
-		_phase = &Player::MovePhase;
-		wire_->ChangeStandby();
-		movePow_.y = 0.0f;
-		wire_->EndSwing();
-	}
 }
 
 void Player::SwingJumpPhese(Input& input)
@@ -456,16 +466,16 @@ void Player::SwingJumpPhese(Input& input)
 	{
 		movePow_.y = 14.0f;
 	}	
-	if (movePow_.x >0.1f&&movePow_.x >= 9.5f)
+	if (movePow_.x >0.1f&&movePow_.x >= 7.5f)
 	{
-		movePow_.x = 9.5f;
+		movePow_.x = 7.5f;
 	}
-	else if (movePow_.x <-0.1f&&movePow_.x <= -9.5f)
+	else if (movePow_.x <-0.1f&&movePow_.x <= -7.5f)
 	{
-		movePow_.x = -9.5f;
+		movePow_.x = -7.5f;
 	}
 
-	Vector2DFloat movecec = { 0.0f,movePow_.y };
+	Vector2DFloat movecec = { 0.0f,movePow_.y+0.1f };
 	Vector2DFloat up = { 0.0f,-50.0f };
 	//床と当たっていなかったら
 	if (!CollisionVec(movecec)|| !CollisionVec(up))
@@ -547,7 +557,6 @@ bool Player::CollisionDown()
 
 bool Player::CollisionVec(Vector2DFloat movevec)
 {
-	Vector2DFloat rayCenter = { pos_ };
 	//実際の当たり判定レイの描画
 	//_dbgDrawLine(
 	//	rayCenter.x, rayCenter.y,
@@ -556,7 +565,7 @@ bool Player::CollisionVec(Vector2DFloat movevec)
 	//);
 	for (const auto& col : grndColList_)
 	{
-		Raycast::Ray ray = { rayCenter,movevec };
+		Raycast::Ray ray = { pos_,movevec };
 		if (rayCast_.CheckCollision(ray, col, pos_ ))
 		{
 			return false;
@@ -654,6 +663,7 @@ void Player::Damage(ItemBase::ITEM_TYPE type)
 	{
 	case ItemBase::ITEM_TYPE::MISSILE:
 		_damage = &Player::DamageMissile;
+		movePow_.x = 0.0f;
 		lpAnimMng.SetAnime(animeStr_, "Dmage");
 		break;
 	case ItemBase::ITEM_TYPE::LASER:
@@ -749,14 +759,14 @@ void Player::Move(Input& input)
 		//スライディングボタンが押されていたら
 		if (input.IsPrassed("c"))
 		{
-			if (!testItemFlag)
-			{
-				testItemFlag = true;
-			}
-			else
-			{
-				testItemFlag = false;
-			}
+			//if (!testItemFlag)
+			//{
+			//	testItemFlag = true;
+			//}
+			//else
+			//{
+			//	testItemFlag = false;
+			//}
 
 			lpAnimMng.SetAnime(animeStr_, "Slide");
 			//スライディング中は減速する

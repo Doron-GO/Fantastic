@@ -88,7 +88,7 @@ bool LoadMap::SetMap()
 			float y = json[cnt]["y"].get<int>();
 			float w = json[cnt]["width"].get<int>();
 			float h = json[cnt]["height"].get<int>();
-			col.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{x+w,y+h} });
+			col.push_back(Collision{ Vector2DFloat{x,y+h},Vector2DFloat{x+w,y} });
 		}
 	};
 	auto & col = json_["layers"][1]["objects"];

@@ -42,14 +42,15 @@ void ItemBox::Draw(Vector2DFloat offset)
 	count_++;
 	for (const auto& col : loadMap_.itemBoxGetColList())
 	{
-		DrawBoxAA(col.first.x , col.first.y ,
-			col.second.x , col.second.y , 0xff0000, false, 5.0f);
+		DrawBoxAA(col.first.x + offset.x, col.first.y + offset.y,
+			col.second.x + offset.x, col.second.y + offset.y, 0xff0000, false, 5.0f);
 	}
 	for (const auto& player :players_)
 	{
 		for (const auto& col : loadMap_.itemBoxGetColList())
 		{
-			if (rayCast_.CheckCollision(col, player->pos_))
+			//if (rayCast_.CheckCollision(col, player->pos_))
+			if (rayCast_.RectToRectCollision(player->col_.min_, player->col_.max_,col.first, col.second ))
 			{
 				if (player->IsItem() == Player::ItemList::NON)
 				{

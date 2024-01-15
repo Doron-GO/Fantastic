@@ -1,23 +1,23 @@
 #include "Raycast.h"
 #include"../_debug/_DebugDispOut.h"
 #include<DxLib.h>
-bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerPos)
+bool Raycast::CheckCollision(Ray ray, Collision collision, Vec playerPos)
 {// ↓上下左右の一辺
-    Vector2DFloat view = { 1200.0f, 800.0f };
+    Vec view = { 1200.0f, 800.0f };
     auto offset = (view / 4.0f) - playerPos;
     Raycast::Line lines[4] = {  
 
     //上の辺   
     {collision.first,
-        (collision.first )+ Vector2DFloat{collision.second.x,0} },
+        (collision.first )+ Vec{collision.second.x,0} },
     //右辺
-    {(collision.first) + Vector2DFloat{collision.second.x,0} ,
+    {(collision.first) + Vec{collision.second.x,0} ,
             collision.first + collision.second },
     //下の辺
     { collision.first + collision.second ,
-    collision.first + Vector2DFloat{0,collision.second.y } },
+    collision.first + Vec{0,collision.second.y } },
     //左辺
-    { collision.first + Vector2DFloat{0,collision.second.y} ,
+    { collision.first + Vec{0,collision.second.y} ,
     collision.first }
     };
 
@@ -29,7 +29,7 @@ bool Raycast::CheckCollision(Ray ray, Collision collision, Vector2DFloat playerP
     return reslut;
 }
 
-bool Raycast::CheckCollision(Collision collision, Vector2DFloat playerPos)
+bool Raycast::CheckCollision(Collision collision, Vec playerPos)
 {
 
     bool reslut = false;
@@ -38,7 +38,7 @@ bool Raycast::CheckCollision(Collision collision, Vector2DFloat playerPos)
     return reslut;
 }
 
-bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
+bool Raycast::CheckRay(Ray ray, Line line, Vec offset)
 {
 
     //デバッグ用の実際の当たり判定を赤いワイヤーフレームで表示する
@@ -50,7 +50,7 @@ bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
     //    0xff0000
     //);
 
-    auto checkCross = [](Vector2DFloat vec1, Vector2DFloat& vec2)
+    auto checkCross = [](Vec vec1, Vec& vec2)
     {
         return (vec1.x*vec2.y)-(vec2.x*vec1.y);
     };
@@ -65,7 +65,7 @@ bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
        return false;
    }
 
-   Vector2DFloat v =  line.p- ray.p;
+   Vec v =  line.p- ray.p;
   
    auto cross_vRay  = checkCross(v, ray.vec);
    auto cross_vLine = checkCross(v, veclLine);
@@ -81,7 +81,7 @@ bool Raycast::CheckRay(Ray ray, Line line, Vector2DFloat offset)
     return false;
 }
 
-bool Raycast::CheckRectangle(Collision collision, Vector2DFloat pos)
+bool Raycast::CheckRectangle(Collision collision, Vec pos)
 {
     if (collision.first.y < pos.y && collision.first.x<pos.x &&
         collision.second.y>pos.y && collision.second.x > pos.x)
@@ -91,3 +91,31 @@ bool Raycast::CheckRectangle(Collision collision, Vector2DFloat pos)
     return false;
 }
 
+bool Raycast::RectToRectCollision(Vec pMin, Vec pMax, Vec iMin, Vec iMax)
+{
+    if (RightSide(pMax, iMin) && LeftSide(iMax, pMin) &&
+        TopSide(pMax, iMin) && DownSide(iMax, pMin))
+    {
+        return true;
+    }
+    return false;
+}
+bool Raycast::TopSide(Vec Max, Vec Min)
+{
+    return (Max.y <= Min.y);
+}
+
+bool Raycast::DownSide(Vec Max, Vec Min)
+{
+    return (Max.y <= Min.y);
+}
+
+bool Raycast::LeftSide(Vec Max, Vec Min)
+{
+    return (Min.x <= Max.x);
+}
+
+bool Raycast::RightSide(Vec Max, Vec Min)
+{
+    return (Min.x <= Max.x);
+}

@@ -54,11 +54,17 @@ Input::Input()
 							{InputType::gamepad,PAD_INPUT_B} //プレステの×
 							};
 	//攻撃
-	//inputTable_["item"] = {
-	//						{ InputType::keybord, KEY_INPUT_X} ,
-	//						{InputType::gamepad,PAD_INPUT_B} //プレステの×
-	//						};
+	inputTable_["item"] = {
+							{ InputType::keybord, KEY_INPUT_V} ,
+							{InputType::gamepad,PAD_INPUT_C} //プレステの×
+							};
 
+	//スライディング
+	inputTable_["c"] = {
+							{ InputType::keybord, KEY_INPUT_C} ,
+							{InputType::gamepad,PAD_INPUT_X} //padのA　プレステの△
+
+	};
 
 	//上
 	inputTable_["up"] = {
@@ -80,12 +86,6 @@ Input::Input()
 	inputTable_["left"] = {
 							{ InputType::keybord, KEY_INPUT_LEFT} ,
 							{InputType::gamepad,PAD_INPUT_LEFT} ,//padのA
-	};
-	//スライディング
-	inputTable_["c"] = {
-							{ InputType::keybord, KEY_INPUT_C} ,
-							{InputType::gamepad,PAD_INPUT_X} //padのA　プレステの△
-
 	};
 	//キーコンフィグ
 	inputTable_["keyconfig"] = {
