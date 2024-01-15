@@ -50,7 +50,6 @@ void Camera::Follow()
     offset.x = (view.x / 4.0f) * 2.0f - taeget_.lock()->GetPos().x;
     offset.y = (view.y / 2.0f) - taeget_.lock()->GetPos().y;
 
-
     cameraPos_ = offset;
     oldPos_ = cameraPos_;
 }
