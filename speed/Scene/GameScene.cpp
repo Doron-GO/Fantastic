@@ -13,7 +13,7 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 	playerManager_->Init(GetJoypadNum(), stage_->GetColList(), stage_->GetWallColList(),
 		stage_->GetWireColList());
 	stage_->Init(playerManager_->GetPlayers());
-	checkPoint_ = std::make_unique<CheckPoint>(playerManager_->GetPlayers());
+	checkPoint_ = std::make_unique<CheckPoint>(playerManager_->GetPlayers(), stage_->CheckPointGetColList());
 	camera_->ReConnect(playerManager_->GetPlayers()[(int)playerManager_->GetNewLeadNum()]);
 	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//カメラを初期化
 	outSide_ = std::make_unique<OutSide>(*camera_, playerManager_->GetPlayers(), GetJoypadNum());
@@ -36,7 +36,8 @@ void GameScene::Draw()
 
 void GameScene::DecideOnTheBeginning()
 {
-	playerManager_->DecideOnTheBeginning(checkPoint_->GetCheckPoint());
+	//playerManager_->DecideOnTheBeginning(checkPoint_->GetCheckPoint());
+	playerManager_->DecideOnTheBeginning2(checkPoint_->GetCheckPoint2());
 	auto newLeder= playerManager_->GetNewLeadNum();
 	auto oldLeder =playerManager_->GetOldLeadNum();
 	//前のフレームの先頭プレイヤーと今の先頭プレイヤーが違っていたら、

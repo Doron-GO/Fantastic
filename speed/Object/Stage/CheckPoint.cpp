@@ -1,17 +1,52 @@
 #include "CheckPoint.h"
 #include "../../Player/Player.h"
 
-CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>> players):players_(players)
+CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>> players, PointColList checkpoint)
+	:players_(players), checkPointColList2_(checkpoint)
 {
-	checkPoints_.push_back({ 0.0f,1600.0f });
-	checkPoints_.push_back({ 2433.0f,1700.0f });
-	checkPoints_.push_back({ 3739.0f,157.0f });
-	checkPoints_.push_back({ 690.0f,153.0f });
+	// x9800
+	// y0
+	// x0
+	//y 3000
+	// x9800
+	//y 3000
+	//x0
+	//y3000
 
-	checkPointColList_.push_back(Collision(vec{ 0.0f,1000.0f }, vec{ 800.0f,1500.0f }));
-	checkPointColList_.push_back(Collision(vec{ 2172.0f,520.0f }, vec{ 2454.0f,1600.0f }));
-	checkPointColList_.push_back(Collision(vec{ 3566.0f,0.0f }, vec{ 4014,155.0f }));
-	checkPointColList_.push_back(Collision(vec{ 0.0f,0.0f }, vec{ 864.0f,155.0f }));
+	////一番右
+	//checkPoints_.push_back({ 9800.0f,0.0f });
+	////一番上
+	//checkPoints_.push_back({ 0.0f,0.0f });
+	////一番左
+	//checkPoints_.push_back({ 0.0f,0.0f });
+	////一番下
+	//checkPoints_.push_back({ 0.0f,3000.0f });
+	////一番右
+	//checkPoints_.push_back({ 9800.0f,0.0f });
+	////一番下
+	//checkPoints_.push_back({ 0.0f,3000.0f });
+	////一番左
+	//checkPoints_.push_back({ 0.0f,0.0f });
+	////一番下
+	//checkPoints_.push_back({ 0.0f,3000.0f });
+
+	//一番右
+	checkPoints3_.push_back(CHECKPOINT{ false,{9800.0f,0.0f} });
+	//一番↑
+	checkPoints3_.push_back(CHECKPOINT{ true,{0.0f,0.0f} });
+	//一番左
+	checkPoints3_.push_back(CHECKPOINT{ false,{0.0f,0.0f} });
+	//一番下
+	checkPoints3_.push_back(CHECKPOINT{ true,{0.0f,3000.0f} });
+	//一番右
+	checkPoints3_.push_back(CHECKPOINT{ false,{9800.0f,0.0f} });
+	//一番下
+	checkPoints3_.push_back(CHECKPOINT{ true,{0.0f,3000.0f} });
+	//一番左
+	checkPoints3_.push_back(CHECKPOINT{ false,{0.0f,0.0f} });
+	//一番下
+	checkPoints3_.push_back(CHECKPOINT{ true,{0.0f,3000.0f} });
+
 
 	currentPoint_ = 0;
 }
@@ -26,18 +61,20 @@ void CheckPoint::Update()
 	{
 		if (player->IsAlive())
 		{
-			if (rayCast_.CheckCollision(checkPointColList_[currentPoint_], player->pos_))
-			{
-				if (currentPoint_ < 3)
+			if (rayCast_.RectToRectCollision(checkPointColList2_[currentPoint_].first, checkPointColList2_[currentPoint_].second,
+			player->col_.min_, player->col_.max_))
+
 				{
-					currentPoint_++;
+					if (currentPoint_ < 6)
+					{
+						currentPoint_++;
+					}
+					else
+					{
+						currentPoint_ = 0;
+					}
+					break;
 				}
-				else
-				{
-					currentPoint_ = 0;
-				}
-				break;
-			}
 		}
 	}
 }
@@ -49,20 +86,25 @@ void CheckPoint::Draw(Vector2DFloat pos)
 	{
 		if (player->IsAlive())
 		{
-			if (rayCast_.CheckCollision(checkPointColList_[currentPoint_], player->pos_))
+			if (rayCast_.CheckCollision(checkPointColList2_[currentPoint_], player->pos_))
 			{
 				DrawStringF(0.0f, 290.0f, "チェックポイントをに接触", 0xff0000);
 			}
 		}
 	}
-	DrawBoxAA(checkPointColList_[currentPoint_].first.x+ pos.x, checkPointColList_[currentPoint_].first.y + pos.y,
-		checkPointColList_[currentPoint_].second.x+ pos.x, checkPointColList_[currentPoint_].second.y + pos.y, 0xff0000,false,5.0f);
+	DrawBoxAA(checkPointColList2_[currentPoint_].first.x+ pos.x, checkPointColList2_[currentPoint_].first.y + pos.y,
+		checkPointColList2_[currentPoint_].second.x+ pos.x, checkPointColList2_[currentPoint_].second.y + pos.y, 0xff0000,false,5.0f);
 	DrawFormatString(0, 300, 0xffffff, "現在のチェックポイントのナンバー:%d", currentPoint_);
-	DrawFormatString(0, 320, 0xffffff, "現在のチェックポイント:%f,%f", checkPoints_[currentPoint_].x, checkPoints_[currentPoint_].y);
-	DrawCircle(checkPoints_[currentPoint_].x + pos.x, checkPoints_[currentPoint_].y + pos.y,20, 0xff0000, true);
+	//DrawFormatString(0, 320, 0xffffff, "現在のチェックポイント:%f,%f", checkPoints_[currentPoint_].x, checkPoints_[currentPoint_].y);
+//	DrawCircle(checkPoints_[currentPoint_].x + pos.x, checkPoints_[currentPoint_].y + pos.y,20, 0xff0000, true);
 }
 
 Vector2DFloat CheckPoint::GetCheckPoint() const
 {
 	return checkPoints_[currentPoint_];
+}
+
+CHECKPOINT CheckPoint::GetCheckPoint2() const
+{
+	return checkPoints3_[currentPoint_];
 }

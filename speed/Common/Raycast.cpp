@@ -3,8 +3,6 @@
 #include<DxLib.h>
 bool Raycast::CheckCollision(Ray ray, Collision collision, Vec playerPos)
 {// ↓上下左右の一辺
-    Vec view = { 1200.0f, 800.0f };
-    auto offset = (view / 4.0f) - playerPos;
     Raycast::Line lines[4] = {  
 
     //上の辺   
@@ -55,7 +53,7 @@ bool Raycast::CheckRay(Ray ray, Line line, Vec offset)
         return (vec1.x*vec2.y)-(vec2.x*vec1.y);
     };
     
-    auto veclLine= (line.end) - (line.p );
+    auto veclLine= line.end - line.p ;
 
     //ray.vec: 始点からの方向ベクトル
    auto crossRayLine= checkCross(ray.vec, veclLine);

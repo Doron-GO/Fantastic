@@ -29,6 +29,7 @@ public:
 	const ColList& GetColList(void);
 	const ColList& GetWallColList(void);
 	const ColList& GetWireColList(void);
+	const PointColList& CheckPointGetColList(void);
 
 private:
 

@@ -109,3 +109,8 @@ const ColList& Stage::GetWireColList(void)
 {
 	return loadMap_.WireGetColList();
 }
+
+const PointColList& Stage::CheckPointGetColList(void)
+{
+	return loadMap_.CheckPointGetColList();
+}

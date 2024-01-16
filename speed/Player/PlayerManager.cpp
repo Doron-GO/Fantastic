@@ -103,6 +103,60 @@ void PlayerManager::DecideOnTheBeginning(Vector2DFloat checkPoint)
 
 }
 
+void PlayerManager::DecideOnTheBeginning2(std::pair<bool, Vector2DFloat>checkPoint)
+{
+	leadDistance_.clear();
+	//プレイヤーとチェックポイントとの距離を格納している。
+	for (auto& p : players_)
+	{
+		iD_.first = (p->padNum_) - 1;
+		Vector2DFloat checkPointPos= {0.0f, 0.0f};
+		if (checkPoint.first)
+		{
+			checkPointPos = { players_[(p->padNum_) - 1]->GetPos().x,checkPoint.second.y };
+		}
+		else
+		{
+			checkPointPos = {checkPoint.second.x, players_[(p->padNum_) - 1]->GetPos().y}; 
+		}
+		iD_.second = players_[(p->padNum_) - 1]->GetPos().distance(checkPointPos);
+		leadDistance_.push_back(iD_);
+	}
+	for (auto& p1 : players_)
+	{
+		for (auto& p2 : players_)
+		{
+			if (p1->IsAlive() && p2->IsAlive())
+			{
+				auto num1 = (p1->padNum_) - 1;
+				auto num2 = (p2->padNum_) - 1;
+				//プレイヤーNがプレイヤーN+1より前だったら、プレイヤーNを先頭にする。 
+				if (leadDistance_[num1].second < leadDistance_[num2].second)
+				{
+					if (leadDistance_[num1].second < leadDistance_[(int)new_LeadNum_].second)
+					{
+						new_LeadNum_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
+					}
+				}
+				else
+				{//最後尾のプレイヤーが脱落していたらとりあえず別のプレイヤーを最後尾扱いにする
+					if (!(players_[(int)last_Num_]->IsAlive()))
+					{
+						last_Num_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
+					}
+					//前最後尾のプレイヤーより後ろだったら
+					if (leadDistance_[(int)last_Num_].second <
+						leadDistance_[num1].second)
+					{
+						last_Num_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
+					}
+				}
+			}
+		}
+	}
+
+}
+
 void PlayerManager::HormingTargrt()
 {
 	for (auto& player1 : players_)

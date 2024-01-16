@@ -32,6 +32,7 @@ public:
 	const Players GetPlayers();
 	//æ“ª‚ğ’T‚·‚æ
 	void DecideOnTheBeginning(Vector2DFloat checkPoint);
+	void DecideOnTheBeginning2(std::pair<bool,Vector2DFloat>checkPoint);
 
 	void HormingTargrt();
 

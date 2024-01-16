@@ -23,6 +23,7 @@ public:
 	const ColList& WallGetColList(void);
 	const ColList& WireGetColList(void);
 	const ColList& itemBoxGetColList(void);
+	const PointColList& CheckPointGetColList(void);
 	const Vector2D& GetWorldArea(void);
 	const Vector2D& GetTileSize(void);
 	const  MapData& GetMapData(void);
@@ -36,6 +37,7 @@ private:
 	ColList WallCollList_;
 	ColList WireCollList_;
 	ColList itemBoxCollList_;
+	PointColList checkPointCollList_;
 
 	std::string mapKey_;
 	MapData mapData;//マップにストリングはあまり使わない方がいいenumの方がいい

@@ -75,12 +75,7 @@ void Player::Update(Input& input)
 				item_->Update();
 			}
 			wire_->Update();
-			(this->*_phase)(input_);
-
-
 		}
-
-		(this->*_damage)();
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;
@@ -90,6 +85,8 @@ void Player::Update(Input& input)
 				pos_.x += movePow_.x;
 			}
 		}
+		(this->*_damage)();
+		(this->*_phase)(input_);
 
 	}
 	lpAnimMng.UpdateAnime(animeStr_);
@@ -110,7 +107,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 				true, static_cast<int>(dir_LR_), 0);
 
 		//見せかけのキャラクター描画
-		DrawRotaGraph2F(pos.x, pos.y+0.2f,
+		DrawRotaGraph2F(pos.x, pos.y+0.3f,
 			24.0f, 35.0f,
 			1.5, 0.0,
 			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
@@ -174,8 +171,8 @@ void Player::Draw(Vector2DFloat cameraPos)
 	DrawString(0, 320 + (padNum_ * 20),player.c_str(), 0xffffff);
 
 	Vector2DFloat rayCenter = { pos  };
-	Vector2DFloat movecec = { 0.0f,movePow_.y + 0.1f };
-	if (movePow_.y <= 0.0f)
+	Vector2DFloat movecec = { 0.0f,movePow_.y  };
+	if (movePow_.y < 0.0f)
 	{
 		movecec.y = 0.2f;
 	}
@@ -186,6 +183,8 @@ void Player::Draw(Vector2DFloat cameraPos)
 		rayCenter.x + diagonallyVec_.x, rayCenter.y + diagonallyVec_.y, 0x00ff00,2.0f);
 	DrawLine(rayCenter.x, rayCenter.y,
 		rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0xff0000,3.0f);
+
+	DrawCircle(pos.x, pos.y,2, 0x00ff00 );
 }
 
 const Vector2DFloat Player::GetPos()
@@ -291,7 +290,7 @@ void Player::JumpPhese(Input& input)
 		_phase = &Player::FallPhase;
 	}
 
-	 else if((movePow_.y<=-6.0f))
+	 if((movePow_.y<-5.0f))
 	{
 		//ｙの移動量0にしてフォールを呼ぶ
 		//movePow_.y = 0.0f;
@@ -301,41 +300,33 @@ void Player::JumpPhese(Input& input)
 	else
 	{
 		//movePow_.y += -0.2f;
-		movePow_.y += -0.5f;
+		movePow_.y += -1.0f;
 	}
 }
 
 void Player::FallPhase(Input& input)
 {		
 	Jump(input);
-	Vector2DFloat movecec = { 0.0f,movePow_.y+0.2f };
-	if (movePow_.y<=0.0f)
+	if (CollisionVec({ 0.0f,movePow_.y }))
 	{
-		movecec.y = 0.2f;
+		movePow_.y += 0.2f;
 	}
-	if (!CollisionVec(movecec))
-	{		
-		_phase = &Player::MovePhase;
+	else
+	{
 		movePow_.y = 0.0f;
 		doubleJump_ = true;
+		_phase = &Player::MovePhase;
 	}
-	else	//床と当たっていなかったら
-
+	if (movePow_.y > 12.0f)
 	{
-		movePow_.y += 0.25f;
+		movePow_.y = 12.0f;
 	}
-
 	if (!CollisionVec(up_))
 	{
 		movePow_.y = 0.2f;
 	}
-
 	//CollisionDown
 	//落下速度が一定を超えたら決まった値にする
-	if (movePow_.y >= 12.0f)
-	{
-		movePow_.y = 12.0f;
-	}
 	phase_ = Player::PHASE::FALL;
 	lpAnimMng.SetAnime(animeStr_, "Fall");	
 }
@@ -759,22 +750,13 @@ void Player::Move(Input& input)
 		//スライディングボタンが押されていたら
 		if (input.IsPrassed("c"))
 		{
-			//if (!testItemFlag)
-			//{
-			//	testItemFlag = true;
-			//}
-			//else
-			//{
-			//	testItemFlag = false;
-			//}
-
 			lpAnimMng.SetAnime(animeStr_, "Slide");
 			//スライディング中は減速する
-			if (movePow_.x >= 0.0f) 
+			if (movePow_.x > 0.0f) 
 			{
 				movePow_.x -= 0.1f;
 			}
-			if (movePow_.x <= 0.0f) 
+			if (movePow_.x < 0.0f) 
 			{
 				movePow_.x += 0.1f;
 			}			
