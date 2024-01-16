@@ -119,8 +119,10 @@ private:
 	bool CollisionDown();
 	//足元から　true 当たってない:false 当たってる
 	bool CollisionVec(Vector2DFloat movevec);
+	bool CollisionVec(Vector2DFloat movevec, Vector2DFloat center);
 	bool ColWallGrab(Vector2DFloat movevec);
 	bool IsWall();
+	void Landing(float y);
 
 	//プレイヤーのアクション
 	void Move(Input& input);	//左右移動
@@ -146,6 +148,7 @@ private:
 	float slideY_ = -35.0f;	
  	int test= 0xffffff;
 	Vector2DFloat targetPos_;
+	Vector2DFloat landingPos_;
 
 
 	std::shared_ptr<ItemBase>item_;

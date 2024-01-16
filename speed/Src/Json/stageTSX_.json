@@ -14,9 +14,9 @@
  "name":"stage_2",
  "spacing":0,
  "tilecount":9,
- "tiledversion":"1.8.2",
+ "tiledversion":"1.10.2",
  "tileheight":32,
  "tilewidth":32,
  "type":"tileset",
- "version":"1.8"
+ "version":"1.10"
 }

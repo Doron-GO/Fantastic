@@ -20,11 +20,9 @@ Player::~Player()
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
 	pos_ = { 400.0f-padNum_*-20.0f,2710.0f };
-
 	center_ = { 0.0f,12.0f };
 	grndColList_ = colList;
 	wallcolList_ = wallColList;
-
 	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
 	 char num = '0'+padNum_;
 	 std::string act = "Src/Img/act";//string文字列を作る
@@ -37,9 +35,7 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 	std::string objID = "Player";
 	objID += num;
 	animeStr_.objID_ = objID.c_str();
-
 	lpAnimMng.SetAnime(animeStr_, "Idle");
-
 
 	item_ = std::make_shared<ItemBase>();
 	moveVec_ = { 0.0f,0.0f};
@@ -80,14 +76,13 @@ void Player::Update(Input& input)
 		{
 			pos_.y += movePow_.y;
 			//壁に当たっていたら横移動させない
-			if (_damage == &Player::Nothing&&CollisionVec(moveVec_))
+			if (_damage == &Player::Nothing)
 			{
 				pos_.x += movePow_.x;
 			}
 		}
 		(this->*_damage)();
 		(this->*_phase)(input_);
-
 	}
 	lpAnimMng.UpdateAnime(animeStr_);
 	col_.min_ = { pos_.x-10.0f,pos_.y };
@@ -153,7 +148,6 @@ void Player::Draw(Vector2DFloat cameraPos)
 	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
 	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
 
-
 	char num= '0' + padNum_;
 	std::string dead="死んだ";
 	std::string alive="生きている";
@@ -172,6 +166,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 
 	Vector2DFloat rayCenter = { pos  };
 	Vector2DFloat movecec = { 0.0f,movePow_.y  };
+	Vector2DFloat movecec2 = { moveVec_.x,movePow_.y-10.0f  };
 	if (movePow_.y < 0.0f)
 	{
 		movecec.y = 0.2f;
@@ -183,6 +178,8 @@ void Player::Draw(Vector2DFloat cameraPos)
 		rayCenter.x + diagonallyVec_.x, rayCenter.y + diagonallyVec_.y, 0x00ff00,2.0f);
 	DrawLine(rayCenter.x, rayCenter.y,
 		rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0xff0000,3.0f);
+	DrawLine(pos.x, pos.y,
+		pos.x + movecec2.x, pos.y + movecec2.y, 0xff0000,3.0f);
 
 	DrawCircle(pos.x, pos.y,2, 0x00ff00 );
 }
@@ -285,6 +282,7 @@ void Player::JumpPhese(Input& input)
 	//ジャンプ高度が最大に達したもしくは、頭をぶつけたら
 	 if(!(CollisionVec(up_)))
 	{
+		 pos_.y = landingPos_.y;
 		//ｙの移動量0にしてフォールを呼ぶ
 		movePow_.y = 0.0f;
 		_phase = &Player::FallPhase;
@@ -307,13 +305,14 @@ void Player::JumpPhese(Input& input)
 void Player::FallPhase(Input& input)
 {		
 	Jump(input);
-	if (CollisionVec({ 0.0f,movePow_.y }))
+	if (CollisionVec({ 0.0f,movePow_.y+0.1f }))
 	{
 		movePow_.y += 0.2f;
 	}
 	else
 	{
 		movePow_.y = 0.0f;
+		pos_.y = landingPos_.y;
 		doubleJump_ = true;
 		_phase = &Player::MovePhase;
 	}
@@ -354,6 +353,7 @@ void Player::WallGrabPhese(Input& input)
 	//もし地面に足がついたら
 	if ( !CollisionVec(movecec))
 	{
+		pos_.y = landingPos_.y;
 		movePow_.y = 0.0f;
 		_phase = &Player::MovePhase;
 	}
@@ -374,8 +374,14 @@ void Player::WallJumpPhese(Input& input)
 	diagonallyVec_ = { moveVec_.x,slideY_ };
 	Vector2DFloat movevec = { 0.0f,-40.0f };
 	//ジャンプ高度が最大に達したもしくは、地面に接地したら
-	if ((movePow_.y <= -5.0f) || !(CollisionVec(movevec)))
+	if (movePow_.y <= -5.0f)
 	{
+
+		_phase = &Player::FallPhase;
+	}
+	if (!(CollisionVec(movevec)))
+	{
+
 		_phase = &Player::FallPhase;
 	}
 	//でなければyの移動量を加算する
@@ -415,7 +421,7 @@ void Player::SwingPhese(Input& input)
 	if (!CollisionVec(movevec))
 	{
 		movePow_.y = 0.0f;
-
+		pos_.y = landingPos_.y;
 		_phase = &Player::MovePhase;
 		wire_->ChangeStandby();
 		wire_->EndSwing();
@@ -465,12 +471,19 @@ void Player::SwingJumpPhese(Input& input)
 	{
 		movePow_.x = -7.5f;
 	}
-
 	Vector2DFloat movecec = { 0.0f,movePow_.y+0.1f };
 	Vector2DFloat up = { 0.0f,-50.0f };
 	//床と当たっていなかったら
-	if (!CollisionVec(movecec)|| !CollisionVec(up))
+	if (!CollisionVec(up))
 	{
+		movePow_.y = 0.0f;
+		doubleJump_ = true;
+		wire_->ChangeStandby();
+		_phase = &Player::MovePhase;
+	}
+	else if (!CollisionVec(movecec))
+	{
+		pos_.y = landingPos_.y;
 		movePow_.y = 0.0f;
 		doubleJump_ = true;
 		wire_->ChangeStandby();
@@ -480,6 +493,7 @@ void Player::SwingJumpPhese(Input& input)
 	{
 		movePow_.y += 0.2f;
 	}
+
 }
 
 void Player::AnchoringPhese(Input& input)
@@ -504,12 +518,13 @@ void Player::MoveColision()
 	}
 	//壁に当たったら加速度を０にする 1:自分の前方 2:上斜め前 
 	diagonallyVec_ = { moveVec_.x,slideY_ };
-	if (!CollisionVec(moveVec_) || !CollisionVec(diagonallyVec_))
+	if ( !CollisionVec(diagonallyVec_)||!CollisionVec(moveVec_,{0.0f,-16.0f}) )
+	//if (!CollisionVec(diagonallyVec_))
 	{
 		movePow_.x = 0.0f;
 	}
 	//背中から壁に当たったら
-	Vector2DFloat backVec = { -(moveVec_.x / 2.0f),0.0f };
+	Vector2DFloat backVec = { -(moveVec_.x / 2.0f),-16.0f };
 	Vector2DFloat backDiagonallyVec_ = { backVec.x,slideY_ };//背中からの斜めバージョン
 	if (!CollisionVec(backVec))
 	{
@@ -532,14 +547,15 @@ void Player::MoveColision()
 
 bool Player::CollisionDown()
 {
-	Vector2DFloat rayCenter = { pos_};
-	Vector2DFloat moveVec = { 0.0f,20.0f };
+	Vector2DFloat rayCenter = { pos_.x,pos_.y-10.0f};
+	Vector2DFloat moveVec = { 0.0f,10.0f };
 	for (const auto& col : grndColList_)
 	{
 		Raycast::Ray ray = { rayCenter,moveVec};
 		if (rayCast_.CheckCollision(ray, col,pos_))
 		{
 			//TRACE("当たった\n");
+			Landing(col.first.y);
 			return false;
 		}
 	}
@@ -559,6 +575,22 @@ bool Player::CollisionVec(Vector2DFloat movevec)
 		Raycast::Ray ray = { pos_,movevec };
 		if (rayCast_.CheckCollision(ray, col, pos_ ))
 		{
+			Landing(col.first.y);
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Player::CollisionVec(Vector2DFloat movevec, Vector2DFloat center)
+{
+	Vector2DFloat center_{ pos_ + center };
+	for (const auto& col : grndColList_)
+	{
+		Raycast::Ray ray = { center_,movevec };
+		if (rayCast_.CheckCollision(ray, col, center_))
+		{
+			Landing(col.first.y);
 			return false;
 		}
 	}
@@ -592,6 +624,11 @@ bool Player::ColWallGrab(Vector2DFloat movevec)
 bool Player::IsWall()
 {
 	return (!ColWallGrab(moveVec_) || !ColWallGrab(diagonallyVec_));
+}
+
+void Player::Landing(float y)
+{
+	landingPos_.y = y;
 }
 
 void Player::Dead()
@@ -717,14 +754,14 @@ void Player::Move(Input& input)
 			{
 				dir_LR_ = DIR_LR::RIGHT;
 				movePow_.x += 0.2f;
-				moveVec_ = { 16.0f,0.0f };
+				moveVec_ = { 16.0f,15.0f };
 			}
 			//左キー
 			if (input.IsPrassed("left"))
 			{
 				dir_LR_ = DIR_LR::LEFT;
 				movePow_.x -= 0.2f;
-				moveVec_ = { -16.0f,0.0f };
+				moveVec_ = { -16.0f,-15.0f };
 			}
 		}
 
@@ -785,7 +822,6 @@ void Player::Anchoring(Input& input)
 				if (!(_phase == &Player::SwingPhese) && !(_phase == &Player::WallGrabPhese))
 				{
 					lpAnimMng.SetAnime(animeStr_, "Jump");
-
 					wire_->SetAnchorPalam();
 					AnchoringFlag_ = true;
 				}
