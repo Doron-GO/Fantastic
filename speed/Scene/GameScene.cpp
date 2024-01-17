@@ -23,9 +23,10 @@ GameScene::GameScene(SceneMng& manager):Scene(manager)
 void GameScene::Update(Input& input)
 {
 	camera_->Update();
-	playerManager_->Update(input);
-	outSide_->Update();
 	checkPoint_->Update();
+	outSide_->Update();
+
+	playerManager_->Update(input);
 	DecideOnTheBeginning();
 	DrawOwnScreen();
 }
@@ -53,8 +54,8 @@ void GameScene::DecideOnTheBeginning()
 void GameScene::DrawOwnScreen()
 {
 	stage_->Draw(camera_->GetPos());
-	playerManager_->Draw(camera_->GetPos());
 	outSide_->Draw(camera_->GetPos());
+	playerManager_->Draw(camera_->GetPos());
 	checkPoint_->Draw(camera_->GetPos());
 	DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 	auto newLeder = playerManager_->GetNewLeadNum();

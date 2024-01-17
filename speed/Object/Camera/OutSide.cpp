@@ -23,10 +23,78 @@ OutSide::~OutSide()
 void OutSide::Update()
 {
 	auto target = camera_.GetTargetPos();
+	dangerZone_->Update();
 	minPos_ = target + minScale_;
 	maxPos_ = target + maxScale_;
-	dangerZone_->Update();
 	IsDead();
+	if (isExploding_)
+	{
+		//画面左上になったら右に行く
+		if (upperPos_.y < 0.0f && upperPos_.x <= 0.0f)
+		{
+			upperVec_ = { 20.0f,0.0f };
+		}
+		//画面右上になったら下に行く
+		if (upperPos_.x >= screenSize.x && upperPos_.y <= 0.0f)
+		{
+			upperVec_ = { 0.0f,20.0f };
+		}
+		//画面右下になったら左に行く
+		if (upperPos_.y >= screenSize.y && upperPos_.x >= screenSize.x)
+		{
+			upperVec_ = { -20.0f ,0.0f };
+		}
+		//画面左下に行ったら上に行く
+		if (upperPos_.x <= 0.0f && upperPos_.y >= screenSize.y)
+		{
+			upperVec_ = { 0.0f ,-20.0f };
+		}
+		upperPos_ += upperVec_;
+
+		//lowerは左回り
+		//画面右上だったら左に行く
+		if (lowerPos_.y <= 0.0f && lowerPos_.x >= screenSize.x)
+		{
+			lowerVec_ = { -20.0f ,0.0f };
+		}
+		//画面右下なら上に行く
+		if (lowerPos_.x >= screenSize.x && lowerPos_.y >= screenSize.y)
+		{
+			lowerVec_ = { 0.0f,-20.0f };
+		}
+		//画面左下なら右に行く
+		if (lowerPos_.y >= screenSize.y && lowerPos_.x <= 0.0f)
+		{
+			lowerVec_ = { 20.0f ,0.0f };
+		}
+		//画面左上なら下に行く
+		if (lowerPos_.y <= 0.0f && lowerPos_.x <= 0.0f)
+		{
+			lowerVec_ = { 0.0f ,20.0f };
+		}
+		lowerPos_ += lowerVec_;
+
+		//一定時間ごとに爆発させる、あと音も出す
+		if (frame_ % 4 == 0)
+		{
+			bombs_.emplace_back(upperPos_);
+			bombs_.emplace_back(lowerPos_);
+			//PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
+		}
+
+		//上からの爆弾と下からの爆弾が重なったらどっちも消す
+		if (upperPos_ == lowerPos_)
+		{
+			//StartJoypadVibration(padNum_, 1000, 400);
+			bombs_.clear();
+			isExploding_ = false;
+			bigExploding_ = true;
+			bigFrame_ = 0;
+		}
+		frame_++;
+	}
+
+
 	TestSmaller();
 }
 
@@ -50,72 +118,72 @@ void OutSide::Draw(Vector2DFloat offset)
 	DrawFormatStringF(0.0f, 510.0f, 0xffffff, "minPos_:x %f, y %f,", minPos_.x, minPos_.y);
 	DrawFormatStringF(0.0f, 530.0f, 0xffffff, "画面が狭まるカウント%d", dangerZone_->count_);
 
-	if (isExploding_)
-	{
-		//画面左上になったら右に行く
-		if (upperPos_.y < 0.0f && upperPos_.x <= 0.0f)
-		{
-			upperVec_ = { 20.0f,0.0f };
-		}
-		//画面右上になったら下に行く
-		if (upperPos_.x>= screenSize.x && upperPos_.y <=0.0f)
-		{
-			upperVec_ = { 0.0f,20.0f };
-		}
-		//画面右下になったら左に行く
-		if (upperPos_.y >= screenSize.y && upperPos_.x >= screenSize.x)
-		{
-			upperVec_ = {-20.0f ,0.0f};
-		}
-		//画面左下に行ったら上に行く
-		if (upperPos_.x <= 0.0f && upperPos_.y >= screenSize.y)
-		{
-			upperVec_ = { 0.0f ,-20.0f };
-		}
-		upperPos_ += upperVec_;
-		
-		//lowerは左回り
-		//画面右上だったら左に行く
-		if (lowerPos_.y <= 0.0f&& lowerPos_.x >= screenSize.x)
-		{
-			lowerVec_ = { -20.0f ,0.0f };
-		}
-		//画面右下なら上に行く
-		if ( lowerPos_.x >= screenSize .x&& lowerPos_.y>= screenSize.y)
-		{
-			lowerVec_ = { 0.0f,-20.0f };
-		}
-		//画面左下なら右に行く
-		if (  lowerPos_.y>= screenSize.y&& lowerPos_.x <=0.0f)
-		{
-			lowerVec_ = { 20.0f ,0.0f };
-		}
-		//画面左上なら下に行く
-		if (lowerPos_.y <= 0.0f && lowerPos_.x <= 0.0f)
-		{
-			lowerVec_ = { 0.0f ,20.0f };
-		}
-		lowerPos_ += lowerVec_;
+	//if (isExploding_)
+	//{
+	//	//画面左上になったら右に行く
+	//	if (upperPos_.y < 0.0f && upperPos_.x <= 0.0f)
+	//	{
+	//		upperVec_ = { 20.0f,0.0f };
+	//	}
+	//	//画面右上になったら下に行く
+	//	if (upperPos_.x>= screenSize.x && upperPos_.y <=0.0f)
+	//	{
+	//		upperVec_ = { 0.0f,20.0f };
+	//	}
+	//	//画面右下になったら左に行く
+	//	if (upperPos_.y >= screenSize.y && upperPos_.x >= screenSize.x)
+	//	{
+	//		upperVec_ = {-20.0f ,0.0f};
+	//	}
+	//	//画面左下に行ったら上に行く
+	//	if (upperPos_.x <= 0.0f && upperPos_.y >= screenSize.y)
+	//	{
+	//		upperVec_ = { 0.0f ,-20.0f };
+	//	}
+	//	upperPos_ += upperVec_;
+	//	
+	//	//lowerは左回り
+	//	//画面右上だったら左に行く
+	//	if (lowerPos_.y <= 0.0f&& lowerPos_.x >= screenSize.x)
+	//	{
+	//		lowerVec_ = { -20.0f ,0.0f };
+	//	}
+	//	//画面右下なら上に行く
+	//	if ( lowerPos_.x >= screenSize .x&& lowerPos_.y>= screenSize.y)
+	//	{
+	//		lowerVec_ = { 0.0f,-20.0f };
+	//	}
+	//	//画面左下なら右に行く
+	//	if (  lowerPos_.y>= screenSize.y&& lowerPos_.x <=0.0f)
+	//	{
+	//		lowerVec_ = { 20.0f ,0.0f };
+	//	}
+	//	//画面左上なら下に行く
+	//	if (lowerPos_.y <= 0.0f && lowerPos_.x <= 0.0f)
+	//	{
+	//		lowerVec_ = { 0.0f ,20.0f };
+	//	}
+	//	lowerPos_ += lowerVec_;
 
-		//一定時間ごとに爆発させる、あと音も出す
-		if (frame_ % 4 == 0)
-		{
-			bombs_.emplace_back(upperPos_);
-			bombs_.emplace_back(lowerPos_);
-			//PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
-		}	
+	//	//一定時間ごとに爆発させる、あと音も出す
+	//	if (frame_ % 4 == 0)
+	//	{
+	//		bombs_.emplace_back(upperPos_);
+	//		bombs_.emplace_back(lowerPos_);
+	//		//PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
+	//	}	
 
-		//上からの爆弾と下からの爆弾が重なったらどっちも消す
-		if(upperPos_ ==lowerPos_)
-		{			
-			//StartJoypadVibration(padNum_, 1000, 400);
-			bombs_.clear();
-			isExploding_ = false;
-			bigExploding_ = true;
-			bigFrame_ = 0;
-		}
-		frame_++;
-	}
+	//	//上からの爆弾と下からの爆弾が重なったらどっちも消す
+	//	if(upperPos_ ==lowerPos_)
+	//	{			
+	//		//StartJoypadVibration(padNum_, 1000, 400);
+	//		bombs_.clear();
+	//		isExploding_ = false;
+	//		bigExploding_ = true;
+	//		bigFrame_ = 0;
+	//	}
+	//	frame_++;
+	//}
 
 	if (isExploding_)
 	{

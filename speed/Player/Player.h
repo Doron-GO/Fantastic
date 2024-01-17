@@ -120,7 +120,7 @@ private:
 	//‘«Œ³‚©‚ç@true “–‚½‚Á‚Ä‚È‚¢:false “–‚½‚Á‚Ä‚é
 	bool CollisionVec(Vector2DFloat movevec);
 	bool CollisionVec(Vector2DFloat movevec, Vector2DFloat center);
-	bool ColWallGrab(Vector2DFloat movevec);
+	bool ColWallGrab(Vector2DFloat movevec,float y DEFAULTPARAM( = 0.0f ));
 	bool IsWall();
 	void Landing(float y);
 

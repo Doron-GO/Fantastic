@@ -20,7 +20,7 @@ Player::~Player()
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
 	pos_ = { 400.0f-padNum_*-20.0f,2710.0f };
-	center_ = { 0.0f,12.0f };
+	center_ = { 0.0f,16.0f };
 	grndColList_ = colList;
 	wallcolList_ = wallColList;
 	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
@@ -70,19 +70,23 @@ void Player::Update(Input& input)
 				item_->SetPos(targetPos_);
 				item_->Update();
 			}
-			wire_->Update();
 		}
+		(this->*_damage)();
+		(this->*_phase)(input_);
+		if (_damage == &Player::Nothing)
+		{
+			wire_->Update();
+		}		
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;
 			//壁に当たっていたら横移動させない
-			if (_damage == &Player::Nothing)
+			if (_damage == &Player::Nothing&& CollisionVec(diagonallyVec_))
 			{
 				pos_.x += movePow_.x;
 			}
 		}
-		(this->*_damage)();
-		(this->*_phase)(input_);
+
 	}
 	lpAnimMng.UpdateAnime(animeStr_);
 	col_.min_ = { pos_.x-10.0f,pos_.y };
@@ -251,6 +255,10 @@ void Player::MovePhase(Input& input)
 	{
 		_phase = &Player::FallPhase;
 	}
+	else
+	{
+		pos_.y = landingPos_.y;
+	}
 	Jump(input);
 }
 
@@ -334,23 +342,9 @@ void Player::WallGrabPhese(Input& input)
 {
 	phase_ = Player::PHASE::WALLGRAB;
 	diagonallyVec_ = { moveVec_.x,slideY_ };
-	Jump(input);
-	//壁にくっついていなかったらフォール状態に移行する
-	if (!(_phase == &Player::WallJumpPhese))
-	{
-		if (!IsWall())
-		{
-			moveVec_ = -(moveVec_);
-			_phase = &Player::FallPhase;
-		}
-	}
+	Jump(input);	
 	Vector2DFloat movecec = { 0.0f,movePow_.y };
-	//壁つかまり中に頭を打ったらそれ以上は上がらない
-	if (!CollisionVec(up_))
-	{
-		movePow_.y = 0.0f;
-	}
-	//もし地面に足がついたら
+
 	if ( !CollisionVec(movecec))
 	{
 		pos_.y = landingPos_.y;
@@ -365,6 +359,22 @@ void Player::WallGrabPhese(Input& input)
 			movePow_.y += 0.1f;
 		}
 	}
+
+	//壁にくっついていなかったらフォール状態に移行する
+	if (!(_phase == &Player::WallJumpPhese))
+	{
+		if (!IsWall())
+		{
+			moveVec_ = -(moveVec_);
+			_phase = &Player::FallPhase;
+		}
+	}
+	//壁つかまり中に頭を打ったらそれ以上は上がらない
+	if (!CollisionVec(up_))
+	{
+		movePow_.y = 0.0f;
+	}
+	//もし地面に足がついたら
 }
 
 void Player::WallJumpPhese(Input& input)
@@ -400,6 +410,16 @@ void Player::WallJumpPhese(Input& input)
 void Player::SwingPhese(Input& input)
 {
 	phase_ = Player::PHASE::SWING;
+	Vector2DFloat movevec = { 0.0f,1.0f };
+	if (!CollisionVec(movevec))
+	{
+		pos_.y = landingPos_.y;
+		movePow_.y = 0.0f;
+		_phase = &Player::MovePhase;
+		wire_->ChangeStandby();
+		wire_->EndSwing();
+	}
+
 	//壁に当たったら加速度を０にする 1:自分の前方 2:上斜め前 
 	diagonallyVec_ = { moveVec_.x,slideY_ };
 	Vector2DFloat tt = { movePow_.x,0.0f };
@@ -410,21 +430,12 @@ void Player::SwingPhese(Input& input)
 		_phase = &Player::WallGrabPhese;
 		wire_->ChangeStandby();
 	}
-	if (!CollisionVec(moveVec_) || !CollisionVec(diagonallyVec_))
+	if (!CollisionVec(diagonallyVec_))
 	{
 		movePow_.x = 0.0f;
 		movePow_.y= 0.0f;
 		_phase = &Player::FallPhase;
 		wire_->ChangeStandby();
-	}
-	Vector2DFloat movevec = { 0.0f,1.0f };
-	if (!CollisionVec(movevec))
-	{
-		movePow_.y = 0.0f;
-		pos_.y = landingPos_.y;
-		_phase = &Player::MovePhase;
-		wire_->ChangeStandby();
-		wire_->EndSwing();
 	}
 
 	Vector2DFloat up = { 0.0f,-60.0f };
@@ -597,10 +608,10 @@ bool Player::CollisionVec(Vector2DFloat movevec, Vector2DFloat center)
 	return true;
 }
 
-bool Player::ColWallGrab(Vector2DFloat movevec)
+bool Player::ColWallGrab(Vector2DFloat movevec, float y)
 {
 	float wallX=0.0f;
-	Vector2DFloat rayCenter = { pos_ - center_ };
+	Vector2DFloat rayCenter = { pos_.x, pos_.y - y };
 	for (const auto& col : wallcolList_)
 	{
 		Raycast::Ray ray = { rayCenter,movevec };
@@ -623,7 +634,7 @@ bool Player::ColWallGrab(Vector2DFloat movevec)
 
 bool Player::IsWall()
 {
-	return (!ColWallGrab(moveVec_) || !ColWallGrab(diagonallyVec_));
+	return (!ColWallGrab(moveVec_,16.0f) );
 }
 
 void Player::Landing(float y)
