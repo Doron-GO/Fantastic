@@ -52,13 +52,17 @@ void Player::Update(Input& input)
 	input_.Update(padNum_);
 	if (aliveFlag_)
 	{
-		if (_damage==  &Player::Nothing)
+		(this->*_damage)();
+		(this->*_phase)(input_);
+		if (_damage == &Player::Nothing)
 		{
+			Move(input_);	
 			Anchoring(input_);
-			Move(input_);
+			wire_->Update();
+
 			if (!(itemList_ == ItemList::NON))
 			{
-				if (item_->IsEnd())
+				if (item_->IsEnd());
 				{
 					itemList_ = ItemList::NON;
 				}		
@@ -71,12 +75,7 @@ void Player::Update(Input& input)
 				item_->Update();
 			}
 		}
-		(this->*_damage)();
-		(this->*_phase)(input_);
-		if (_damage == &Player::Nothing)
-		{
-			wire_->Update();
-		}		
+	
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;
@@ -121,6 +120,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
 		DrawFormatStringF(0, 20, 0xffffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
 		DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+		DrawFormatStringF(0, 60, 0xffffff, "camerapos+pos_(x:%f,y%f)", pos.x, pos.y);
 		//DrawString(0, 120, now_.c_str(), 0xffffff);
 
 		if (!CollisionVec(moveVec_))
@@ -290,7 +290,6 @@ void Player::JumpPhese(Input& input)
 	//ジャンプ高度が最大に達したもしくは、頭をぶつけたら
 	 if(!(CollisionVec(up_)))
 	{
-		 pos_.y = landingPos_.y;
 		//ｙの移動量0にしてフォールを呼ぶ
 		movePow_.y = 0.0f;
 		_phase = &Player::FallPhase;
@@ -808,7 +807,7 @@ void Player::Move(Input& input)
 			{
 				movePow_.x += 0.1f;
 			}			
-			slideY_ = -15.0f;
+			slideY_ = -13.0f;
 		}
 		else{ slideY_ = -35.0f; }
 	}
@@ -849,7 +848,6 @@ void Player::Anchoring(Input& input)
 			}
 			else
 			{
-				//_phase = &Player::MovePhase;//これのせいでジャンプ中にフックボタン連打でふんわりジャンプする
 				AnchoringFlag_ = false;
 				wire_->ChangeStandby();
 			}

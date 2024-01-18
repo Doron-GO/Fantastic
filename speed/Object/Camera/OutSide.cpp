@@ -17,7 +17,6 @@ playerCount_(playerCount), minPos_({0.0f,0.0f}), maxPos_({1600.0f, 1000.0f}), mi
 }
 OutSide::~OutSide()
 {
-
 }
 
 void OutSide::Update()
@@ -75,13 +74,12 @@ void OutSide::Update()
 		lowerPos_ += lowerVec_;
 
 		//ˆê’èŽžŠÔ‚²‚Æ‚É”š”­‚³‚¹‚éA‚ ‚Æ‰¹‚ào‚·
-		if (frame_ % 4 == 0)
+		if (frame_ % 6 == 0)
 		{
 			bombs_.emplace_back(upperPos_);
 			bombs_.emplace_back(lowerPos_);
 			//PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
 		}
-
 		//ã‚©‚ç‚Ì”š’e‚Æ‰º‚©‚ç‚Ì”š’e‚ªd‚È‚Á‚½‚ç‚Ç‚Á‚¿‚àÁ‚·
 		if (upperPos_ == lowerPos_)
 		{
@@ -108,7 +106,6 @@ void OutSide::Draw(Vector2DFloat offset)
 	auto min = (minPos_ + camera);
 	auto max = (maxPos_ + camera);
 	DrawBoxAA( min.x, min.y, max.x, max.y, 0x00ffaa, false);
-
 
 	DrawFormatStringF(0.0f, 430.0f, 0xffffff, "upperPos_:x %f, y %f,", upperPos_.x, upperPos_.y);
 	DrawFormatStringF(0.0f, 450.0f, 0xffffff, "lowerPos_:x %f, y %f,", lowerPos_.x, lowerPos_.y);
@@ -187,27 +184,25 @@ void OutSide::Draw(Vector2DFloat offset)
 
 	if (isExploding_)
 	{
-		DrawRotaGraph2F(upperPos_.x, upperPos_.y,
+		DrawRotaGraph2F(upperPos_.x, upperPos_.y ,
 			16.0f, 16.0f,
-			3.5, 0.0,
-			bombImg_[frame_ / 2],
+			5.0, 0.0,
+			bombImg_[frame_%11],
 			true, 0, 0);
-
-		DrawCircleAA(upperPos_.x, upperPos_.y, 10.0f, 20.0f, 0xffaaaa);
-
+		DrawCircleAA(upperPos_.x, upperPos_.y, 10.0f, 20.0f, 0x0000ff);
 		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
 			16.0f, 16.0f,
-			3.5, 0.0,
-			bombImg_[frame_ / 2],
+			5.0, 0.0,
+			bombImg_[frame_%11],
 			true, 0, 0);
-		DrawCircleAA(lowerPos_.x, lowerPos_.y, 10.0f, 20.0f, 0xffaaaa);
+		DrawCircleAA(lowerPos_.x, lowerPos_.y, 10.0f, 20.0f, 0xff0000);
 
 		for (auto& b : bombs_)
 		{
 			DrawRotaGraph2F(b.pos_.x, b.pos_.y,
-				17.5, 16.0f,
-				3.5, 0.0,
-				bombImg_[(b.frame_/2)],
+				18.0, 16.0f,
+				4.5, 0.0,
+				bigBombImg_[(b.frame_/3)%8],
 				true, 0, 0);
 		}
 		for (auto& b : bombs_)
@@ -227,7 +222,7 @@ void OutSide::Draw(Vector2DFloat offset)
 	{
 		DrawRotaGraph2F(lowerPos_.x, lowerPos_.y,
 			16.0f, 16.0f,
-			8.5, 0.0,
+			9.5, 0.0,
 			bigBombImg_[bigFrame_ / 4],
 			true, 0, 0);
 		bigFrame_++;
@@ -257,7 +252,6 @@ void OutSide::IsDead()
 				frame_ = 0;
 				dangerZone_->ResetCounter();
 				playerCount_--;
-
 				//StartJoypadVibration(padNum_, 400, 300);
 			}
 		}
@@ -272,6 +266,7 @@ bool OutSide::IsOutSide(Vector2DFloat pos)
 
 void OutSide::UpDownORLeftRight(Vector2DFloat pos)
 {
+
 	if (pos.y < minPos_.y || maxPos_.y < pos.y)
 	{
 		UpORDown(pos);
@@ -286,34 +281,37 @@ void OutSide::UpORDown(Vector2DFloat pos)
 {
 	Vector2DFloat up;
 	Vector2DFloat low;
+	Vector2DFloat camera{ camera_.GetPos().x,camera_.GetPos().y };
 
 	if (pos.y <minPos_.y )
 	{
-		up = { pos.x ,0.0f };
+		up = { pos.x + camera.x ,0.0f };
 		upperVec_ = { 20.0f,0.0f };
-		low = { pos.x, 0.0f };
+		low = { pos.x + camera.x, 0.0f };
 		lowerVec_ = { -20.0f ,0.0f };
 	}
 	else if(maxPos_.y < pos.y)
 	{
-		up = { pos.x ,1000.0f };
+		up = { pos.x + camera.x , screenSize.y };
 		upperVec_ = { -20.0f,0.0f };
-		low = { pos.x, 1000.0f };
+		low = { pos.x+camera.x, screenSize.y };
 		lowerVec_ = { 20.0f ,0.0f };
 	}
-	upperPos_ = up;
-	lowerPos_ = low;
+	upperPos_ = up ;
+	lowerPos_ = low ;
 }
 
 void OutSide::LeftOrRight(Vector2DFloat pos)
 {
 	Vector2DFloat up;
 	Vector2DFloat low;
+	Vector2DFloat camera{ camera_.GetPos().x,camera_.GetPos().y };
+
 	if (pos.x > maxPos_.x)
 	{
-		up = { screenSize.x ,pos.y };
+		up = { screenSize.x ,pos.y + camera.y };
 		upperVec_ = { 0.0f,20.0f };
-		low = { screenSize.x, pos.y };
+		low = { screenSize.x, pos.y + camera .y};
 		lowerVec_ = { 0.0f ,-20.0f };
 	}
 	else if (minPos_.x > pos.x)
@@ -323,7 +321,7 @@ void OutSide::LeftOrRight(Vector2DFloat pos)
 		low = {0.0f, pos.y };
 		lowerVec_ = { 0.0f ,20.0f };
 	}
-	upperPos_ = up;
+	upperPos_ = up ;
 	lowerPos_ = low;
 }
 

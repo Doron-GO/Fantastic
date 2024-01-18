@@ -83,10 +83,6 @@ void Wire::EndSwingPhase()
 
 void Wire:: AnchoringPhase()
 {	
-	if (!IsHitHook())
-	{
-		SetSwingPalam();
-	}
 	fulcrum_pos = VAdd(fulcrum_pos, Scale_);
 	fulcrum_.x = fulcrum_pos.x;
 	fulcrum_.y = fulcrum_pos.y;
@@ -94,7 +90,6 @@ void Wire:: AnchoringPhase()
 	{
 		SetSwingPalam();
 	}
-
 }
 
 void Wire::SetSwingPalam()
@@ -179,9 +174,10 @@ void Wire::Pump()
 bool Wire::IsHitHook()
 {
 	for (const auto& col : col)
-	{
-		Raycast::Ray ray = { fulcrum_,moveVec_ };
-		if (rayCast_.CheckCollision(ray, col, fulcrum_))
+	{	
+		//"x":2720,"y":2400
+
+		if (rayCast_.CheckCollision( col, fulcrum_))
 		{		
 			return false;
 		}
