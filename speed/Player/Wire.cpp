@@ -25,12 +25,12 @@ void Wire::Draw(Vector2DFloat cameraPos)
 	DrawCircle(fulcrum_.x+ cameraPos.x,fulcrum_.y+ cameraPos.y,5,0xff0000);
 	DrawLine(pPos.x, pPos.y, fulcrum_.x + cameraPos.x, fulcrum_.y + cameraPos.y, 0xffffff);
 
-	if (player_.padNum_ == 1)
-	{
-		DrawFormatStringF(0, 200, 0xffffff, "DiagonallyVecVec:x.%f,y.%f", player_.GetDiagonallyVecVec().x, player_.GetDiagonallyVecVec().y);
-		DrawFormatStringF(0, 220, 0xffffff, "Žx“_pos_:x%f:y%f", fulcrum_.x,fulcrum_.y);
-		DrawFormatStringF(0, 240, 0xffffff, "angle_:%f", angle_);
-	}
+	//if (player_.padNum_ == 1)
+	//{
+	//	DrawFormatStringF(0, 200, 0xffffff, "DiagonallyVecVec:x.%f,y.%f", player_.GetDiagonallyVecVec().x, player_.GetDiagonallyVecVec().y);
+	//	DrawFormatStringF(0, 220, 0xffffff, "Žx“_pos_:x%f:y%f", fulcrum_.x,fulcrum_.y);
+	//	DrawFormatStringF(0, 240, 0xffffff, "angle_:%f", angle_);
+	//}
 }
 
 

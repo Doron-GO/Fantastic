@@ -82,19 +82,19 @@ void CheckPoint::Update()
 void CheckPoint::Draw(Vector2DFloat pos)
 
 {
-	for (const auto& player : players_)
-	{
-		if (player->IsAlive())
-		{
-			if (rayCast_.CheckCollision(checkPointColList2_[currentPoint_], player->pos_))
-			{
-				DrawStringF(0.0f, 290.0f, "チェックポイントをに接触", 0xff0000);
-			}
-		}
-	}
-	DrawBoxAA(checkPointColList2_[currentPoint_].first.x+ pos.x, checkPointColList2_[currentPoint_].first.y + pos.y,
-		checkPointColList2_[currentPoint_].second.x+ pos.x, checkPointColList2_[currentPoint_].second.y + pos.y, 0xff0000,false,5.0f);
-	DrawFormatString(0, 300, 0xffffff, "現在のチェックポイントのナンバー:%d", currentPoint_);
+	//for (const auto& player : players_)
+	//{
+	//	if (player->IsAlive())
+	//	{
+	//		if (rayCast_.CheckCollision(checkPointColList2_[currentPoint_], player->pos_))
+	//		{
+	//			DrawStringF(0.0f, 290.0f, "チェックポイントをに接触", 0xff0000);
+	//		}
+	//	}
+	//}
+	//DrawBoxAA(checkPointColList2_[currentPoint_].first.x+ pos.x, checkPointColList2_[currentPoint_].first.y + pos.y,
+	//	checkPointColList2_[currentPoint_].second.x+ pos.x, checkPointColList2_[currentPoint_].second.y + pos.y, 0xff0000,false,5.0f);
+	//DrawFormatString(0, 300, 0xffffff, "現在のチェックポイントのナンバー:%d", currentPoint_);
 	//DrawFormatString(0, 320, 0xffffff, "現在のチェックポイント:%f,%f", checkPoints_[currentPoint_].x, checkPoints_[currentPoint_].y);
 //	DrawCircle(checkPoints_[currentPoint_].x + pos.x, checkPoints_[currentPoint_].y + pos.y,20, 0xff0000, true);
 }

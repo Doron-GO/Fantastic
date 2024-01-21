@@ -166,6 +166,7 @@
     <ClCompile Include="Object\Manager\AnimMng.cpp" />
     <ClCompile Include="Object\Manager\ImageMng.cpp" />
     <ClCompile Include="Object\Shader\PostEfffect.cpp" />
+    <ClCompile Include="Object\Stage\Block.cpp" />
     <ClCompile Include="Object\Stage\CheckPoint.cpp" />
     <ClCompile Include="Object\Stage\LoadMap.cpp" />
     <ClCompile Include="Object\Stage\Stage.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Object\Manager\AnimMng.h" />
     <ClInclude Include="Object\Manager\ImageMng.h" />
     <ClInclude Include="Object\Shader\PostEfffect.h" />
+    <ClInclude Include="Object\Stage\Block.h" />
     <ClInclude Include="Object\Stage\CheckPoint.h" />
     <ClInclude Include="Object\Stage\LoadMap.h" />
     <ClInclude Include="Object\Stage\Stage.h" />

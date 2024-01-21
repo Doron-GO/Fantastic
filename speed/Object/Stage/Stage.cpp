@@ -2,6 +2,9 @@
 #include "Stage.h"
 #include"../Manager/ImageMng.h"
 #include "../../Player/Player.h"
+#include"../../Object/Item/ItemBox.h"
+#include"Block.h"
+
 Stage::Stage() 
 {	
 	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
@@ -16,6 +19,7 @@ void Stage::Init(std::vector<std::shared_ptr<Player>> players)
 {
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
 	itemBox_ = std::make_unique<ItemBox>(loadMap_, players);
+	block_ = std::make_unique<Block>(loadMap_, players);
 	backImg_ = LoadGraph("Src/Img/Stageimage/siro.png");
 }
 
@@ -42,7 +46,7 @@ void Stage::Draw(Vector2DFloat cameraPos)
 				if (x + y * worldArea.x < layer.second.size())
 				{
 					auto gid = layer.second[x + y * worldArea.x];
-					if (gid >= 0)
+					if (gid >= 0&& !(gid==5))
 					{
 						DrawGraph(x * tileSize.x+ cameraPos.x,
 							(y * tileSize.y + cameraPos.y),

@@ -54,7 +54,7 @@ void Player::Update(Input& input)
 	{
 		(this->*_damage)();
 		(this->*_phase)(input_);
-		if (_damage == &Player::Nothing)
+		if (_damage == &Player::Nothing && !(_phase == &Player::WinnerPhese))
 		{
 			Move(input_);	
 			Anchoring(input_);
@@ -62,10 +62,11 @@ void Player::Update(Input& input)
 
 			if (!(itemList_ == ItemList::NON))
 			{
-				if (item_->IsEnd());
+				if (item_->IsEnd())
 				{
 					itemList_ = ItemList::NON;
 				}		
+
 				if (input_.IsTriggerd("item"))
 				{
 					item_->Activate(pos_);
@@ -73,6 +74,7 @@ void Player::Update(Input& input)
 				}		
 				item_->SetPos(targetPos_);
 				item_->Update();
+
 			}
 		}
 	
@@ -97,7 +99,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 	auto pos = pos_ + cameraPos;
 	if (aliveFlag_)
 	{
-		//デバッグ用の実際のキャラの座標を表示
+		////デバッグ用の実際のキャラの座標を表示
 		DrawRotaGraph2F(pos_.x, pos_.y ,
 				24.0f, 35.0f,
 				1.5, 0.0,
@@ -112,80 +114,80 @@ void Player::Draw(Vector2DFloat cameraPos)
 			true, static_cast<int>(dir_LR_), 0);
 
 		TesItemDraw(cameraPos);
-		DrawBox(col_.min_.x + cameraPos.x, col_.min_.y + cameraPos.y, col_.max_.x + cameraPos.x, col_.max_.y + cameraPos.y, 0xffaaff, false);
-		DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
+		//DrawBox(col_.min_.x + cameraPos.x, col_.min_.y + cameraPos.y, col_.max_.x + cameraPos.x, col_.max_.y + cameraPos.y, 0xffaaff, false);
+		//DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
 	}
-	if (padNum_ == 1)
-	{
-		DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-		DrawFormatStringF(0, 20, 0xffffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
-		DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
-		DrawFormatStringF(0, 60, 0xffffff, "camerapos+pos_(x:%f,y%f)", pos.x, pos.y);
-		//DrawString(0, 120, now_.c_str(), 0xffffff);
+	//if (padNum_ == 1)
+	//{
+	//	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
+	//	DrawFormatStringF(0, 20, 0xffffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
+	//	DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+	//	DrawFormatStringF(0, 60, 0xffffff, "camerapos+pos_(x:%f,y%f)", pos.x, pos.y);
+	//	//DrawString(0, 120, now_.c_str(), 0xffffff);
 
-		if (!CollisionVec(moveVec_))
-		{
-			DrawString(0, 100, "壁に当たった", 0xffffff);
-		}
-		if (!CollisionDown())
-		{
-			DrawString(0, 80, "床に当たった", 0xffffff);
-		}
-		if (!ColWallGrab(moveVec_))
-		{
-			DrawString(0, 60, "ジャンプ壁に当たった", test);
-		}
-	}		
-	switch (itemList_)
-	{
-	case Player::ItemList::NON:
-		now_Item_ = "NON";
-		break;
-	case Player::ItemList::MISSILE:
-		now_Item_ = "MISSILS";
-		break;
-	case Player::ItemList::LASER:
-		now_Item_ = "LASER";
-		break;
-	}
-	DebugPhaseCheck();
-	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
-	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
+	//	if (!CollisionVec(moveVec_))
+	//	{
+	//		DrawString(0, 100, "壁に当たった", 0xffffff);
+	//	}
+	//	if (!CollisionDown())
+	//	{
+	//		DrawString(0, 80, "床に当たった", 0xffffff);
+	//	}
+	//	if (!ColWallGrab(moveVec_))
+	//	{
+	//		DrawString(0, 60, "ジャンプ壁に当たった", test);
+	//	}
+	//}		
+	//switch (itemList_)
+	//{
+	//case Player::ItemList::NON:
+	//	now_Item_ = "NON";
+	//	break;
+	//case Player::ItemList::MISSILE:
+	//	now_Item_ = "MISSILS";
+	//	break;
+	//case Player::ItemList::LASER:
+	//	now_Item_ = "LASER";
+	//	break;
+	//}
+	//DebugPhaseCheck();
+	//DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
+	//DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
 
-	char num= '0' + padNum_;
-	std::string dead="死んだ";
-	std::string alive="生きている";
-	std::string player="Player";
-	if (aliveFlag_)
-	{
-		player +=num;
-		player += alive;
-	}
-	else
-	{
-		player += num;
-		player += dead;
-	}
-	DrawString(0, 320 + (padNum_ * 20),player.c_str(), 0xffffff);
+	//char num= '0' + padNum_;
+	//std::string dead="死んだ";
+	//std::string alive="生きている";
+	//std::string player="Player";
+	//if (aliveFlag_)
+	//{
+	//	player +=num;
+	//	player += alive;
+	//}
+	//else
+	//{
+	//	player += num;
+	//	player += dead;
+	//}
+	//DrawString(0, 320 + (padNum_ * 20),player.c_str(), 0xffffff);
 
-	Vector2DFloat rayCenter = { pos  };
-	Vector2DFloat movecec = { 0.0f,movePow_.y  };
-	Vector2DFloat movecec2 = { moveVec_.x,movePow_.y-10.0f  };
-	if (movePow_.y < 0.0f)
-	{
-		movecec.y = 0.2f;
-	}
+	//Vector2DFloat rayCenter = { pos  };
+	//Vector2DFloat movecec = { 0.0f,movePow_.y  };
+	//Vector2DFloat movecec2 = { moveVec_.x,movePow_.y-10.0f  };
+	//if (movePow_.y < 0.0f)
+	//{
+	//	movecec.y = 0.2f;
+	//}
 
 	wire_->Draw(cameraPos);
 
-	DrawLine(rayCenter.x, rayCenter.y,
-		rayCenter.x + diagonallyVec_.x, rayCenter.y + diagonallyVec_.y, 0x00ff00,2.0f);
-	DrawLine(rayCenter.x, rayCenter.y,
-		rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0xff0000,3.0f);
-	DrawLine(pos.x, pos.y,
-		pos.x + movecec2.x, pos.y + movecec2.y, 0xff0000,3.0f);
+	//DrawLine(rayCenter.x, rayCenter.y,
+	//	rayCenter.x + diagonallyVec_.x, rayCenter.y + diagonallyVec_.y, 0x00ff00,2.0f);
+	//DrawLine(rayCenter.x, rayCenter.y,
+	//	rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0xff0000,3.0f);
+	//DrawLine(pos.x, pos.y,
+	//	pos.x + movecec2.x, pos.y + movecec2.y, 0xff0000,3.0f);
 
-	DrawCircle(pos.x, pos.y,2, 0x00ff00 );
+	//DrawCircle(pos.x, pos.y,2, 0x00ff00 );
 }
 
 const Vector2DFloat Player::GetPos()
@@ -506,8 +508,18 @@ void Player::SwingJumpPhese(Input& input)
 
 }
 
-void Player::AnchoringPhese(Input& input)
+
+void Player::WinnerPhese(Input& input)
 {
+
+	lpAnimMng.SetAnime(animeStr_, "Fall");
+
+}
+
+void Player::Conclusion()
+{
+	_phase = &Player::WinnerPhese;
+
 }
 
 void Player::MoveColision()

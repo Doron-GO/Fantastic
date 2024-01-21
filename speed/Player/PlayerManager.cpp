@@ -2,8 +2,11 @@
 #include "Player.h"
 #include"../Object/Item/ItemBase.h"
 
-PlayerManager::PlayerManager():new_LeadNum_(PLAYER_NUM::P_1), old_LeadNum_(PLAYER_NUM::P_1), last_Num_(PLAYER_NUM::P_1)
+PlayerManager::PlayerManager(bool& conclusion):conclusion_(conclusion),
+new_LeadNum_(PLAYER_NUM::P_2), old_LeadNum_(PLAYER_NUM::P_2), last_Num_(PLAYER_NUM::P_2), winner_(0), count_(0)
 {
+	winImg_=LoadGraph("Src/Img/WIN.png");
+	restertImg_ =LoadGraph("Src/Img/RESTERT.png");
 }
 
 PlayerManager::~PlayerManager()
@@ -26,6 +29,11 @@ void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList w
 
 void PlayerManager::Update(Input& input)
 {
+	if (count_<30)
+	{
+		count_++;
+		return;
+	}
 	for (const auto& player : players_)
 	{
 		if (player->IsAlive())
@@ -34,7 +42,8 @@ void PlayerManager::Update(Input& input)
 		}
 	}
 	HormingTargrt();
-	ItemCol();
+	ItemCol(); 
+	Conclusion();
 }
 
 void PlayerManager::Draw(Vector2DFloat cameraPos)
@@ -46,6 +55,11 @@ void PlayerManager::Draw(Vector2DFloat cameraPos)
 			player->Draw(cameraPos);
 		}
 	}
+	if (conclusion_)
+	{
+		DrawRotaGraph2F(800.0f, 500.0f, 200.0f, 20.0f, 1.0, 0.0, winImg_,true);
+		DrawRotaGraph2F(800.0f, 560.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_,true);
+	}
 }
 
 const Vector2DFloat& PlayerManager::GetPlayerPos(int playerNum)
@@ -56,51 +70,6 @@ const Vector2DFloat& PlayerManager::GetPlayerPos(int playerNum)
 const Players PlayerManager::GetPlayers()
 {
 	return players_;
-}
-
-void PlayerManager::DecideOnTheBeginning(Vector2DFloat checkPoint)
-{
-	leadDistance_.clear();
-	//プレイヤーとチェックポイントとの距離を格納している。
-	for (auto& p : players_)
-	{
-		iD_.first = (p->padNum_) - 1;
-		iD_.second = players_[(p->padNum_) - 1]->GetPos().distance(checkPoint);
-		leadDistance_.push_back(iD_);
-	}
-	for (auto& p1 : players_)
-	{
-		for (auto& p2 : players_)
-		{
-			if (p1->IsAlive() && p2->IsAlive())
-			{
-				auto num1 = (p1->padNum_) - 1;
-				auto num2 = (p2->padNum_) - 1;
-				//プレイヤーNがプレイヤーN+1より前だったら、プレイヤーNを先頭にする。 
-				if (leadDistance_[num1].second < leadDistance_[num2].second)
-				{
-					if (leadDistance_[num1].second < leadDistance_[(int)new_LeadNum_].second)
-					{
-						new_LeadNum_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
-					}
-				}
-				else
-				{//最後尾のプレイヤーが脱落していたらとりあえず別のプレイヤーを最後尾扱いにする
-					if (!(players_[(int)last_Num_]->IsAlive()))
-					{
-						last_Num_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
-					}
-					//前最後尾のプレイヤーより後ろだったら
-					if (leadDistance_[(int)last_Num_].second <
-						leadDistance_[num1].second)
-					{
-						last_Num_ = static_cast<PLAYER_NUM>(leadDistance_[num1].first);
-					}
-				}
-			}
-		}
-	}
-
 }
 
 void PlayerManager::DecideOnTheBeginning2(std::pair<bool, Vector2DFloat>checkPoint)
@@ -178,6 +147,26 @@ void PlayerManager::HormingTargrt()
 		TTleadDistance_.clear();
 	}	 
 }
+
+void PlayerManager::Conclusion()
+{
+	if (conclusion_)
+	{
+		for (auto& player : players_)
+		{
+			if (player->IsAlive())
+			{
+				winner_ = player->padNum_;
+			}
+			else
+			{
+				continue;
+			}
+		}
+		players_[winner_-1]->Conclusion();
+	}
+}
+
 
 void PlayerManager::ItemCol()
 {

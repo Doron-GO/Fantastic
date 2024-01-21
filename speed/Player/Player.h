@@ -80,6 +80,7 @@ public:
 
 	void TesItemDraw( Vector2DFloat cameraPos);
 	void SetTarget (Vector2DFloat targetPos);
+	void Conclusion();
 
 	bool TestItem();
 	const std::shared_ptr<ItemBase> GetItem();	
@@ -104,7 +105,8 @@ private:
 	void WallJumpPhese(Input& input);//壁ジャンプ
 	void SwingPhese(Input& input);//スイング状態
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
-	void AnchoringPhese(Input& input);//スイングジャンプ状態
+	void WinnerPhese(Input& input);//勝者状態
+
 
 
 	void (Player::* _damage)();

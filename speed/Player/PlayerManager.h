@@ -22,7 +22,7 @@ public:
 		P_4
 	};
 
-	PlayerManager();
+	PlayerManager(bool& conclusion);
 	~PlayerManager();
 
 	void Update(Input& input);
@@ -31,10 +31,12 @@ public:
 	const Vector2DFloat& GetPlayerPos(int playerNum);
 	const Players GetPlayers();
 	//先頭を探すよ
-	void DecideOnTheBeginning(Vector2DFloat checkPoint);
 	void DecideOnTheBeginning2(std::pair<bool,Vector2DFloat>checkPoint);
-
 	void HormingTargrt();
+
+	void Conclusion();
+
+	void Reset();
 
 	//アイテムとの当たり判定をプレイヤー人数ぶん回す関数
 	void ItemCol();
@@ -52,7 +54,6 @@ public:
 	bool LeftSide(Vec Max,Vec Min);
 	bool RightSide(Vec Max,Vec Min);
 
-
 private:
 	Players players_;
 	std::vector< std::pair<int, float>> leadDistance_;//firstはパッドナンバー:secondはdistance
@@ -64,5 +65,14 @@ private:
 	PLAYER_NUM new_LeadNum_;//最新の最前列のプレイヤー
 	PLAYER_NUM last_Num_;//最後尾のプレイヤー
 
+
+	bool &conclusion_;
+	int winImg_;
+	int restertImg_;
+	int winner_;
+
+	int count_;
+
+	//int &playerCounts_;//生存数
 };
 

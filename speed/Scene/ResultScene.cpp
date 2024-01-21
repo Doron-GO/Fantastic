@@ -1,6 +1,6 @@
 #include "ResultScene.h"
 
-ResultScene::ResultScene(SceneMng& manager) :Scene(manager)
+ResultScene::ResultScene(SceneMng& manager, int n) :Scene(manager,n)
 {
 }
 

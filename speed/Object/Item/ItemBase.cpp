@@ -33,11 +33,11 @@ void ItemBase::Activate(Vector2DFloat playerpos)
 
 bool ItemBase::IsEnd()
 {
-	if (activateFlag_)
-	{
-		return true;
-		activateFlag_ = false;
-	}
+	//if (activateFlag_)
+	//{
+	//	return true;
+	//	activateFlag_ = false;
+	//}
 	return false;
 }
 

@@ -8,17 +8,13 @@ class SceneMng;
 
 class Scene
 {
-protected:
-	SceneMng& sceneManager_;
-
 public:
-	Scene(SceneMng& scene);
+	Scene(SceneMng& scene,int n );
 	virtual void Update(Input& input) = 0;
 	virtual void DrawOwnScreen(void) = 0;
 	virtual void Draw() ;
-
-
 protected:
+	SceneMng& sceneManager_;
 	int screenID_;
 	Vector2DFloat drawOffset_;
 

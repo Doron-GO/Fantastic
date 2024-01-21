@@ -23,15 +23,20 @@ class OutSide
 {
 public:
 	
-	OutSide(Camera& camera,std::vector< std::shared_ptr<Player >> players, int playerCount);
+	OutSide(Camera& camera, int playerCount);
 	~OutSide();
+	void (OutSide::* _phase)();
 
-	void Update();
-	void ExplosionUpdate();
+	void Update(std::vector< std::shared_ptr<Player >> players);
+	void PhaseChanging();
+
+	//カメラ追従状態
+	void Follow();
+	void Switching();
 	void Draw(Vector2DFloat offset);
 
 	//画面外かどうかを判定
-	void IsDead();
+	void IsDead(std::vector< std::shared_ptr<Player >> players);
 	bool IsOutSide(Vector2DFloat pos);
 
 	//画面からはみ出した時、上下から出たのか左右から出たのか
@@ -39,9 +44,9 @@ public:
 	void UpDownORLeftRight(Vector2DFloat pos);
 	void UpORDown(Vector2DFloat pos);
 	void LeftOrRight(Vector2DFloat pos);
-
 	void TestSmaller(); 
 	const int NumberOfSurvivors();
+	bool conclusion_;
 
 private:
 
@@ -55,8 +60,12 @@ private:
 	Vector2DFloat minScale_;
 	Vector2DFloat maxScale_;
 
+	Vector2DFloat outsidePos_;//現カメラ追従対象
+	Vector2DFloat outsideOldPos_;//
+
 	Vector2DFloat upperPos_;
 	Vector2DFloat upperVec_;
+
 	Vector2DFloat lowerPos_;
 	Vector2DFloat lowerVec_;
 	std::list<Bomb> bombs_;
@@ -72,6 +81,7 @@ private:
 	int bigFrame_;
 
 	int playerCount_;
+	float time = 0;
 
 };
 

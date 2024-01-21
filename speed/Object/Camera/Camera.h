@@ -26,15 +26,14 @@ private:
 
 	int nextNum_=0;
 	void (Camera::* _phase)();
-	//カメラ追従状態
-	void Switching();
 	//追従対象変更中
+	void Switching();
+	//カメラ追従状態
 	void Follow();
 	//ズーム
 	void Zoom();
 
-	std::weak_ptr<Player> taeget_;
-	Vector2DFloat targetPos_;
+	std::weak_ptr<Player> target_;
 	Vector2DFloat cameraPos_;
 	Vector2DFloat oldPos_;
 	RECT moveArea_;

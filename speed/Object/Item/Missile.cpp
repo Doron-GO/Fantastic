@@ -9,6 +9,7 @@ Missile::Missile()
 	type_ = ITEM_TYPE::MISSILE;
 	LoadDivGraph("Src/Img/Explosion.png", 11, 11, 1, 32, 31, img_);
 	explosionFlag_ = false;
+	activateFlag_ = false;
 
 }
 
@@ -46,7 +47,7 @@ void Missile::Activate(Vector2DFloat playerpos)
 
 bool Missile::IsEnd()
 {
-	if (!activateFlag_ && _update == &Missile::ActivateUpdate)
+	if (_update == &Missile::ActivateUpdate &&!activateFlag_ )
 	{
 		explosionFlag_ = true;
 		_draw = &Missile::ExplosionDraw;

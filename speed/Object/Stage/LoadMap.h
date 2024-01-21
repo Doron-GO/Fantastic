@@ -38,6 +38,7 @@ private:
 	ColList WireCollList_;
 	ColList itemBoxCollList_;
 	PointColList checkPointCollList_;
+	ColList blockCollList_;
 
 	std::string mapKey_;
 	MapData mapData;//マップにストリングはあまり使わない方がいいenumの方がいい

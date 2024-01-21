@@ -26,7 +26,7 @@ public:
         P_4
     };
 
-    GameScene(SceneMng& manager);
+    GameScene(SceneMng& manager, int n);
 
     virtual void Update(Input& input) override;
     virtual void Draw() override;
@@ -54,5 +54,6 @@ private:
     std::vector<float> distance_;
     std::vector< std::pair<int, float>> testDistance_;//firstはパッドナンバー:secondはdistance
     std::pair<int, float> iD_;
+    int playerNum_;
 
 };

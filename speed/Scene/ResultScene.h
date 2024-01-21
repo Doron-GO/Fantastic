@@ -4,7 +4,7 @@ class ResultScene :
     public Scene
 {
 public:
-    ResultScene(SceneMng& manager);
+    ResultScene(SceneMng& manager, int n);
 
     virtual void Update(Input& input) override;
     virtual void Draw() override;

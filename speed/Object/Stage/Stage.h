@@ -2,10 +2,10 @@
 #include<memory>
 #include"LoadMap.h"
 #include"../../Vector2D.h"
-#include"../../Object/Item/ItemBox.h"
 
 class ItemBox;
 class Player;
+class Block;
 
 class Stage
 {
@@ -35,6 +35,7 @@ private:
 
 	LoadMap loadMap_;
 	std::unique_ptr<ItemBox> itemBox_;
+	std::unique_ptr<Block> block_;
 	int backImg_;
 
 };

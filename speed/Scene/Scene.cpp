@@ -1,6 +1,6 @@
 #include "Scene.h"
 #include<DxLib.h>
-Scene::Scene(SceneMng& scene):sceneManager_(scene)
+Scene::Scene(SceneMng& scene,int n ):sceneManager_(scene)
 {
 }
 
