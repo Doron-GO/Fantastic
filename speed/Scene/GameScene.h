@@ -26,11 +26,11 @@ public:
         P_4
     };
 
-    GameScene(SceneMng& manager, int n);
+    GameScene(SceneMng& manager, int n, Transitor& transit);
+    ~GameScene();
 
     virtual void Update(Input& input) override;
     virtual void Draw() override;
-     void DrawOwnScreen() ;
 private:
 
     //ˆê”Ôæ“ª‚ÌƒvƒŒƒCƒ„[‚É’Ç]‚³‚¹‚é

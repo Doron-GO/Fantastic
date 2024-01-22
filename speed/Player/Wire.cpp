@@ -131,7 +131,7 @@ void Wire::SetAnchorPalam()
 {
 	fulcrum_ = player_.pos_;
 	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,
-		(player_.GetDiagonallyVecVec().y)+17.0f};
+		(-35.0f)+17.0f};
 
 	moveVec_.x = moveVec.x/2.0f;
 	moveVec_.y = moveVec.y/2.0f;

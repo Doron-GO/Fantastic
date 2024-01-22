@@ -69,7 +69,7 @@ void ItemBox::Draw(Vector2DFloat offset)
 					}
 
 				}
-				DrawStringF(0.0f, 590.0f, "アイテムボックスに接触", 0xff0000);
+		//DrawStringF(0.0f, 590.0f, "アイテムボックスに接触", 0xff0000);
 			}
 		}
 	}

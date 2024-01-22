@@ -1,14 +1,17 @@
 #pragma once
 #include "Scene.h"
+#include<memory>
+#include"Transition/TileTransitor.h"
+
+
 class TitleScene :
     public Scene
 {
 public:
-    TitleScene(SceneMng& manager, int n);
-
+    TitleScene(SceneMng& manager, int n, Transitor& transit);
+    ~TitleScene();
     virtual void Update(Input& input) override;
     virtual void Draw() override;
-    virtual void DrawOwnScreen(void)override;
 
 private:
 

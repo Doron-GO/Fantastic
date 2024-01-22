@@ -22,7 +22,7 @@ void PostEfffect::Draw()
 
 	SetDrawScreen(screen_);
 
-	ClearDrawScreen();
+	//ClearDrawScreen();
 
 	SetUsePixelShader(ShaderHandle_);
 

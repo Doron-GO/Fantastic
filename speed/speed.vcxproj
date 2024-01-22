@@ -178,6 +178,10 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneMng.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="Scene\Transition\IrisTransitor.cpp" />
+    <ClCompile Include="Scene\Transition\StripTransitor.cpp" />
+    <ClCompile Include="Scene\Transition\TileTransitor.cpp" />
+    <ClCompile Include="Scene\Transition\Transitor.cpp" />
     <ClCompile Include="_debug\_DebugConOut.cpp" />
     <ClCompile Include="_debug\_DebugDispOut.cpp" />
   </ItemGroup>
@@ -214,6 +218,10 @@
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneMng.h" />
     <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="Scene\Transition\IrisTransitor.h" />
+    <ClInclude Include="Scene\Transition\StripTransitor.h" />
+    <ClInclude Include="Scene\Transition\TileTransitor.h" />
+    <ClInclude Include="Scene\Transition\Transitor.h" />
     <ClInclude Include="Src\Json\json.hpp" />
     <ClInclude Include="Vector2D.h" />
     <ClInclude Include="_debug\_DebugConOut.h" />

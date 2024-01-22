@@ -101,6 +101,7 @@ private:
 	void MovePhase(Input& input);//左右移動：ジャンプ
 	void JumpPhese(Input& input);//ジャンプ
 	void FallPhase(Input& input);//落下中
+	void DamagePhase(Input& input);//落下中
 	void WallGrabPhese(Input& input);//壁ずり落ち
 	void WallJumpPhese(Input& input);//壁ジャンプ
 	void SwingPhese(Input& input);//スイング状態
@@ -157,5 +158,6 @@ private:
 	ItemList itemList_;	 
 	bool testItemFlag;
 	bool doubleJump_;
+	float damageCount_;
 };
 

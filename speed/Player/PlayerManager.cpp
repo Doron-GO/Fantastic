@@ -183,7 +183,7 @@ void PlayerManager::ItemCol()
 			{
 				item->End();
 				player2->Damage(item->type_);
-			}
+ 			}
 		}
 	}
 }

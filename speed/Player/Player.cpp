@@ -7,7 +7,7 @@
 #include"../_debug/_DebugDispOut.h"
 
 Player::Player(int playerNum):dir_LR_(DIR_LR::RIGHT),phase_(PHASE::FALL),
-aliveFlag_(true), padNum_(playerNum)
+aliveFlag_(true), padNum_(playerNum), damageCount_(0)
 {
 	AnchoringFlag_ = false;
 	doubleJump_ = true;
@@ -59,14 +59,12 @@ void Player::Update(Input& input)
 			Move(input_);	
 			Anchoring(input_);
 			wire_->Update();
-
 			if (!(itemList_ == ItemList::NON))
 			{
 				if (item_->IsEnd())
 				{
 					itemList_ = ItemList::NON;
 				}		
-
 				if (input_.IsTriggerd("item"))
 				{
 					item_->Activate(pos_);
@@ -82,7 +80,7 @@ void Player::Update(Input& input)
 		{
 			pos_.y += movePow_.y;
 			//壁に当たっていたら横移動させない
-			if (_damage == &Player::Nothing&& CollisionVec(diagonallyVec_))
+			if (_damage == &Player::Nothing &&(CollisionVec({moveVec_.x ,0.0f})||CollisionVec(diagonallyVec_)) )
 			{
 				pos_.x += movePow_.x;
 			}
@@ -119,9 +117,9 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	//if (padNum_ == 1)
 	//{
-	//	DrawFormatStringF(0, 0, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-	//	DrawFormatStringF(0, 20, 0xffffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
-	//	DrawFormatStringF(0, 40, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+		DrawFormatStringF(pos.x-30.0f, pos.y-100.0f, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
+		DrawFormatStringF(pos.x - 30.0f, pos.y - 140.0f, 0xfffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
+		DrawFormatStringF(pos.x - 30.0f, pos.y - 120.0f, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
 	//	DrawFormatStringF(0, 60, 0xffffff, "camerapos+pos_(x:%f,y%f)", pos.x, pos.y);
 	//	//DrawString(0, 120, now_.c_str(), 0xffffff);
 
@@ -138,21 +136,21 @@ void Player::Draw(Vector2DFloat cameraPos)
 	//		DrawString(0, 60, "ジャンプ壁に当たった", test);
 	//	}
 	//}		
-	//switch (itemList_)
-	//{
-	//case Player::ItemList::NON:
-	//	now_Item_ = "NON";
-	//	break;
-	//case Player::ItemList::MISSILE:
-	//	now_Item_ = "MISSILS";
-	//	break;
-	//case Player::ItemList::LASER:
-	//	now_Item_ = "LASER";
-	//	break;
-	//}
-	//DebugPhaseCheck();
-	//DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
-	//DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
+	switch (itemList_)
+	{
+	case Player::ItemList::NON:
+		now_Item_ = "NON";
+		break;
+	case Player::ItemList::MISSILE:
+		now_Item_ = "MISSILS";
+		break;
+	case Player::ItemList::LASER:
+		now_Item_ = "LASER";
+		break;
+	}
+	DebugPhaseCheck();
+	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
+	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
 
 	//char num= '0' + padNum_;
 	//std::string dead="死んだ";
@@ -180,14 +178,12 @@ void Player::Draw(Vector2DFloat cameraPos)
 
 	wire_->Draw(cameraPos);
 
-	//DrawLine(rayCenter.x, rayCenter.y,
-	//	rayCenter.x + diagonallyVec_.x, rayCenter.y + diagonallyVec_.y, 0x00ff00,2.0f);
-	//DrawLine(rayCenter.x, rayCenter.y,
-	//	rayCenter.x + movecec.x, rayCenter.y + movecec.y, 0xff0000,3.0f);
-	//DrawLine(pos.x, pos.y,
-	//	pos.x + movecec2.x, pos.y + movecec2.y, 0xff0000,3.0f);
-
-	//DrawCircle(pos.x, pos.y,2, 0x00ff00 );
+	DrawLine(pos.x, pos.y,
+		pos.x, pos.y + movePow_.y, 0xff0000,2.0f);
+	DrawLine(pos.x, pos.y,
+		pos.x+diagonallyVec_.x, pos.y + diagonallyVec_.y, 0xff0000,3.0f);
+	DrawLine(pos.x, pos.y,
+		pos.x + (moveVec_.x), pos.y-3.0f , 0xff0000,3.0f);
 }
 
 const Vector2DFloat Player::GetPos()
@@ -270,17 +266,21 @@ void Player::Nothing()
 
 void Player::DamageMissile()
 {
-	if ((movePow_.y <= -7.0f) || !(CollisionVec(up_)))
-	{
-		//ｙの移動量0にしてフォールを呼ぶ
-		//movePow_.y = 0.0f;
-		_phase = &Player::FallPhase;
-		_damage = &Player::Nothing;
+	if ((damageCount_++<30.0f) && (CollisionVec(up_)))
+	{		
+		if (damageCount_<8.0f)
+		{
+			movePow_.y -= 0.3f;
+
+		}
 	}
 	else 
-	{
-		movePow_.y -= 0.3f;
+	{	//ｙの移動量0にしてフォールを呼ぶ
+		_phase = &Player::FallPhase;
+		_damage = &Player::Nothing;
+		damageCount_ = 0;
 	}
+
 }
 
 void Player::JumpPhese(Input& input)
@@ -337,6 +337,11 @@ void Player::FallPhase(Input& input)
 	//落下速度が一定を超えたら決まった値にする
 	phase_ = Player::PHASE::FALL;
 	lpAnimMng.SetAnime(animeStr_, "Fall");	
+}
+
+void Player::DamagePhase(Input& input)
+{
+
 }
 
 void Player::WallGrabPhese(Input& input)
@@ -713,13 +718,13 @@ void Player::Damage(ItemBase::ITEM_TYPE type)
 	{
 	case ItemBase::ITEM_TYPE::MISSILE:
 		_damage = &Player::DamageMissile;
+		_phase = &Player::DamagePhase;
 		movePow_.x = 0.0f;
 		lpAnimMng.SetAnime(animeStr_, "Dmage");
 		break;
 	case ItemBase::ITEM_TYPE::LASER:
 		_damage = &Player::DamageMissile;
 		lpAnimMng.SetAnime(animeStr_, "Dmage");
-
 		break;
 	}
 }
@@ -776,14 +781,14 @@ void Player::Move(Input& input)
 			{
 				dir_LR_ = DIR_LR::RIGHT;
 				movePow_.x += 0.2f;
-				moveVec_ = { 16.0f,15.0f };
+				moveVec_ = { 20.0f,15.0f };
 			}
 			//左キー
 			if (input.IsPrassed("left"))
 			{
 				dir_LR_ = DIR_LR::LEFT;
 				movePow_.x -= 0.2f;
-				moveVec_ = { -16.0f,-15.0f };
+				moveVec_ = { -20.0f,-15.0f };
 			}
 		}
 
@@ -839,6 +844,7 @@ void Player::Anchoring(Input& input)
 	{
 		if (input.IsTriggerd("hook"))
 		{
+			slideY_ = -35.0f;
 			if (CollisionDown() && CollisionVec(moveVec_) && CollisionVec(diagonallyVec_))
 			{
 				if (!(_phase == &Player::SwingPhese) && !(_phase == &Player::WallGrabPhese))

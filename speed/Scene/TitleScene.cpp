@@ -2,10 +2,17 @@
 #include "GameScene.h"
 #include "SceneMng.h"
 #include "ResultScene.h"
+#include"Transition/TileTransitor.h"
 
-TitleScene::TitleScene(SceneMng& manager, int n) :Scene(manager,n), num_(2)
+TitleScene::TitleScene(SceneMng& manager, int n, Transitor& transit) :Scene(manager,n,transit), num_(2)
 {
+	sceneTransitor_.Start();
 	titleImg_ = LoadGraph("Src/Img/Title.png");
+
+}
+
+TitleScene::~TitleScene()
+{
 }
 
 void TitleScene::Update(Input& input)
@@ -22,18 +29,21 @@ void TitleScene::Update(Input& input)
 
 	if (input.IsTriggerd("jump"))
 	{
-		sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_,num_));
+		sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_,num_, sceneTransitor_));
+		return;
 	}
+	sceneTransitor_.Update();
+
 }
 
 void TitleScene::Draw()
-{	DrawGraph(0, 0, titleImg_, true);
+{	
+	ClearDrawScreen();
+
+	DrawGraph(0, 0, titleImg_, true);
 	DrawFormatString(0, 200, 0xffffff, "%d",num_);
-}
 
-void TitleScene::DrawOwnScreen(void)
-{
-
-
+	sceneTransitor_.Draw();
 
 }
+

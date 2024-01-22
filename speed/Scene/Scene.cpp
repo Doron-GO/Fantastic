@@ -1,11 +1,10 @@
 #include "Scene.h"
 #include<DxLib.h>
-Scene::Scene(SceneMng& scene,int n ):sceneManager_(scene)
+Scene::Scene(SceneMng& scene,int n,Transitor& transit ):sceneManager_(scene),sceneTransitor_(transit)
 {
+
 }
 
 void Scene::Draw()
 {
-	DrawGraph(drawOffset_.x, drawOffset_.y, screenID_, true);
-
 }
