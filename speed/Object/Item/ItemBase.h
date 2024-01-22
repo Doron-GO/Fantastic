@@ -1,5 +1,7 @@
 #pragma once
 #include"../../Vector2D.h"
+#include"../../Common/Collision.h"
+#include"../../Common/Raycast.h"
 
 class ItemBase
 {
@@ -32,7 +34,7 @@ public:
 	};
 	COL col_;
 	ITEM_TYPE type_;
-
+	ColList grndColList_;//“Á‚ÉƒMƒ~ƒbƒN‚Ì‚È‚¢“–‚½‚è”»’è
 
 protected:
 	Vector2DFloat itemPos_;
@@ -40,6 +42,9 @@ protected:
 	bool activateFlag_;
 	bool explosionFlag_;
 	int img_[11];
+	int drawCount_;
 	int count_;
+
+	Raycast raycast_;
 };
 

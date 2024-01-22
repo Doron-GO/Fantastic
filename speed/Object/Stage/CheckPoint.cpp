@@ -4,31 +4,6 @@
 CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>> players, PointColList checkpoint)
 	:players_(players), checkPointColList2_(checkpoint)
 {
-	// x9800
-	// y0
-	// x0
-	//y 3000
-	// x9800
-	//y 3000
-	//x0
-	//y3000
-
-	////ˆê”Ô‰E
-	//checkPoints_.push_back({ 9800.0f,0.0f });
-	////ˆê”Ôã
-	//checkPoints_.push_back({ 0.0f,0.0f });
-	////ˆê”Ô¶
-	//checkPoints_.push_back({ 0.0f,0.0f });
-	////ˆê”Ô‰º
-	//checkPoints_.push_back({ 0.0f,3000.0f });
-	////ˆê”Ô‰E
-	//checkPoints_.push_back({ 9800.0f,0.0f });
-	////ˆê”Ô‰º
-	//checkPoints_.push_back({ 0.0f,3000.0f });
-	////ˆê”Ô¶
-	//checkPoints_.push_back({ 0.0f,0.0f });
-	////ˆê”Ô‰º
-	//checkPoints_.push_back({ 0.0f,3000.0f });
 
 	//ˆê”Ô‰E
 	checkPoints3_.push_back(CHECKPOINT{ false,{9800.0f,0.0f} });

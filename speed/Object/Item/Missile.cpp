@@ -4,6 +4,7 @@
 Missile::Missile()
 {
 	count_ = 0;
+	drawCount_ = 0;
 	_update = &Missile::WaitUpdate;
 	_draw = &Missile::MissileDraw;
 	type_ = ITEM_TYPE::MISSILE;
@@ -28,14 +29,11 @@ void Missile::Update()
 
 void Missile::Draw(Vector2DFloat offset)
 {
-
 	DrawCircle(itemPos_.x+offset.x, itemPos_.y + offset.y, 20, 0xff0000);
 	DrawBox(col_.min_.x + offset.x, col_.min_.y + offset.y, col_.max_.x + offset.x, col_.max_.y + offset.y, 0xffaaff, false);
 	DrawCircle(itemPos_.x, itemPos_.y , 20, 0xff0000);
 	DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
-
 	(this->*_draw)(offset);
-
 }
 
 void Missile::Activate(Vector2DFloat playerpos)
@@ -60,9 +58,9 @@ void Missile::ActivateUpdate()
 {		
 	vel_ = (vel_ + (targetPos_ - itemPos_).Normalized()).Normalized() * 12.0f;
 	itemPos_ += vel_;
-	if (count_ > 200)
-	{
-		activateFlag_ = false;
+	if (count_++ > 50)
+	{	
+		IsCollision();
 	}
 }
 
@@ -71,24 +69,34 @@ void Missile::WaitUpdate()
 
 }
 
+void Missile::IsCollision()
+{
+	for (const auto& colG : grndColList_)
+	{
+		Collision col = { Vector2DFloat{colG.first.x,colG.first.y + colG.second.y},
+			Vector2DFloat{colG.first.x + colG.second.x,colG.first.y}};
+		if(raycast_.RectToRectCollision(col_.min_, col_.max_,col.first, col.second ))
+		{
+			activateFlag_ = false;
+		}
+	}
+}
+
 void Missile::ExplosionDraw(Vector2DFloat offset)
 {
-	if (count_ <= 31)
-	{
 		//DrawGraph(itemPos_.x + offset.x,
 		//	(itemPos_.y + offset.y),
 		//	img_[(count_ / 3) % 11], true);
-		DrawRotaGraph2F(itemPos_.x + offset.x, itemPos_.y + offset.y,
-			20.0f, 20.0f,
-			2.5, 0.0,
-			img_[(count_ / 3) % 11],
-			true);
+	DrawRotaGraph2F(itemPos_.x + offset.x, itemPos_.y + offset.y,
+		20.0f, 20.0f,
+		2.5, 0.0,
+		img_[(drawCount_ / 3) % 11],
+		true);
 
-		count_++;
-	}
-	else
-	{
+	if (drawCount_++ >= 31)
+	{	
 		explosionFlag_ = false;
+		drawCount_ =0;
 	}
 
 }

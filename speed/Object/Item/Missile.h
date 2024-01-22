@@ -15,6 +15,7 @@ public:
 
     void ActivateUpdate();
     void WaitUpdate();
+    void IsCollision();
 
     void ExplosionDraw(Vector2DFloat offset);
     void MissileDraw(Vector2DFloat offset);

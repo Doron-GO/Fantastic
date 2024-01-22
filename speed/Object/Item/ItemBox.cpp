@@ -58,6 +58,7 @@ void ItemBox::Draw(Vector2DFloat offset)
 					{
 						player->SetItemList(1);	
 						auto ii = std::make_shared<Missile>();
+						ii->grndColList_ = loadMap_.GetColList();
 						player->SetItem(ii);
 					}
 					else

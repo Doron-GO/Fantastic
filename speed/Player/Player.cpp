@@ -67,10 +67,10 @@ void Player::Update(Input& input)
 				}		
 				if (input_.IsTriggerd("item"))
 				{
-					item_->Activate(pos_);
+					item_->Activate(Vector2DFloat{ pos_.x,pos_.y - 20.0f });
 					ItemUse();
 				}		
-				item_->SetPos(targetPos_);
+				item_->SetPos(Vector2DFloat{ targetPos_.x,targetPos_.y - 20.0f });
 				item_->Update();
 
 			}
@@ -908,7 +908,7 @@ void Player::Jump(Input& input)
 			movePow_.y = 0.0f;
 			_phase = &Player::JumpPhese;
 		}
-		if ((_phase == &Player::FallPhase)&&doubleJump_)
+		if (((_phase == &Player::FallPhase)|| (_phase == &Player::SwingJumpPhese))&&doubleJump_)
 		{
 			lpAnimMng.SetAnime(animeStr_, "Jump");
 			movePow_.y = 0.2f;

@@ -17,8 +17,7 @@ PlayerManager::~PlayerManager()
 void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList wire)
 {
 	for (int Num = 1; Num <= playerNum; Num++)
-	{
-		
+	{	
 		std::shared_ptr<Player> player;
 		player = std::make_shared<Player>(Num);
 		player->Init(gruound, Wall, wire);
