@@ -10,10 +10,9 @@ Camera::~Camera()
 {
 }
 
-bool Camera::Init(const Vector2D& worldSize)
+void Camera::Init(const Vector2D& worldSize)
 {
-    _phase = &Camera::Follow;
-    return true;
+    //_phase = &Camera::Follow;
 }
 
 void Camera:: Update()
@@ -27,10 +26,10 @@ void Camera::Switching()
     Vector2DFloat offset;
     offset.x = (view.x / 4.0f) * 2.0f - target_.lock()->GetPos().x;
     offset.y = (view.y / 2.0f) - (target_.lock()->GetPos().y);
-    if (time <= 60.0f){time++;}
-    cameraPos_.x = oldPos_.x * (1.0f - time / 60.0f) + offset.x * time / 60.0f;
-    cameraPos_.y = oldPos_.y * (1.0f - time / 60.0f) + offset.y * time / 60.0f;
-    if (time >= 60.0f)
+    if (time <= MAXFRAME){time++;}
+    cameraPos_.x = oldPos_.x * (1.0f - time / MAXFRAME) + offset.x * time / MAXFRAME;
+    cameraPos_.y = oldPos_.y * (1.0f - time / MAXFRAME) + offset.y * time / MAXFRAME;
+    if (time >= MAXFRAME)
     {
         _phase = &Camera::Follow;
         time = 0.0f;

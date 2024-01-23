@@ -26,6 +26,10 @@ void TitleScene::Update(Input& input)
 	{
 		num_ = 2;
 	}
+	if (input.IsTriggerd("c"))
+	{
+		num_ = 1;
+	}
 
 	if (input.IsTriggerd("jump"))
 	{

@@ -3,7 +3,7 @@
 #include"../Object/Item/ItemBase.h"
 
 PlayerManager::PlayerManager(bool& conclusion):conclusion_(conclusion),
-new_LeadNum_(PLAYER_NUM::P_2), old_LeadNum_(PLAYER_NUM::P_2), last_Num_(PLAYER_NUM::P_2), winner_(0), count_(0)
+new_LeadNum_(PLAYER_NUM::P_1), old_LeadNum_(PLAYER_NUM::P_1), last_Num_(PLAYER_NUM::P_1), winner_(0), count_(0)
 {
 	winImg_=LoadGraph("Src/Img/WIN.png");
 	restertImg_ =LoadGraph("Src/Img/RESTERT.png");
@@ -28,11 +28,11 @@ void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList w
 
 void PlayerManager::Update(Input& input)
 {
-	if (count_<30)
-	{
-		count_++;
-		return;
-	}
+	//if (count_<30)
+	//{
+	//	count_++;
+	//	return;
+	//}
 	for (const auto& player : players_)
 	{
 		if (player->IsAlive())
@@ -40,7 +40,10 @@ void PlayerManager::Update(Input& input)
 			player->Update(input);
 		}
 	}
-	HormingTargrt();
+	if (!singlePlay_)
+	{
+		HormingTargrt();
+	}
 	ItemCol(); 
 	Conclusion();
 }
@@ -235,5 +238,10 @@ bool PlayerManager::LeftSide(Vec Max, Vec Min)
 bool PlayerManager::RightSide(Vec Max, Vec Min)
 {
 	return (Min.x <= Max.x);
+}
+
+void PlayerManager::SinglePlay()
+{
+	singlePlay_ = true;
 }
 

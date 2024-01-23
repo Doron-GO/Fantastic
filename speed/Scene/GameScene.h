@@ -11,7 +11,7 @@
 #include"../Object/Shader/PostEfffect.h"
 #include"../Player/PlayerManager.h"
 
-
+class TimeCount;
 
 class GameScene :
     public Scene
@@ -43,9 +43,12 @@ private:
     std::unique_ptr<Camera> camera_;
     std::unique_ptr<OutSide> outSide_;
     std::unique_ptr<CheckPoint> checkPoint_;
-
     std::unique_ptr<PlayerManager>playerManager_;
+    std::unique_ptr<TimeCount>timeCount_;
 
+    void (GameScene::* _update)(Input& input);
+    void MultiPlayUpdate(Input& input);
+    void SinglePlayUpdate(Input& input);
 
     PLAYER_NUM old_LeadNum_;//1フレーム前の最前列のプレイヤー
     PLAYER_NUM new_LeadNum_;//最新の最前列のプレイヤー

@@ -3,24 +3,30 @@
 #include "SceneMng.h"
 #include"../Object/Manager/ImageMng.h"
 #include"Transition/TileTransitor.h"
+#include"../Object/Time/TimeCount.h"
 
-GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager, n, transit), playerNum_(n)
+GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager, n, transit), playerNum_(n),_update(&GameScene::MultiPlayUpdate)
 {
+	SetDrawScreen(DX_SCREEN_BACK);
 
 	sceneTransitor_.Start();
-
 	camera_ = std::make_unique<Camera>();	
 	stage_ = std::make_unique<Stage>();
 	outSide_ = std::make_unique<OutSide>(*camera_, playerNum_);
+	timeCount_ = std::make_unique<TimeCount>();
 
 	playerManager_ = std::make_unique<PlayerManager>(outSide_->conclusion_);
 	playerManager_->Init(playerNum_, stage_->GetColList(), stage_->GetWallColList(), stage_->GetWireColList());
-
+	if (playerNum_ ==1)
+	{
+		playerManager_->SinglePlay();
+		_update = &GameScene::SinglePlayUpdate;
+	}
+	//camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ÉJÉÅÉâÇèâä˙âª
 	stage_->Init(playerManager_->GetPlayers());
 	checkPoint_ = std::make_unique<CheckPoint>(playerManager_->GetPlayers(), stage_->CheckPointGetColList());
-	camera_->ReConnect(playerManager_->GetPlayers()[(int)playerManager_->GetNewLeadNum()]);
-	camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ÉJÉÅÉâÇèâä˙âª
 
+	camera_->ReConnect(playerManager_->GetPlayers()[(int)playerManager_->GetNewLeadNum()]);
 }
 
 GameScene::~GameScene()
@@ -29,21 +35,7 @@ GameScene::~GameScene()
 
 void GameScene::Update(Input& input)
 {
-	camera_->Update();
-	checkPoint_->Update();
-	outSide_->Update(playerManager_->GetPlayers());
-	playerManager_->Update(input);
-	DecideOnTheBeginning();
-
-	if (outSide_->conclusion_)
-	{
-		if ( input.IsTriggerd("jump"))
-		{
-			sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_, playerNum_,sceneTransitor_));
-			return;
-		}
-	}
-	sceneTransitor_.Update();
+	(this->*_update)(input);
 }
 
 void GameScene::Draw()
@@ -58,7 +50,7 @@ void GameScene::Draw()
 	auto Last = playerManager_->GetLastLeadNum();
 	//DrawFormatStringF(0, 580, 0xffffff, "ç≈å„îˆÇÕ:%d", static_cast<int>(Last));
 	//DrawFormatStringF(0, 560, 0xffffff, "êÊì™ÇÕ:%d", static_cast<int>(newLeder));
-
+	timeCount_->Draw();
 	sceneTransitor_.Draw();
 }
 
@@ -77,5 +69,46 @@ void GameScene::DecideOnTheBeginning()
 		outSide_->PhaseChanging();
 	}
 	playerManager_->SetOld();
+}
+
+void GameScene::MultiPlayUpdate(Input& input)
+{
+	camera_->Update();
+	checkPoint_->Update();
+	timeCount_->Update();
+	outSide_->Update(playerManager_->GetPlayers());
+	playerManager_->Update(input);
+	DecideOnTheBeginning();
+
+	if (outSide_->conclusion_)
+	{
+		if (input.IsTriggerd("jump"))
+		{
+			sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_, playerNum_, sceneTransitor_));
+			return;
+		}
+	}
+	sceneTransitor_.Update();
+
+}
+
+void GameScene::SinglePlayUpdate(Input& input)
+{
+	camera_->Update();
+	checkPoint_->Update();
+	playerManager_->Update(input);
+	timeCount_->Update();
+	DecideOnTheBeginning();
+
+	if (outSide_->conclusion_)
+	{
+		if (input.IsTriggerd("jump"))
+		{
+			sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_, playerNum_, sceneTransitor_));
+			return;
+		}
+	}
+	sceneTransitor_.Update();
+
 }
 
