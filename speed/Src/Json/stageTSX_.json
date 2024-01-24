@@ -7,7 +7,7 @@
          "target":"stageTSX_.json"
         }
     },
- "image":"..\/Img\/stageCip2.png",
+ "image":"Src/Img/stageCip2.png",
  "imageheight":96,
  "imagewidth":96,
  "margin":0,

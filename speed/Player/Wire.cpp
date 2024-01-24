@@ -22,8 +22,12 @@ void Wire::Draw(Vector2DFloat cameraPos)
 {
 	auto pPos = player_.pos_;
 	pPos += cameraPos;
-	DrawCircle(fulcrum_.x+ cameraPos.x,fulcrum_.y+ cameraPos.y,5,0xff0000);
-	DrawLine(pPos.x, pPos.y, fulcrum_.x + cameraPos.x, fulcrum_.y + cameraPos.y, 0xffffff);
+	if (_phase== &Wire::SwingPhase|| _phase == &Wire::AnchoringPhase)
+	{
+		DrawCircle(fulcrum_.x+ cameraPos.x,fulcrum_.y+ cameraPos.y,5,0xff0000);
+		DrawLine(pPos.x, pPos.y, fulcrum_.x + cameraPos.x, fulcrum_.y + cameraPos.y, 0xffffff);
+
+	}
 
 	//if (player_.padNum_ == 1)
 	//{
@@ -109,11 +113,9 @@ void Wire::SetSwingPalam()
 
 	length_ = lVec.Magnitude();							//紐の長さ
 	vel_.x = player_.movePow_.x;	//初速度的な
-
 	//ここでアングルの初期設定をする
 	angle_ = atan2f(player_.pos_.x - fulcrum_.x, player_.pos_.y - fulcrum_.y);
 	v_ = -2 * vel_.x * cosf(angle_);//x軸の速度
-
 
 	if (player_.dir_LR_ == Player::DIR_LR::LEFT)
 	{
@@ -132,30 +134,24 @@ void Wire::SetAnchorPalam()
 	fulcrum_ = player_.pos_;
 	VECTOR moveVec = { player_.GetDiagonallyVecVec().x,
 		(-35.0f)+17.0f};
-
 	moveVec_.x = moveVec.x/2.0f;
 	moveVec_.y = moveVec.y/2.0f;
-
 	moveVec = VNorm(moveVec);
 	Scale_ = VScale(moveVec, 30.0f);
 	fulcrum_pos.x = fulcrum_.x;
-	fulcrum_pos.y = fulcrum_.y;
-	
+	fulcrum_pos.y = fulcrum_.y;	
 	_phase = &Wire::AnchoringPhase;
-
 }
 
 void Wire::StartSwingJump()
 {
 	player_.StartSwingJump();
 	_phase = &Wire::EndSwingPhase;
-
 }
 
 void Wire::StartSwing()
 {
 	_phase = &Wire::SwingPhase;
-
 }
 
 void Wire::EndSwing()

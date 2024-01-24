@@ -156,7 +156,7 @@ private:
 
 	std::shared_ptr<ItemBase>item_;
 	ItemList itemList_;	 
-	bool testItemFlag;
+	bool testItemFlag=true;
 	bool doubleJump_;
 	float damageCount_;
 };

@@ -20,6 +20,7 @@ Player::~Player()
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
 	pos_ = { 400.0f-padNum_*-20.0f,2710.0f };
+	//pos_ = { 0.0f,0.0f };
 	center_ = { 0.0f,16.0f };
 	grndColList_ = colList;
 	wallcolList_ = wallColList;
@@ -117,9 +118,9 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	//if (padNum_ == 1)
 	//{
-		DrawFormatStringF(pos.x-30.0f, pos.y-100.0f, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-		DrawFormatStringF(pos.x - 30.0f, pos.y - 140.0f, 0xfffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
-		DrawFormatStringF(pos.x - 30.0f, pos.y - 120.0f, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
+		//DrawFormatStringF(pos.x-30.0f, pos.y-100.0f, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
+		//DrawFormatStringF(pos.x - 30.0f, pos.y - 140.0f, 0xfffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
+		//DrawFormatStringF(pos.x - 30.0f, pos.y - 120.0f, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
 	//	DrawFormatStringF(0, 60, 0xffffff, "camerapos+pos_(x:%f,y%f)", pos.x, pos.y);
 	//	//DrawString(0, 120, now_.c_str(), 0xffffff);
 
@@ -150,7 +151,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	DebugPhaseCheck();
 	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
-	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
+	//DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
 
 	//char num= '0' + padNum_;
 	//std::string dead="Ž€‚ñ‚¾";
@@ -178,12 +179,12 @@ void Player::Draw(Vector2DFloat cameraPos)
 
 	wire_->Draw(cameraPos);
 
-	DrawLine(pos.x, pos.y,
-		pos.x, pos.y + movePow_.y, 0xff0000,2.0f);
-	DrawLine(pos.x, pos.y,
-		pos.x+diagonallyVec_.x, pos.y + diagonallyVec_.y, 0xff0000,3.0f);
-	DrawLine(pos.x, pos.y,
-		pos.x + (moveVec_.x), pos.y-3.0f , 0xff0000,3.0f);
+	//DrawLine(pos.x, pos.y,
+	//	pos.x, pos.y + movePow_.y, 0xff0000,2.0f);
+	//DrawLine(pos.x, pos.y,
+	//	pos.x+diagonallyVec_.x, pos.y + diagonallyVec_.y, 0xff0000,3.0f);
+	//DrawLine(pos.x, pos.y,
+	//	pos.x + (moveVec_.x), pos.y-3.0f , 0xff0000,3.0f);
 }
 
 const Vector2DFloat Player::GetPos()
@@ -397,7 +398,6 @@ void Player::WallJumpPhese(Input& input)
 	}
 	if (!(CollisionVec(movevec)))
 	{
-
 		_phase = &Player::FallPhase;
 	}
 	//‚Å‚È‚¯‚ê‚Îy‚ÌˆÚ“®—Ê‚ð‰ÁŽZ‚·‚é

@@ -6,12 +6,15 @@
 
 class Player;
 
+constexpr float MAXFRAME =60.0f;
+
 class Camera
 {
 public:
+
 	Camera();
 	~Camera();
-	bool Init(const Vector2D& worldSize);
+	void Init(const Vector2D& worldSize);
 	void Update();
 
 	//ƒJƒƒ‰‚Ìó‘Ô‚ğ•Ï‚¦‚é
@@ -37,5 +40,6 @@ private:
 	Vector2DFloat cameraPos_;
 	Vector2DFloat oldPos_;
 	RECT moveArea_;
+
 };
 

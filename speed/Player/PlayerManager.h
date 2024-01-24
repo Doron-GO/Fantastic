@@ -54,6 +54,7 @@ public:
 	bool LeftSide(Vec Max,Vec Min);
 	bool RightSide(Vec Max,Vec Min);
 
+	void SinglePlay();
 private:
 	Players players_;
 	std::vector< std::pair<int, float>> leadDistance_;//firstはパッドナンバー:secondはdistance
@@ -71,6 +72,7 @@ private:
 	int restertImg_;
 	int winner_;
 
+	bool singlePlay_=false;
 	int count_;
 
 	//int &playerCounts_;//生存数

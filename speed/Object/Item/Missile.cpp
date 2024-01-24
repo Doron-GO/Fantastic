@@ -78,6 +78,8 @@ void Missile::IsCollision()
 		if(raycast_.RectToRectCollision(col_.min_, col_.max_,col.first, col.second ))
 		{
 			activateFlag_ = false;
+			_draw = &Missile::ExplosionDraw;
+
 		}
 	}
 }
@@ -103,7 +105,6 @@ void Missile::ExplosionDraw(Vector2DFloat offset)
 
 void Missile::MissileDraw(Vector2DFloat offset)
 {
-	int a;
 }
 
 
