@@ -1,8 +1,14 @@
 #include "TimeCount.h"
+#include "../Stage/CheckPoint.h"
 #include<DxLib.h>
 
-TimeCount::TimeCount():oldTime_(0.0f),deltaTime_(0.000001f),elapsedTime_(0.0f), nowTime_(0.0f), startFlag_(false)
+TimeCount::TimeCount(CheckPoint& CheckPoint):checkPoint_(CheckPoint),oldTime_(0.0f),
+deltaTime_(0.000001f),elapsedTime_(0.0f), nowTime_(0.0f), startFlag_(false),
+_draw(&TimeCount::GameDraw),_update(&TimeCount::GameUpdate), endFlag_(false)
 {
+	goalImg_ = LoadGraph("Src/Img/Goal.png");
+	restertImg_ = LoadGraph("Src/Img/RESTERT.png");
+	fontHandle_ = CreateFontToHandle(NULL, 70, 3);
 }
 
 TimeCount::~TimeCount()
@@ -11,31 +17,71 @@ TimeCount::~TimeCount()
 
 void TimeCount::Update(float startime)
 {
-	if (startime>=2.0f&&(!startFlag_))
-	{
-		SetStart();
-		startFlag_ = true;
-	}
-	nowTime_ = GetNowHiPerformanceCount();
-	deltaTime_ = (nowTime_ - oldTime_) / 1000000.0f;
-	oldTime_ = nowTime_;
-
-	elapsedTime_ += deltaTime_;
+	(this->*_update)( startime);
 }
 
 void TimeCount::Draw()
 {
-	DrawFormatStringF(0.0f, 50.0f, 0xff0000, "deltaTime_%f", elapsedTime_);
+	(this->*_draw)();
+}
+
+void TimeCount::GoalUpdate(float startime)
+{
+	Count();
+}
+
+void TimeCount::GoalDraw()
+{
+	DrawGraph(0, 0, goalImg_, true);
+	if (elapsedTime_>= record_ +2.0f)
+	{
+		DrawRotaGraph2F(800.0f, 700.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_, true);
+		DrawFormatStringToHandle(500.0f, 600.0f, 0xff0000, fontHandle_, "RECORD:%f", record_);
+		endFlag_ = true;
+	}
+}
+
+void TimeCount::GameUpdate(float startime)
+{
+	if (startime >= 2.0f && (!startFlag_))
+	{
+		SetStart();
+		startFlag_ = true;
+	}
+	Count();
+	if (checkPoint_.IsGoal())
+	{
+		record_ = elapsedTime_;
+		_draw = &TimeCount::GoalDraw;
+		_update = &TimeCount::GoalUpdate;
+	}
+
+}
+
+void TimeCount::GameDraw()
+{	
+	DrawFormatStringToHandle(0.0f, 0.0f, 0xff0000, fontHandle_, "RECORD:%f", elapsedTime_);
 }
 
 void TimeCount::SetStart()
 {
 	oldTime_ = GetNowHiPerformanceCount();
+}
 
+bool TimeCount::IsEnd()
+{
+	return endFlag_;
 }
 
 float TimeCount::ElapsedTime()
 {
-	
 	return elapsedTime_;
+}
+
+void TimeCount::Count()
+{
+	nowTime_ = GetNowHiPerformanceCount();
+	deltaTime_ = (nowTime_ - oldTime_) / 1000000.0f;
+	oldTime_ = nowTime_;
+	elapsedTime_ += deltaTime_;
 }

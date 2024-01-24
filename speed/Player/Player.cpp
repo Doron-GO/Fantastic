@@ -19,7 +19,7 @@ Player::~Player()
 
 void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 {
-	pos_ = { 400.0f-padNum_*-20.0f,2710.0f };
+	pos_ = { 400.0f-padNum_*-20.0f,2720.0f };
 	//pos_ = { 0.0f,0.0f };
 	center_ = { 0.0f,16.0f };
 	grndColList_ = colList;
@@ -42,7 +42,7 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 	moveVec_ = { 0.0f,0.0f};
 	movePow_ = { 0.0f,0.0f};
 	up_ = { 0.0f,-50.0f };
-	_phase = &Player::FallPhase;
+	_phase = &Player::MovePhase;
 	_damage = &Player::Nothing;
 	itemList_ = ItemList::NON;
 	wire_ = std::make_unique<Wire>(*this,wireColList);
@@ -73,10 +73,8 @@ void Player::Update(Input& input)
 				}		
 				item_->SetPos(Vector2DFloat{ targetPos_.x,targetPos_.y - 20.0f });
 				item_->Update();
-
 			}
-		}
-	
+		}	
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;
@@ -151,7 +149,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	DebugPhaseCheck();
 	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
-	//DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
+	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
 
 	//char num= '0' + padNum_;
 	//std::string dead="Ž€‚ñ‚¾";
@@ -473,6 +471,7 @@ void Player::SwingPhese(Input& input)
 
 void Player::SwingJumpPhese(Input& input)
 {
+	Jump(input);
 	phase_ = Player::PHASE::SWINGJUMP;
 	lpAnimMng.SetAnime(animeStr_, "Fall");
 	//—Ž‰º‘¬“x‚ªˆê’è‚ð’´‚¦‚½‚çŒˆ‚Ü‚Á‚½’l‚É‚·‚é

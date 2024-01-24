@@ -2,7 +2,7 @@
 #include "../../Player/Player.h"
 
 CheckPoint::CheckPoint(std::vector<std::shared_ptr<Player>> players, PointColList checkpoint)
-	:players_(players), checkPointColList2_(checkpoint)
+	:players_(players), checkPointColList2_(checkpoint), GoalFlag_(false),_work(&CheckPoint::MultiPlay)
 {
 
 	//ˆê”Ô‰E
@@ -38,18 +38,10 @@ void CheckPoint::Update()
 		{
 			if (rayCast_.RectToRectCollision(checkPointColList2_[currentPoint_].first, checkPointColList2_[currentPoint_].second,
 			player->col_.min_, player->col_.max_))
-
-				{
-					if (currentPoint_ < 6)
-					{
-						currentPoint_++;
-					}
-					else
-					{
-						currentPoint_ = 0;
-					}
-					break;
-				}
+			{
+				(this->*_work)();
+				break;
+			}
 		}
 	}
 }
@@ -82,4 +74,33 @@ Vector2DFloat CheckPoint::GetCheckPoint() const
 CHECKPOINT CheckPoint::GetCheckPoint2() const
 {
 	return checkPoints3_[currentPoint_];
+}
+
+const bool CheckPoint::IsGoal()
+{
+	return GoalFlag_;
+}
+
+void CheckPoint::SetSingleMode()
+{
+	_work = &CheckPoint::SinglePlay;
+}
+
+void CheckPoint::SinglePlay()
+{
+	if (currentPoint_ < CHECKPOINT_MAX) { currentPoint_++; }
+	else
+	{
+		GoalFlag_ = true;
+		currentPoint_ = 0;
+	}
+}
+
+void CheckPoint::MultiPlay()
+{
+	if (currentPoint_ < CHECKPOINT_MAX) { currentPoint_++; }
+	else
+	{
+		currentPoint_ = 0;
+	}
 }

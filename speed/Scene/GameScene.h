@@ -59,4 +59,6 @@ private:
     std::pair<int, float> iD_;
     int playerNum_;
 
+    float startTime_;
+
 };

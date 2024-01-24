@@ -15,20 +15,24 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 	camera_ = std::make_unique<Camera>();	
 	stage_ = std::make_unique<Stage>();
 	outSide_ = std::make_unique<OutSide>(*camera_, playerNum_);
-	timeCount_ = std::make_unique<TimeCount>();
 
 	playerManager_ = std::make_unique<PlayerManager>(outSide_->conclusion_);
 	playerManager_->Init(playerNum_, stage_->GetColList(), stage_->GetWallColList(), stage_->GetWireColList());
-	if (playerNum_ ==1)
-	{
-		playerManager_->SinglePlay();
-		_update = &GameScene::SinglePlayUpdate;
-	}
 	//camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//ÉJÉÅÉâÇèâä˙âª
 	stage_->Init(playerManager_->GetPlayers());
 	checkPoint_ = std::make_unique<CheckPoint>(playerManager_->GetPlayers(), stage_->CheckPointGetColList());
-	deltaTime.SetStart();
+	timeCount_ = std::make_unique<TimeCount>(*checkPoint_);
 	camera_->ReConnect(playerManager_->GetPlayers()[(int)playerManager_->GetNewLeadNum()]);
+	if (playerNum_ ==1)
+	{
+		playerManager_->SinglePlay();
+		checkPoint_->SetSingleMode();
+		_update = &GameScene::SinglePlayUpdate;
+	}
+
+	deltaTime.SetStart();
+	startTime_ = deltaTime.GetElapsedTime();
+
 }
 
 GameScene::~GameScene()
@@ -52,15 +56,12 @@ void GameScene::Draw()
 	//DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 	auto newLeder = playerManager_->GetNewLeadNum();
 	auto Last = playerManager_->GetLastLeadNum();
-	//DrawFormatStringF(0, 580, 0xffffff, "ç≈å„îˆÇÕ:%d", static_cast<int>(Last));
-	//DrawFormatStringF(0, 560, 0xffffff, "êÊì™ÇÕ:%d", static_cast<int>(newLeder));
 	timeCount_->Draw();
 	sceneTransitor_.Draw();
 }
 
 void GameScene::DecideOnTheBeginning()
 {
-	//playerManager_->DecideOnTheBeginning(checkPoint_->GetCheckPoint());
 	playerManager_->DecideOnTheBeginning2(checkPoint_->GetCheckPoint2());
 	auto newLeder= playerManager_->GetNewLeadNum();
 	auto oldLeder =playerManager_->GetOldLeadNum();
@@ -77,17 +78,16 @@ void GameScene::DecideOnTheBeginning()
 
 void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 {
-
 	camera_->Update();
-	if (elapsedTime >= 2.0f)
-	{
-		checkPoint_->Update();
+
+	if (elapsedTime >= startTime_+2.0f)
+	{		
 		timeCount_->Update(elapsedTime);
+		checkPoint_->Update();
 		outSide_->Update(playerManager_->GetPlayers());
 		playerManager_->Update(input);
+		DecideOnTheBeginning();
 	}
-	DecideOnTheBeginning();
-
 	if (outSide_->conclusion_)
 	{
 		if (input.IsTriggerd("jump"))
@@ -97,21 +97,22 @@ void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 		}
 	}
 	sceneTransitor_.Update();
-
 }
 
 void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 {
 	camera_->Update();
-	if (elapsedTime >= 2.0f)
+	if (elapsedTime >= startTime_+ 2.0f)
 	{
-		checkPoint_->Update();
-		playerManager_->Update(input);
 		timeCount_->Update(elapsedTime);
-		DecideOnTheBeginning();
+		if (!checkPoint_->IsGoal())
+		{
+			checkPoint_->Update();
+			playerManager_->Update(input);
+			DecideOnTheBeginning();
+		}	
 	}
-
-	if (outSide_->conclusion_)
+	if (timeCount_->IsEnd())
 	{
 		if (input.IsTriggerd("jump"))
 		{
@@ -120,6 +121,5 @@ void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 		}
 	}
 	sceneTransitor_.Update();
-
 }
 
