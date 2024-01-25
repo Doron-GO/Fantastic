@@ -2,9 +2,7 @@
 #include"Scene/SceneMng.h"
 #include"Scene/GameScene.h"
 #include"Scene/TitleScene.h"
-#include"Scene/Transition/TileTransitor.h"
 #include"Scene/Transition/IrisTransitor.h"
-#include"Scene/Transition/StripTransitor.h"
 #include"Input/Input.h"
 using namespace std;
 #include"_debug/_DebugConOut.h"
@@ -24,8 +22,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	SetDrawScreen(DX_SCREEN_BACK);
 	SceneMng sceneManager;
-	TileTransitor tileTransitor;
-	StripTransitor stripTransitor;
 	IrisTransitor irisTransitor;
 	sceneManager.ChangeScene(make_shared<TitleScene>(sceneManager,0, irisTransitor));
 	Input input;

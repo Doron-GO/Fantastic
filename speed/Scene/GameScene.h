@@ -60,5 +60,7 @@ private:
     int playerNum_;
 
     float startTime_;
+    int GoImg_;
+    int ReadyImg_;
 
 };

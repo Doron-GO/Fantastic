@@ -29,6 +29,8 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 		_update = &GameScene::SinglePlayUpdate;
 		timeCount_->SinglePlay();
 	}
+	GoImg_ = LoadGraph("Src/Img/Go.png");
+	ReadyImg_ = LoadGraph("Src/Img/Ready.png");
 
 	deltaTime.SetStart();
 	startTime_ = deltaTime.GetElapsedTime();
@@ -51,6 +53,7 @@ void GameScene::Update(Input& input)
 
 void GameScene::Draw()
 {
+
 	ClearDrawScreen();
 	stage_->Draw(camera_->GetPos());
 	outSide_->Draw(camera_->GetPos());
@@ -60,6 +63,19 @@ void GameScene::Draw()
 	auto newLeder = playerManager_->GetNewLeadNum();
 	auto Last = playerManager_->GetLastLeadNum();
 	timeCount_->Draw();
+	auto elapsed = deltaTime.GetElapsedTime();
+
+	if (!(startTime_ +0.6f> elapsed)&& elapsed <= startTime_ + 1.5f)
+	{
+		DrawRotaGraph2F(screenSize_.x / 2.0f,0.0f+ screenSize_.y / 3.0f,
+			288.0f,33.0f, 2.0f, 0.0f, ReadyImg_, true);
+	}
+	if (!(startTime_ + 1.5f > elapsed) && elapsed <= startTime_ + 2.0f)
+	{
+		DrawRotaGraph2F(screenSize_.x / 2.0f, 0.0f+screenSize_.y / 3.0f,
+			225.0f, 80.0f, 1.0f, 0.0f, GoImg_, true);
+	}
+
 
 	sceneTransitor_.Draw();
 }

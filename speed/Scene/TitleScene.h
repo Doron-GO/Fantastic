@@ -15,8 +15,7 @@ public:
 
 private:
 
-   // int soundH_[2];
-    int newKey_;
+    int soundH_[2];
     bool startFlag_;
     int titleImg_;
     int selectImg_[4];
