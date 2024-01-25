@@ -15,7 +15,11 @@ public:
 
 private:
 
+   // int soundH_[2];
+    int newKey_;
+    bool startFlag_;
     int titleImg_;
+    int selectImg_[4];
     int num_;
 };
 

@@ -149,7 +149,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	DebugPhaseCheck();
 	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
-	DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
+	//DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
 
 	//char num= '0' + padNum_;
 	//std::string dead="Ž€‚ñ‚¾";

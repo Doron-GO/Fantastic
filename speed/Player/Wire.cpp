@@ -2,10 +2,8 @@
 #include "Wire.h"
 #include"Player.h"
 
-Wire::Wire(Player& player, ColList& list):player_(player), pow_(0.0f),col(list)
+Wire::Wire(Player& player, ColList& list):player_(player), pow_(0.0f),col(list), _phase(&Wire::StandbyPhase)
 {
-	_phase = &Wire::AnchoringPhase;
-
 }
 
 Wire::~Wire()
@@ -26,7 +24,6 @@ void Wire::Draw(Vector2DFloat cameraPos)
 	{
 		DrawCircle(fulcrum_.x+ cameraPos.x,fulcrum_.y+ cameraPos.y,5,0xff0000);
 		DrawLine(pPos.x, pPos.y, fulcrum_.x + cameraPos.x, fulcrum_.y + cameraPos.y, 0xffffff);
-
 	}
 
 	//if (player_.padNum_ == 1)
@@ -45,15 +42,12 @@ void Wire::SwingPhase()
 	angle_ = atan2f(player_.pos_.x - fulcrum_.x, player_.pos_.y - fulcrum_.y);
 	v_ += gravity * sinf(angle_);
 	vel_ = { -v_ * cosf(angle_),v_ * sinf(angle_) };
-
 	Vector2DFloat vel = { vel_.x,vel_.y };
-
 	if (_phase == &Wire::SwingPhase)
 	{
 		player_.pos_ += vel;		//velÇâ¡éZ
 		player_.pos_ = fulcrum_ + (player_.pos_ - fulcrum_).Normalized() * length_;//í∑Ç≥Çï‚ê≥
 	}
-
 	if (player_.pos_.y <= fulcrum_.y + -150.0f)
 	{
 		SwingJump();

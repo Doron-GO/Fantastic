@@ -9,7 +9,6 @@
 
 GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager, n, transit), playerNum_(n),_update(&GameScene::MultiPlayUpdate)
 {
-	SetDrawScreen(DX_SCREEN_BACK);
 
 	sceneTransitor_.Start();
 	camera_ = std::make_unique<Camera>();	
@@ -28,6 +27,7 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 		playerManager_->SinglePlay();
 		checkPoint_->SetSingleMode();
 		_update = &GameScene::SinglePlayUpdate;
+		timeCount_->SinglePlay();
 	}
 
 	deltaTime.SetStart();
@@ -44,6 +44,9 @@ void GameScene::Update(Input& input)
 	deltaTime.update();
 	auto elapsed = deltaTime.GetElapsedTime();
 	(this->*_update)(input, elapsed);
+
+	sceneTransitor_.Update();
+
 }
 
 void GameScene::Draw()
@@ -57,6 +60,7 @@ void GameScene::Draw()
 	auto newLeder = playerManager_->GetNewLeadNum();
 	auto Last = playerManager_->GetLastLeadNum();
 	timeCount_->Draw();
+
 	sceneTransitor_.Draw();
 }
 
@@ -96,7 +100,6 @@ void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 			return;
 		}
 	}
-	sceneTransitor_.Update();
 }
 
 void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
@@ -120,6 +123,5 @@ void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 			return;
 		}
 	}
-	sceneTransitor_.Update();
 }
 

@@ -14,10 +14,13 @@ public:
 	void GoalDraw();
 	void GameUpdate(float startime);
 	void GameDraw();
+	void SingleDraw();
 	void SetStart();
 	bool IsEnd();
 	float ElapsedTime();
 	void Count();
+	void SinglePlay();
+
 private:
 
 	void (TimeCount::* _update)(float startime);

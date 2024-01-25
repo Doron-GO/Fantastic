@@ -60,7 +60,12 @@ void TimeCount::GameUpdate(float startime)
 
 void TimeCount::GameDraw()
 {	
+}
+
+void TimeCount::SingleDraw()
+{
 	DrawFormatStringToHandle(0.0f, 0.0f, 0xff0000, fontHandle_, "RECORD:%f", elapsedTime_);
+
 }
 
 void TimeCount::SetStart()
@@ -84,4 +89,9 @@ void TimeCount::Count()
 	deltaTime_ = (nowTime_ - oldTime_) / 1000000.0f;
 	oldTime_ = nowTime_;
 	elapsedTime_ += deltaTime_;
+}
+
+void TimeCount::SinglePlay()
+{
+	_draw = &TimeCount::SingleDraw;
 }

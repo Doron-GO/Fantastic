@@ -206,7 +206,7 @@ void OutSide::IsDead(std::vector< std::shared_ptr<Player >> players)
 				frame_ = 0;
 				dangerZone_->ResetCounter();
 				playerCount_--;
-				//StartJoypadVibration(padNum_, 400, 300);
+				StartJoypadVibration(padNum_, 400, 300);
 			}
 		}
 	}
