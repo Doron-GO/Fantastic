@@ -3,6 +3,7 @@
 #include "SceneMng.h"
 #include "ResultScene.h"
 #include"Transition/TileTransitor.h"
+#include"../Object/Time/DeltaTime.h"
 
 TitleScene::TitleScene(SceneMng& manager, int n, Transitor& transit) :Scene(manager,n,transit),
 num_(1),startFlag_(false)

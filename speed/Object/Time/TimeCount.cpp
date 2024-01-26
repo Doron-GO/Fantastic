@@ -32,7 +32,7 @@ void TimeCount::GoalUpdate(float startime)
 
 void TimeCount::GoalDraw()
 {
-	DrawGraph(0, 0, goalImg_, true);
+	DrawGraph(0, -200, goalImg_, true);
 	if (elapsedTime_>= record_ +2.0f)
 	{
 		DrawRotaGraph2F(800.0f, 700.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_, true);

@@ -210,7 +210,7 @@ void OutSide::IsDead(std::vector< std::shared_ptr<Player >> players)
 			}
 		}
 	}
-	if (playerCount_==1) {
+	if (playerCount_<=1) {
 		conclusion_ = true;
 	}
 }
@@ -223,11 +223,11 @@ bool OutSide::IsOutSide(Vector2DFloat pos)
 
 void OutSide::UpDownORLeftRight(Vector2DFloat pos)
 {
-	if (pos.y < minPos_.y || maxPos_.y < pos.y)
+	if (pos.y <= minPos_.y || maxPos_.y <= pos.y)
 	{
 		UpORDown(pos);
 	}
-	else if (minPos_.x > pos.x || maxPos_.x<pos.x)
+	if (minPos_.x >= pos.x || maxPos_.x<=pos.x)
 	{
 		LeftOrRight(pos);
 	}
@@ -239,14 +239,14 @@ void OutSide::UpORDown(Vector2DFloat pos)
 	Vector2DFloat low;
 	Vector2DFloat camera{ camera_.GetPos().x,camera_.GetPos().y };
 
-	if (pos.y <minPos_.y )
+	if (pos.y <=minPos_.y )
 	{
 		up = { pos.x  ,minPos_.y };
 		upperVec_ = { 30.0f,0.0f };
 		low = { pos.x ,minPos_.y };
 		lowerVec_ = { -30.0f ,0.0f };
 	}
-	else if(maxPos_.y < pos.y)
+	else if(maxPos_.y <= pos.y)
 	{
 		up = { pos.x  , maxPos_.y };
 		upperVec_ = { -30.0f,0.0f };
@@ -263,14 +263,14 @@ void OutSide::LeftOrRight(Vector2DFloat pos)
 	Vector2DFloat low;
 	Vector2DFloat camera{ camera_.GetPos().x,camera_.GetPos().y };
 
-	if (pos.x > maxPos_.x)
+	if (pos.x >= maxPos_.x)
 	{
 		up = { maxPos_.x ,pos.y  };
 		upperVec_ = { 0.0f,20.0f };
 		low = { maxPos_.x, pos.y };
 		lowerVec_ = { 0.0f ,-20.0f };
 	}
-	else if (minPos_.x > pos.x)
+	else if (minPos_.x >= pos.x)
 	{
 		up = { minPos_.x ,pos.y };
 		upperVec_ = { 0.0f,-20.0f };

@@ -32,7 +32,7 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 	GoImg_ = LoadGraph("Src/Img/Go.png");
 	ReadyImg_ = LoadGraph("Src/Img/Ready.png");
 
-	deltaTime.SetStart();
+	deltaTime.Reset();
 	startTime_ = deltaTime.GetElapsedTime();
 
 }
@@ -47,7 +47,6 @@ void GameScene::Update(Input& input)
 	auto elapsed = deltaTime.GetElapsedTime();
 	(this->*_update)(input, elapsed);
 
-	sceneTransitor_.Update();
 
 }
 
@@ -67,12 +66,12 @@ void GameScene::Draw()
 
 	if (!(startTime_ +0.6f> elapsed)&& elapsed <= startTime_ + 1.5f)
 	{
-		DrawRotaGraph2F(screenSize_.x / 2.0f,0.0f+ screenSize_.y / 3.0f,
+		DrawRotaGraph2F(screenSize_.x / 2.0f,0.0f+ (screenSize_.y / 3.0f) - elapsed * 40,
 			288.0f,33.0f, 2.0f, 0.0f, ReadyImg_, true);
 	}
 	if (!(startTime_ + 1.5f > elapsed) && elapsed <= startTime_ + 2.0f)
 	{
-		DrawRotaGraph2F(screenSize_.x / 2.0f, 0.0f+screenSize_.y / 3.0f,
+		DrawRotaGraph2F(screenSize_.x / 2.0f, 0.0f+(screenSize_.y / 3.0f) ,
 			225.0f, 80.0f, 1.0f, 0.0f, GoImg_, true);
 	}
 
@@ -102,6 +101,7 @@ void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 
 	if (elapsedTime >= startTime_+2.0f)
 	{		
+
 		timeCount_->Update(elapsedTime);
 		checkPoint_->Update();
 		outSide_->Update(playerManager_->GetPlayers());
@@ -116,20 +116,24 @@ void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 			return;
 		}
 	}
+	sceneTransitor_.Update();
+
 }
 
 void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 {
 	camera_->Update();
 	if (elapsedTime >= startTime_+ 2.0f)
-	{
+	{		
 		timeCount_->Update(elapsedTime);
-		if (!checkPoint_->IsGoal())
+		if (checkPoint_->IsGoal())
 		{
-			checkPoint_->Update();
-			playerManager_->Update(input);
-			DecideOnTheBeginning();
-		}	
+			playerManager_->Goal();
+		}
+		checkPoint_->Update();
+		playerManager_->Update(input);
+		DecideOnTheBeginning();	
+
 	}
 	if (timeCount_->IsEnd())
 	{
@@ -139,5 +143,7 @@ void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 			return;
 		}
 	}
+	sceneTransitor_.Update();
+
 }
 

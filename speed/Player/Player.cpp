@@ -26,18 +26,20 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 	wallcolList_ = wallColList;
 	//ベストな方法ではないかもだけど、Padナンバーを使ってactlistを変える
 	 char num = '0'+padNum_;
-	 std::string act = "Src/Img/act";//string文字列を作る
+	 std::string act = "Src/Img/actList/act";//string文字列を作る
 	 act += num;						 //	文字列を連結
 	 act +=".list";					 //	文字列を連結
 
 	lpAnimMng.LoadAnime(act.c_str());
-	lpAnimMng.LoadAnime("Src/Img/Explosion.list");
 
 	std::string objID = "Player";
 	objID += num;
 	animeStr_.objID_ = objID.c_str();
 	lpAnimMng.SetAnime(animeStr_, "Idle");
 
+	LoadDivGraph("Src/Img/BigExplosion.png", 8, 8, 1, 32, 32, explosionImg_);
+
+	expCount_ = 0;
 	item_ = std::make_shared<ItemBase>();
 	moveVec_ = { 0.0f,0.0f};
 	movePow_ = { 0.0f,0.0f};
@@ -55,7 +57,7 @@ void Player::Update(Input& input)
 	{
 		(this->*_damage)();
 		(this->*_phase)(input_);
-		if (_damage == &Player::Nothing && !(_phase == &Player::WinnerPhese))
+		if (_damage == &Player::Nothing && !((_phase == &Player::WinnerPhese)|| (_phase == &Player::WinnerFallPhese)))
 		{
 			Move(input_);	
 			Anchoring(input_);
@@ -84,9 +86,8 @@ void Player::Update(Input& input)
 				pos_.x += movePow_.x;
 			}
 		}
-
+		lpAnimMng.UpdateAnime(animeStr_);
 	}
-	lpAnimMng.UpdateAnime(animeStr_);
 	col_.min_ = { pos_.x-10.0f,pos_.y };
 	col_.max_ = { pos_.x + 15.0f,pos_.y - 40.0f };
 }
@@ -94,14 +95,26 @@ void Player::Update(Input& input)
 void Player::Draw(Vector2DFloat cameraPos)
 {
 	auto pos = pos_ + cameraPos;
+	if (winFlag_)
+	{
+		if (expCount_ <= 34)
+		{
+
+			DrawRotaGraph2F(pos.x, pos.y ,
+				15.f, 16.0f,
+				10.0, 0.0,
+				explosionImg_[(expCount_/4)], true);
+			expCount_++;
+		}
+	}
 	if (aliveFlag_)
 	{
 		////デバッグ用の実際のキャラの座標を表示
-		DrawRotaGraph2F(pos_.x, pos_.y ,
-				24.0f, 35.0f,
-				1.5, 0.0,
-				lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-				true, static_cast<int>(dir_LR_), 0);
+		//DrawRotaGraph2F(pos_.x, pos_.y ,
+		//		24.0f, 35.0f,
+		//		1.5, 0.0,
+		//		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+		//		true, static_cast<int>(dir_LR_), 0);
 
 		//見せかけのキャラクター描画
 		DrawRotaGraph2F(pos.x, pos.y+0.3f,
@@ -516,14 +529,49 @@ void Player::SwingJumpPhese(Input& input)
 void Player::WinnerPhese(Input& input)
 {
 
-	lpAnimMng.SetAnime(animeStr_, "Fall");
+	lpAnimMng.SetAnime(animeStr_, "Win");
+}
 
+void Player::WinnerFallPhese(Input& input)
+{
+
+
+	if (!CollisionVec(up_))
+	{
+		movePow_.y = 0.0f;
+	}
+
+	if (CollisionVec({ 0.0f,movePow_.y + 0.1f }))
+	{
+		movePow_.y += 0.1f;
+		lpAnimMng.SetAnime(animeStr_, "Fall");
+
+	}
+	else
+	{
+		movePow_.y = 0.0f;
+		movePow_.x = 0.0f;
+		pos_.y = landingPos_.y;
+		doubleJump_ = true;
+		_phase = &Player::WinnerPhese;
+		winFlag_ = true;
+	}
 }
 
 void Player::Conclusion()
 {
-	_phase = &Player::WinnerPhese;
+	if (_phase == &Player::MovePhase)
+	{
+		movePow_.y = 0.0f;
+		movePow_.x = 0.0f;
+		_phase = &Player::WinnerPhese;
+		winFlag_ = true;
+	}
+	else
+	{
+		_phase = &Player::WinnerFallPhese;
 
+	}
 }
 
 void Player::MoveColision()
@@ -726,6 +774,11 @@ void Player::Damage(ItemBase::ITEM_TYPE type)
 		lpAnimMng.SetAnime(animeStr_, "Dmage");
 		break;
 	}
+}
+
+const bool Player::IsWin()
+{
+	return winFlag_;
 }
 
 void Player::Move(Input& input)

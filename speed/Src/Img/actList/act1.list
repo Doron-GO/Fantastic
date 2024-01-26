@@ -58,4 +58,19 @@
 			1,10,0,0,50,37
 		</anime>
 	</action>
+		<action name = "Win" source = "Src/Img/playerWin.png" divSizeX ="50" divSizeY ="37" divCntX = "1" divCntY = "11">
+		<anime loop ="0" encoding = "csv">
+			0,2,0,0,50,37,
+			1,2,0,0,50,37,
+			2,2,0,0,50,37,
+			3,2,0,0,50,37,
+			4,2,0,0,50,37,
+			5,2,0,0,50,37,
+			6,2,0,0,50,37,
+			7,2,0,0,50,37,
+			8,2,0,0,50,37,
+			9,2,0,0,50,37,
+			10,2,0,0,50,37
+		</anime>
+	</action>
 </actionList>

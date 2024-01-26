@@ -16,6 +16,7 @@ public:
 	const float GetDeltaTime();
 	const float GetElapsedTime();
 	void SetStart();
+	void Reset();
 
 private:
 	DeltaTime();

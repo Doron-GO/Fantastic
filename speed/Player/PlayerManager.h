@@ -33,10 +33,8 @@ public:
 	//先頭を探すよ
 	void DecideOnTheBeginning2(std::pair<bool,Vector2DFloat>checkPoint);
 	void HormingTargrt();
-
 	void Conclusion();
-
-	void Reset();
+	void Goal();
 
 	//アイテムとの当たり判定をプレイヤー人数ぶん回す関数
 	void ItemCol();
@@ -71,6 +69,8 @@ private:
 	int winImg_;
 	int restertImg_;
 	int winner_;
+
+	bool goalFlag_;
 
 	bool singlePlay_=false;
 	int count_;

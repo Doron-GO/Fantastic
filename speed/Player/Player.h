@@ -85,6 +85,7 @@ public:
 	bool TestItem();
 	const std::shared_ptr<ItemBase> GetItem();	
 	void Damage(ItemBase::ITEM_TYPE type);
+	const bool IsWin();
 	COL col_;
 private:
 
@@ -107,6 +108,7 @@ private:
 	void SwingPhese(Input& input);//スイング状態
 	void SwingJumpPhese(Input& input);//スイングジャンプ状態
 	void WinnerPhese(Input& input);//勝者状態
+	void WinnerFallPhese(Input& input);//勝者状態
 
 
 
@@ -147,7 +149,14 @@ private:
 	std::unique_ptr<Wire> wire_;
 
 	bool AnchoringFlag_;
-	bool aliveFlag_;
+	bool aliveFlag_;	
+	bool testItemFlag=true;
+	bool doubleJump_;
+	bool winFlag_=false;
+	int explosionImg_[8];
+	int expCount_;
+
+
 	float slideY_ = -35.0f;	
  	int test= 0xffffff;
 	Vector2DFloat targetPos_;
@@ -156,8 +165,6 @@ private:
 
 	std::shared_ptr<ItemBase>item_;
 	ItemList itemList_;	 
-	bool testItemFlag=true;
-	bool doubleJump_;
 	float damageCount_;
 };
 

@@ -23,7 +23,7 @@ void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList w
 		player->Init(gruound, Wall, wire);
 		players_.push_back(player);
 	}
-
+	goalFlag_ = false;
 }
 
 void PlayerManager::Update(Input& input)
@@ -33,6 +33,12 @@ void PlayerManager::Update(Input& input)
 	//	count_++;
 	//	return;
 	//}
+	if (!singlePlay_)
+	{
+		HormingTargrt();
+	}
+	ItemCol(); 
+	Conclusion();
 	for (const auto& player : players_)
 	{
 		if (player->IsAlive())
@@ -40,12 +46,7 @@ void PlayerManager::Update(Input& input)
 			player->Update(input);
 		}
 	}
-	if (!singlePlay_)
-	{
-		HormingTargrt();
-	}
-	ItemCol(); 
-	Conclusion();
+	
 }
 
 void PlayerManager::Draw(Vector2DFloat cameraPos)
@@ -59,8 +60,8 @@ void PlayerManager::Draw(Vector2DFloat cameraPos)
 	}
 	if (conclusion_)
 	{
-		DrawRotaGraph2F(800.0f, 500.0f, 200.0f, 20.0f, 1.0, 0.0, winImg_,true);
-		DrawRotaGraph2F(800.0f, 560.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_,true);
+		DrawRotaGraph2F(800.0f, 300.0f, 200.0f, 20.0f, 2.0, 0.0, winImg_,true);
+		DrawRotaGraph2F(800.0f, 760.0f, 208.0f, 20.0f, 2.0, 0.0, restertImg_,true);
 	}
 }
 
@@ -152,7 +153,7 @@ void PlayerManager::HormingTargrt()
 
 void PlayerManager::Conclusion()
 {
-	if (conclusion_)
+	if (conclusion_|| goalFlag_)
 	{
 		for (auto& player : players_)
 		{
@@ -165,8 +166,16 @@ void PlayerManager::Conclusion()
 				continue;
 			}
 		}
-		players_[winner_-1]->Conclusion();
+		if (!players_[winner_ - 1]->IsWin())
+		{
+			players_[winner_-1]->Conclusion();
+		}
 	}
+}
+
+void PlayerManager::Goal()
+{
+	goalFlag_ = true;
 }
 
 

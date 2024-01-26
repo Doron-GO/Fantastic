@@ -24,6 +24,12 @@ const float DeltaTime::GetElapsedTime()
 void DeltaTime::SetStart()
 {
 	oldTime_ = GetNowHiPerformanceCount();
+}
+
+void DeltaTime::Reset()
+{
+	oldTime_ = GetNowHiPerformanceCount();
+	elapsedTime_ = 0.0f;
 
 }
 
