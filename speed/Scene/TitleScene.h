@@ -18,6 +18,7 @@ private:
     int soundH_[2];
     bool startFlag_;
     int titleImg_;
+    int startImg_;
     int selectImg_[4];
     int num_;
 };

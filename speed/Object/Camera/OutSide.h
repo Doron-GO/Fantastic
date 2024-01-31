@@ -38,7 +38,7 @@ public:
 	//画面外かどうかを判定
 	void IsDead(std::vector< std::shared_ptr<Player >> players);
 	bool IsOutSide(Vector2DFloat pos);
-
+	void SinglePlay();
 	//画面からはみ出した時、上下から出たのか左右から出たのか
 	//true:上下　false: 左右
 	void UpDownORLeftRight(Vector2DFloat pos);
@@ -72,6 +72,7 @@ private:
 
 	bool isExploding_ = false;
 	bool bigExploding_ = false;
+	bool singlePlayFlag_ = false;
 
 	int ExplosionSound_;
 	int padNum_;

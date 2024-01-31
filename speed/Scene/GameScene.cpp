@@ -15,7 +15,7 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 	stage_ = std::make_unique<Stage>();
 	outSide_ = std::make_unique<OutSide>(*camera_, playerNum_);
 
-	playerManager_ = std::make_unique<PlayerManager>(outSide_->conclusion_);
+	playerManager_ = std::make_unique<PlayerManager>(outSide_->conclusion_, *stage_->GetBlocks());
 	playerManager_->Init(playerNum_, stage_->GetColList(), stage_->GetWallColList(), stage_->GetWireColList());
 	//camera_->Init(stage_->GetWorldArea() * stage_-> GetTileSize());//カメラを初期化
 	stage_->Init(playerManager_->GetPlayers());
@@ -24,6 +24,7 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 	camera_->ReConnect(playerManager_->GetPlayers()[(int)playerManager_->GetNewLeadNum()]);
 	if (playerNum_ ==1)
 	{
+		outSide_->SinglePlay();
 		playerManager_->SinglePlay();
 		checkPoint_->SetSingleMode();
 		_update = &GameScene::SinglePlayUpdate;
@@ -31,6 +32,8 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 	}
 	GoImg_ = LoadGraph("Src/Img/Go.png");
 	ReadyImg_ = LoadGraph("Src/Img/Ready.png");
+	sound_[0] = LoadSoundMem("Src/Sound/ready.mp4");
+	sound_[1] = LoadSoundMem("Src/Sound/「ゴー」.mp3");
 
 	deltaTime.Reset();
 	startTime_ = deltaTime.GetElapsedTime();
@@ -57,6 +60,7 @@ void GameScene::Draw()
 	stage_->Draw(camera_->GetPos());
 	outSide_->Draw(camera_->GetPos());
 	playerManager_->Draw(camera_->GetPos());
+
 	checkPoint_->Draw(camera_->GetPos());
 	//DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 	auto newLeder = playerManager_->GetNewLeadNum();
@@ -66,11 +70,22 @@ void GameScene::Draw()
 
 	if (!(startTime_ +0.6f> elapsed)&& elapsed <= startTime_ + 1.5f)
 	{
+		if (!CheckSoundMem(sound_[0]))
+		{
+			PlaySoundMem(sound_[0], DX_PLAYTYPE_BACK, true);
+		}
+
 		DrawRotaGraph2F(screenSize_.x / 2.0f,0.0f+ (screenSize_.y / 3.0f) - elapsed * 40,
 			288.0f,33.0f, 2.0f, 0.0f, ReadyImg_, true);
+
 	}
+
 	if (!(startTime_ + 1.5f > elapsed) && elapsed <= startTime_ + 2.0f)
 	{
+		if (!CheckSoundMem(sound_[1]))
+		{
+			PlaySoundMem(sound_[1], DX_PLAYTYPE_BACK, true);
+		}
 		DrawRotaGraph2F(screenSize_.x / 2.0f, 0.0f+(screenSize_.y / 3.0f) ,
 			225.0f, 80.0f, 1.0f, 0.0f, GoImg_, true);
 	}
@@ -98,13 +113,12 @@ void GameScene::DecideOnTheBeginning()
 void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 {
 	camera_->Update();
-
+	outSide_->Update(playerManager_->GetPlayers());
+	stage_->Update();
 	if (elapsedTime >= startTime_+2.0f)
 	{		
-
 		timeCount_->Update(elapsedTime);
 		checkPoint_->Update();
-		outSide_->Update(playerManager_->GetPlayers());
 		playerManager_->Update(input);
 		DecideOnTheBeginning();
 	}
@@ -117,12 +131,13 @@ void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 		}
 	}
 	sceneTransitor_.Update();
-
 }
 
 void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 {
 	camera_->Update();
+	outSide_->Update(playerManager_->GetPlayers());
+	stage_->Update();
 	if (elapsedTime >= startTime_+ 2.0f)
 	{		
 		timeCount_->Update(elapsedTime);
@@ -133,7 +148,6 @@ void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 		checkPoint_->Update();
 		playerManager_->Update(input);
 		DecideOnTheBeginning();	
-
 	}
 	if (timeCount_->IsEnd())
 	{
@@ -144,6 +158,5 @@ void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 		}
 	}
 	sceneTransitor_.Update();
-
 }
 

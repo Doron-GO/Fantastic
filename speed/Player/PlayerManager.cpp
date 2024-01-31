@@ -1,9 +1,10 @@
 #include "PlayerManager.h"
 #include "Player.h"
 #include"../Object/Item/ItemBase.h"
+#include"../Object/Stage/Blocks.h"
 
-PlayerManager::PlayerManager(bool& conclusion):conclusion_(conclusion),
-new_LeadNum_(PLAYER_NUM::P_1), old_LeadNum_(PLAYER_NUM::P_1), last_Num_(PLAYER_NUM::P_1), winner_(0), count_(0)
+PlayerManager::PlayerManager(bool& conclusion, Blocks& blocks):conclusion_(conclusion),
+new_LeadNum_(PLAYER_NUM::P_1), old_LeadNum_(PLAYER_NUM::P_1), last_Num_(PLAYER_NUM::P_1), winner_(0), count_(0), blocks_(blocks)
 {
 	winImg_=LoadGraph("Src/Img/WIN.png");
 	restertImg_ =LoadGraph("Src/Img/RESTERT.png");
@@ -19,7 +20,7 @@ void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList w
 	for (int Num = 1; Num <= playerNum; Num++)
 	{	
 		std::shared_ptr<Player> player;
-		player = std::make_shared<Player>(Num);
+		player = std::make_shared<Player>(Num, blocks_);
 		player->Init(gruound, Wall, wire);
 		players_.push_back(player);
 	}
@@ -28,11 +29,6 @@ void PlayerManager::Init(int playerNum, ColList gruound, ColList Wall, ColList w
 
 void PlayerManager::Update(Input& input)
 {
-	//if (count_<30)
-	//{
-	//	count_++;
-	//	return;
-	//}
 	if (!singlePlay_)
 	{
 		HormingTargrt();

@@ -113,7 +113,7 @@ bool LoadMap::SetMap()
 			col.push_back(Collision{ Vector2DFloat{x,y+h},Vector2DFloat{x+w,y} });
 		}
 	};
-	auto LoadBlockCol = [](json json, std::vector<Collision> &col)
+	auto LoadBlockCol = [](json json, std::list<Collision> &col)
 	{
 		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
 		{
@@ -129,6 +129,7 @@ bool LoadMap::SetMap()
 	auto& wireCol = json_["layers"][3]["objects"];
 	auto& itemBoxCol = json_["layers"][4]["objects"];
 	auto& checkPointCol = json_["layers"][5]["objects"];
+	auto& checkBlockCol = json_["layers"][6]["objects"];
 	//auto& checkPointCol = json_["layers"][6]["objects"];
 
 	LoadCol(col, colList_);
@@ -136,6 +137,7 @@ bool LoadMap::SetMap()
 	LoadWireCol(wireCol, WireCollList_);
 	LoadItemCol(itemBoxCol, itemBoxCollList_);
 	LoadCheckCol(checkPointCol, checkPointCollList_);
+	LoadBlockCol(checkBlockCol, blockCollList_);
 
 	return true;
 }
@@ -158,6 +160,11 @@ const ColList& LoadMap::WireGetColList(void)
 const ColList& LoadMap::itemBoxGetColList(void)
 {
 	return itemBoxCollList_;
+}
+
+const ColList& LoadMap::BlockGetColList(void)
+{
+	return blockCollList_;
 }
 
 const PointColList& LoadMap::CheckPointGetColList(void)

@@ -7,6 +7,7 @@
 #include"../Input/Input.h"
 
 class Player;
+class Blocks;
 
 using Players = std::vector<std::shared_ptr<Player>>;
 using Vec = Vector2DFloat;
@@ -22,7 +23,7 @@ public:
 		P_4
 	};
 
-	PlayerManager(bool& conclusion);
+	PlayerManager(bool& conclusion, Blocks& blocks);
 	~PlayerManager();
 
 	void Update(Input& input);
@@ -71,7 +72,7 @@ private:
 	int winner_;
 
 	bool goalFlag_;
-
+	Blocks& blocks_;
 	bool singlePlay_=false;
 	int count_;
 

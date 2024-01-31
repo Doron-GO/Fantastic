@@ -24,7 +24,7 @@ void DangerZoneSmaller::Smaller()
 		Vector2DFloat Vec = { 0.2f, 0.13f };
 		outSideMax_-= Vec;
 		outSideMin_ += Vec;
-		count_++;
+		//count_++;
 	}
 }
 
@@ -40,7 +40,7 @@ void DangerZoneSmaller::UpdateWait()
 	{
 		Activated();
 	}
-	//else{count_++;}
+	else{count_++;}
 }
 void DangerZoneSmaller::Activated()
 {

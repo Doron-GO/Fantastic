@@ -6,11 +6,14 @@
 #include"../_debug/_DebugConOut.h"
 #include"../_debug/_DebugDispOut.h"
 
-Player::Player(int playerNum):dir_LR_(DIR_LR::RIGHT),phase_(PHASE::FALL),
-aliveFlag_(true), padNum_(playerNum), damageCount_(0)
+Player::Player(int playerNum, Blocks& blocks):dir_LR_(DIR_LR::RIGHT),phase_(PHASE::FALL),
+aliveFlag_(true), padNum_(playerNum), damageCount_(0), blocks_(blocks)
 {
 	AnchoringFlag_ = false;
 	doubleJump_ = true;
+	ExplosionSound_[0] = LoadSoundMem("Src/Sound/Explosion.mp3");
+	ExplosionSound_[1] = LoadSoundMem("Src/Sound/launcher1.mp3");
+
 }
 
 Player::~Player()
@@ -48,6 +51,8 @@ void Player::Init(ColList colList, ColList wallColList, ColList wireColList)
 	_damage = &Player::Nothing;
 	itemList_ = ItemList::NON;
 	wire_ = std::make_unique<Wire>(*this,wireColList);
+	missileImg_ = LoadGraph("Src/Img/alamo.png");
+
 }
 
 void Player::Update(Input& input)
@@ -57,6 +62,7 @@ void Player::Update(Input& input)
 	{
 		(this->*_damage)();
 		(this->*_phase)(input_);
+		BlocksCollision();
 		if (_damage == &Player::Nothing && !((_phase == &Player::WinnerPhese)|| (_phase == &Player::WinnerFallPhese)))
 		{
 			Move(input_);	
@@ -88,8 +94,6 @@ void Player::Update(Input& input)
 		}
 		lpAnimMng.UpdateAnime(animeStr_);
 	}
-	col_.min_ = { pos_.x-10.0f,pos_.y };
-	col_.max_ = { pos_.x + 15.0f,pos_.y - 40.0f };
 }
 
 void Player::Draw(Vector2DFloat cameraPos)
@@ -109,13 +113,6 @@ void Player::Draw(Vector2DFloat cameraPos)
 	}
 	if (aliveFlag_)
 	{
-		////デバッグ用の実際のキャラの座標を表示
-		//DrawRotaGraph2F(pos_.x, pos_.y ,
-		//		24.0f, 35.0f,
-		//		1.5, 0.0,
-		//		lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
-		//		true, static_cast<int>(dir_LR_), 0);
-
 		//見せかけのキャラクター描画
 		DrawRotaGraph2F(pos.x, pos.y+0.3f,
 			24.0f, 35.0f,
@@ -124,36 +121,18 @@ void Player::Draw(Vector2DFloat cameraPos)
 			true, static_cast<int>(dir_LR_), 0);
 
 		TesItemDraw(cameraPos);
-		//DrawBox(col_.min_.x + cameraPos.x, col_.min_.y + cameraPos.y, col_.max_.x + cameraPos.x, col_.max_.y + cameraPos.y, 0xffaaff, false);
-		//DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
 	}
-	//if (padNum_ == 1)
-	//{
-		//DrawFormatStringF(pos.x-30.0f, pos.y-100.0f, 0xffffff, "movePow_(x:%f,y%f)", movePow_.x, movePow_.y);
-		//DrawFormatStringF(pos.x - 30.0f, pos.y - 140.0f, 0xfffff, "moveVec_(x:%f,y%f)", moveVec_.x, moveVec_.y);
-		//DrawFormatStringF(pos.x - 30.0f, pos.y - 120.0f, 0xffffff, "pos_(x:%f,y%f)", pos_.x, pos_.y);
-	//	DrawFormatStringF(0, 60, 0xffffff, "camerapos+pos_(x:%f,y%f)", pos.x, pos.y);
-	//	//DrawString(0, 120, now_.c_str(), 0xffffff);
-
-	//	if (!CollisionVec(moveVec_))
-	//	{
-	//		DrawString(0, 100, "壁に当たった", 0xffffff);
-	//	}
-	//	if (!CollisionDown())
-	//	{
-	//		DrawString(0, 80, "床に当たった", 0xffffff);
-	//	}
-	//	if (!ColWallGrab(moveVec_))
-	//	{
-	//		DrawString(0, 60, "ジャンプ壁に当たった", test);
-	//	}
-	//}		
+		
 	switch (itemList_)
 	{
 	case Player::ItemList::NON:
 		now_Item_ = "NON";
 		break;
 	case Player::ItemList::MISSILE:
+		DrawRotaGraph2F(pos.x-13.0f, pos.y-40.0f,
+			4.0f, 10.0f,
+			1.5, 0.0,missileImg_, true);
+
 		now_Item_ = "MISSILS";
 		break;
 	case Player::ItemList::LASER:
@@ -161,41 +140,9 @@ void Player::Draw(Vector2DFloat cameraPos)
 		break;
 	}
 	DebugPhaseCheck();
-	DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
-	//DrawString(pos.x - 30.0f, pos.y - 80.0f, now_.c_str(), 0xffffff);
-
-	//char num= '0' + padNum_;
-	//std::string dead="死んだ";
-	//std::string alive="生きている";
-	//std::string player="Player";
-	//if (aliveFlag_)
-	//{
-	//	player +=num;
-	//	player += alive;
-	//}
-	//else
-	//{
-	//	player += num;
-	//	player += dead;
-	//}
-	//DrawString(0, 320 + (padNum_ * 20),player.c_str(), 0xffffff);
-
-	//Vector2DFloat rayCenter = { pos  };
-	//Vector2DFloat movecec = { 0.0f,movePow_.y  };
-	//Vector2DFloat movecec2 = { moveVec_.x,movePow_.y-10.0f  };
-	//if (movePow_.y < 0.0f)
-	//{
-	//	movecec.y = 0.2f;
-	//}
-
+	//DrawString(pos.x-10.0f, pos.y-60.0f, now_Item_.c_str(), 0xffffff);
 	wire_->Draw(cameraPos);
 
-	//DrawLine(pos.x, pos.y,
-	//	pos.x, pos.y + movePow_.y, 0xff0000,2.0f);
-	//DrawLine(pos.x, pos.y,
-	//	pos.x+diagonallyVec_.x, pos.y + diagonallyVec_.y, 0xff0000,3.0f);
-	//DrawLine(pos.x, pos.y,
-	//	pos.x + (moveVec_.x), pos.y-3.0f , 0xff0000,3.0f);
 }
 
 const Vector2DFloat Player::GetPos()
@@ -337,6 +284,7 @@ void Player::FallPhase(Input& input)
 		doubleJump_ = true;
 		_phase = &Player::MovePhase;
 	}
+
 	if (movePow_.y > 12.0f)
 	{
 		movePow_.y = 12.0f;
@@ -530,6 +478,7 @@ void Player::WinnerPhese(Input& input)
 {
 
 	lpAnimMng.SetAnime(animeStr_, "Win");
+
 }
 
 void Player::WinnerFallPhese(Input& input)
@@ -554,6 +503,7 @@ void Player::WinnerFallPhese(Input& input)
 		pos_.y = landingPos_.y;
 		doubleJump_ = true;
 		_phase = &Player::WinnerPhese;
+		PlaySoundMem(ExplosionSound_[0], DX_PLAYTYPE_BACK, true);
 		winFlag_ = true;
 	}
 }
@@ -565,6 +515,8 @@ void Player::Conclusion()
 		movePow_.y = 0.0f;
 		movePow_.x = 0.0f;
 		_phase = &Player::WinnerPhese;
+		PlaySoundMem(ExplosionSound_[0], DX_PLAYTYPE_BACK, true);
+
 		winFlag_ = true;
 	}
 	else
@@ -680,15 +632,6 @@ bool Player::ColWallGrab(Vector2DFloat movevec, float y)
 		Raycast::Ray ray = { rayCenter,movevec };
 		if (rayCast_.CheckCollision(ray, col, pos_))
 		{		
-			wallX = (col.first.x)+32.0f ;
-			if (rayCenter.x> wallX)
-			{
-				test = 0xff0000;
-			}
-			else
-			{
-				test = 0x0000ff;
-			}
 			return false;
 		}
 	}	
@@ -698,6 +641,25 @@ bool Player::ColWallGrab(Vector2DFloat movevec, float y)
 bool Player::IsWall()
 {
 	return (!ColWallGrab(moveVec_,16.0f) );
+}
+
+void Player::BlocksCollision()
+{
+	for (auto& block:blocks_.GetBlockList())
+	{
+		if (block.blockFlag_)
+		{
+
+			if (rayCast_.RectToRectCollision(col_.min_, col_.max_,
+				block.col_.first, block.col_.second))
+			{
+				block.blockFlag_ = false;
+				movePow_.x= 0.0f;
+				movePow_.y /= 4.0f;
+			}
+		}
+	}
+
 }
 
 void Player::Landing(float y)
@@ -774,6 +736,8 @@ void Player::Damage(ItemBase::ITEM_TYPE type)
 		lpAnimMng.SetAnime(animeStr_, "Dmage");
 		break;
 	}
+	PlaySoundMem(ExplosionSound_[1], DX_PLAYTYPE_BACK, true);
+
 }
 
 const bool Player::IsWin()
@@ -825,7 +789,8 @@ void Player::Move(Input& input)
 
 	//スライディングボダンが押されていない時
 	if (!input.IsPrassed("c"))
-	{
+	{		
+
 		if (!(_phase == &Player::WallJumpPhese)&& !(_phase == &Player::SwingPhese))
 		{
 			//右キー
@@ -843,6 +808,8 @@ void Player::Move(Input& input)
 				moveVec_ = { -20.0f,-15.0f };
 			}
 		}
+		col_.min_ = { pos_.x - 10.0f,pos_.y };
+		col_.max_ = { pos_.x + 15.0f,pos_.y - 40.0f };
 
 		if(_phase == &Player::SwingJumpPhese)
 		{
@@ -856,6 +823,7 @@ void Player::Move(Input& input)
 			if (movePow_.x <= -8.0f) { movePow_.x = -8.0f; }
 			else if (movePow_.x >= 8.0f) { movePow_.x = 8.0f; }
 		}
+
 	}
 	//壁に当たったらのどの処理をまとめている
 	MoveColision();
@@ -866,6 +834,8 @@ void Player::Move(Input& input)
 		//スライディングボタンが押されていたら
 		if (input.IsPrassed("c"))
 		{
+			col_.min_ = { pos_.x - 10.0f,pos_.y };
+			col_.max_ = { pos_.x + 15.0f,pos_.y-20.0f };
 			lpAnimMng.SetAnime(animeStr_, "Slide");
 			//スライディング中は減速する
 			if (movePow_.x > 0.0f) 
@@ -877,6 +847,7 @@ void Player::Move(Input& input)
 				movePow_.x += 0.1f;
 			}			
 			slideY_ = -13.0f;
+
 		}
 		else{ slideY_ = -35.0f; }
 	}

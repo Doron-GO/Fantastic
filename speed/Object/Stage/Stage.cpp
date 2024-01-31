@@ -3,12 +3,14 @@
 #include"../Manager/ImageMng.h"
 #include "../../Player/Player.h"
 #include"../../Object/Item/ItemBox.h"
-#include"Block.h"
+#include"Blocks.h"
 
 Stage::Stage() 
 {	
 	loadMap_.LoadTSX("Src/Json/stageTSX_.json");
 	loadMap_.LoadStage("Src/Json/stage_2.json");
+	blocks_ = std::make_unique<Blocks>(loadMap_);
+
 }
 
 Stage::~Stage()
@@ -19,13 +21,13 @@ void Stage::Init(std::vector<std::shared_ptr<Player>> players)
 {
 	//tmxObj_.LoadTSX("./tmx/stage.tmx");
 	itemBox_ = std::make_unique<ItemBox>(loadMap_, players);
-	block_ = std::make_unique<Block>(loadMap_, players);
 	backImg_ = LoadGraph("Src/Img/Stageimage/siro.png");
 }
 
 void Stage::Update()
 {
 	itemBox_->Update();
+	blocks_->Update();
 }
 
 void Stage::Draw(Vector2DFloat cameraPos)
@@ -46,7 +48,7 @@ void Stage::Draw(Vector2DFloat cameraPos)
 				if (x + y * worldArea.x < layer.second.size())
 				{
 					auto gid = layer.second[x + y * worldArea.x];
-					if (gid >= 0&& !(gid==5))
+					if (gid >= 0&& !(gid==5)&&!(gid == 6))
 					{
 						DrawGraph(x * tileSize.x+ cameraPos.x,
 							(y * tileSize.y + cameraPos.y),
@@ -59,29 +61,30 @@ void Stage::Draw(Vector2DFloat cameraPos)
 	}
 
 	itemBox_->Draw(cameraPos);
-	for ( auto& line : loadMap_.GetColList())
-	{
-		auto first = line.first;
-		auto second = line.second;
-		Line lines[4] = {
-			//è„ÇÃï”   
-			{first + cameraPos,
-			(first + cameraPos) + Vector2DFloat{second.x,0} },
-			//âEï”
-			{(first + cameraPos) + Vector2DFloat{second.x,0} ,
-			first + line.second + cameraPos },
-			//â∫ÇÃï”
-			{ first + second + cameraPos,
-			first + Vector2DFloat{0,second.y } + cameraPos },
-			//ç∂ï”
-			{first + Vector2DFloat{0,second.y} + cameraPos ,
-			first + cameraPos }
-		};
-		for (auto line : lines)
-		{
-			DrawLine(line.p.x, line.p.y, line.end.x, line.end.y, 0x00ff00);
-		}
-	}
+	blocks_->Draw(cameraPos);
+	//for ( auto& line : loadMap_.GetColList())
+	//{
+	//	auto first = line.first;
+	//	auto second = line.second;
+	//	Line lines[4] = {
+	//		//è„ÇÃï”   
+	//		{first + cameraPos,
+	//		(first + cameraPos) + Vector2DFloat{second.x,0} },
+	//		//âEï”
+	//		{(first + cameraPos) + Vector2DFloat{second.x,0} ,
+	//		first + line.second + cameraPos },
+	//		//â∫ÇÃï”
+	//		{ first + second + cameraPos,
+	//		first + Vector2DFloat{0,second.y } + cameraPos },
+	//		//ç∂ï”
+	//		{first + Vector2DFloat{0,second.y} + cameraPos ,
+	//		first + cameraPos }
+	//	};
+	//	for (auto line : lines)
+	//	{
+	//		DrawLine(line.p.x, line.p.y, line.end.x, line.end.y, 0x00ff00);
+	//	}
+	//}
 }
 
 const  Vector2D& Stage::GetWorldArea()
@@ -117,4 +120,9 @@ const ColList& Stage::GetWireColList(void)
 const PointColList& Stage::CheckPointGetColList(void)
 {
 	return loadMap_.CheckPointGetColList();
+}
+
+const std::unique_ptr<Blocks> & Stage::GetBlocks()
+{
+	return blocks_;
 }

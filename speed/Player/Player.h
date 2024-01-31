@@ -10,9 +10,11 @@
 #include"../Object/Item/ItemManager.h"
 #include"../Object/Item/ItemBase.h"
 #include"../Object/Item/Missile.h"
+#include"../Object/Stage/Blocks.h"
 
 
 class Wire;
+class Blocks;
 
 class Player
 {
@@ -47,7 +49,7 @@ public:
 
 	};
 
-	 Player(int playerNum);
+	 Player(int playerNum, Blocks& blocks);
 	 ~Player();
 	 void Init(ColList colList, ColList wallColList, ColList wireColList);
 	 void Update(Input& input);
@@ -127,6 +129,7 @@ private:
 	bool CollisionVec(Vector2DFloat movevec, Vector2DFloat center);
 	bool ColWallGrab(Vector2DFloat movevec,float y DEFAULTPARAM( = 0.0f ));
 	bool IsWall();
+	void BlocksCollision();
 	void Landing(float y);
 
 	//プレイヤーのアクション
@@ -155,14 +158,13 @@ private:
 	bool winFlag_=false;
 	int explosionImg_[8];
 	int expCount_;
-
+	int missileImg_;
 
 	float slideY_ = -35.0f;	
- 	int test= 0xffffff;
 	Vector2DFloat targetPos_;
 	Vector2DFloat landingPos_;
-
-
+	Blocks &blocks_;
+	int ExplosionSound_[2];
 	std::shared_ptr<ItemBase>item_;
 	ItemList itemList_;	 
 	float damageCount_;

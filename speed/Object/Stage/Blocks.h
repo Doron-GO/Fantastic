@@ -8,24 +8,28 @@
 class LoadMap;
 class Player;
 
-class Block
+class Blocks
 {
+
 public:
-	Block(LoadMap& loadMap, std::vector<std::shared_ptr<Player>> players);
-	~Block();
+	Blocks(LoadMap& loadMap);
+	~Blocks();
 
 	void Update();
-	void Draw();
-
+	void Draw(Vector2DFloat cameraPos);
+	struct Block
+	{
+		bool blockFlag_;
+		Collision col_;
+		int count_;
+	};
+	std::list<Block> &GetBlockList();
 
 private:
-
+	std::list<Block> blocks_;
 	Raycast rayCast_;
-	std::vector<Vector2DFloat> blockPos_;
-	std::vector<std::shared_ptr<Player>> players_;
-
-	ColList itemBoxColList_;
 	LoadMap& loadMap_;
+
 
 };
 

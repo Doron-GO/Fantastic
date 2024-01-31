@@ -39,12 +39,17 @@ void ItemBox::Draw(Vector2DFloat offset)
 			}
 		}
 	}
-	count_++;
+	count_++;	
 	for (const auto& col : loadMap_.itemBoxGetColList())
 	{
 		DrawBoxAA(col.first.x + offset.x, col.first.y + offset.y,
 			col.second.x + offset.x, col.second.y + offset.y, 0xff0000, false, 5.0f);
 	}
+
+}
+
+void ItemBox::Update()
+{	
 	for (const auto& player :players_)
 	{
 		for (const auto& col : loadMap_.itemBoxGetColList())
@@ -68,16 +73,11 @@ void ItemBox::Draw(Vector2DFloat offset)
 						player->SetItem(ii);
 
 					}
-
 				}
-		//DrawStringF(0.0f, 590.0f, "アイテムボックスに接触", 0xff0000);
 			}
 		}
 	}
-}
 
-void ItemBox::Update()
-{
 }
 
 bool ItemBox::IsBox(Vector2DFloat pos)

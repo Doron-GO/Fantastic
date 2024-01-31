@@ -62,5 +62,6 @@ private:
     float startTime_;
     int GoImg_;
     int ReadyImg_;
+    int sound_[2];
 
 };

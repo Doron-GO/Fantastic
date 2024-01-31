@@ -23,6 +23,7 @@ public:
 	const ColList& WallGetColList(void);
 	const ColList& WireGetColList(void);
 	const ColList& itemBoxGetColList(void);
+	const ColList& BlockGetColList(void);
 	const PointColList& CheckPointGetColList(void);
 	const Vector2D& GetWorldArea(void);
 	const Vector2D& GetTileSize(void);

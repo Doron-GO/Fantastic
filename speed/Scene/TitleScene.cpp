@@ -10,6 +10,7 @@ num_(1),startFlag_(false)
 {
 	sceneTransitor_.Start();
 	titleImg_ = LoadGraph("Src/Img/Title.png");
+	startImg_ = LoadGraph("Src/Img/start.png");
 	LoadDivGraph("Src/Img/Select.png", 4, 1, 4, 266, 36,selectImg_);
 	soundH_[0] = LoadSoundMem("Src/Sound/カーソル移動5.mp3");
 	soundH_[1] = LoadSoundMem("Src/Sound/決定ボタンを押す33.mp3");
@@ -73,10 +74,12 @@ void TitleScene::Draw()
 		DrawGraph(0, 0, titleImg_, true);
 	}
 
-	DrawFormatString(0, 200, 0xffffff, "%d",num_);
+//	DrawFormatString(0, 200, 0xffffff, "%d",num_);
 	//DrawRotaGraph2F(800.0f, 560.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_, true);
 	if (startFlag_)
 	{
+		DrawRotaGraph2F(800.0f, 800.0f, 350.0f, 20.0f, 1.0, 0.0, startImg_, true);
+
 		for (int num=0;num<GetJoypadNum();num++)
 		{
 

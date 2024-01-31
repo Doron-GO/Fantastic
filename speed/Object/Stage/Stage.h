@@ -5,7 +5,7 @@
 
 class ItemBox;
 class Player;
-class Block;
+class Blocks;
 
 class Stage
 {
@@ -30,12 +30,12 @@ public:
 	const ColList& GetWallColList(void);
 	const ColList& GetWireColList(void);
 	const PointColList& CheckPointGetColList(void);
-
+	const  std::unique_ptr<Blocks> &GetBlocks();
 private:
 
 	LoadMap loadMap_;
 	std::unique_ptr<ItemBox> itemBox_;
-	std::unique_ptr<Block> block_;
+	std::unique_ptr<Blocks> blocks_;
 	int backImg_;
 
 };

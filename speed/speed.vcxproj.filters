@@ -99,7 +99,7 @@
     <ClCompile Include="Object\Item\Laser.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Stage\Block.cpp">
+    <ClCompile Include="Object\Stage\Blocks.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Transition\Transitor.cpp">
@@ -227,7 +227,7 @@
     <ClInclude Include="Object\Item\Laser.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Object\Stage\Block.h">
+    <ClInclude Include="Object\Stage\Blocks.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Transition\Transitor.h">

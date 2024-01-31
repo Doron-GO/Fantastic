@@ -9,6 +9,7 @@ Missile::Missile()
 	_draw = &Missile::MissileDraw;
 	type_ = ITEM_TYPE::MISSILE;
 	LoadDivGraph("Src/Img/Explosion.png", 11, 11, 1, 32, 31, img_);
+	missileImg_ = LoadGraph("Src/Img/alamo.png");
 	explosionFlag_ = false;
 	activateFlag_ = false;
 
@@ -29,10 +30,17 @@ void Missile::Update()
 
 void Missile::Draw(Vector2DFloat offset)
 {
-	DrawCircle(itemPos_.x+offset.x, itemPos_.y + offset.y, 20, 0xff0000);
-	DrawBox(col_.min_.x + offset.x, col_.min_.y + offset.y, col_.max_.x + offset.x, col_.max_.y + offset.y, 0xffaaff, false);
-	DrawCircle(itemPos_.x, itemPos_.y , 20, 0xff0000);
-	DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
+	//DrawCircle(itemPos_.x+offset.x, itemPos_.y + offset.y, 20, 0xff0000);
+	//DrawBox(col_.min_.x + offset.x, col_.min_.y + offset.y, col_.max_.x + offset.x, col_.max_.y + offset.y, 0xffaaff, false);
+	//DrawCircle(itemPos_.x, itemPos_.y , 20, 0xff0000);
+	//DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
+	float deg = atan2f(vel_.y, vel_.x);
+	auto rad = 90 * (DX_PI_F / 180.0f);
+	auto angle = deg + rad;
+	if (activateFlag_)
+	{
+		DrawRotaGraph2F(itemPos_.x + offset.x, itemPos_.y + offset.y, 4, 10, 3.0, angle, missileImg_, true);
+	}
 	(this->*_draw)(offset);
 }
 

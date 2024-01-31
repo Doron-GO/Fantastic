@@ -27,5 +27,6 @@ private:
     void (Missile::* _draw)(Vector2DFloat offset);
 
     Vector2DFloat vel_;
+    int missileImg_;
 };
 
