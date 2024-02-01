@@ -57,7 +57,7 @@ void PlayerManager::Draw(Vector2DFloat cameraPos)
 	if (conclusion_)
 	{
 		DrawRotaGraph2F(800.0f, 300.0f, 200.0f, 20.0f, 2.0, 0.0, winImg_,true);
-		DrawRotaGraph2F(800.0f, 760.0f, 208.0f, 20.0f, 2.0, 0.0, restertImg_,true);
+		//DrawRotaGraph2F(800.0f, 760.0f, 208.0f, 20.0f, 2.0, 0.0, restertImg_,true);
 	}
 }
 

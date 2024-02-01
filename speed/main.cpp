@@ -26,7 +26,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	sceneManager.ChangeScene(make_shared<TitleScene>(sceneManager,0, irisTransitor));
 	Input input;
 
-	while (ProcessMessage() != -1)
+	while (ProcessMessage() != -1&&CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 
 		input.Update(1);

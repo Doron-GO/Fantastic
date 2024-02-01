@@ -10,18 +10,31 @@ class DangerZoneSmaller;
 class Player;
 
 
+enum class SIDE
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+};
+
+
 //âÊñ í[ÇÃîöî≠ÇçÏÇÈÇΩÇﬂÇÃç\ë¢ëÃ
 struct Bomb
 {
 	Vector2DFloat pos_ = {};
 	int frame_ = 0;
 	bool isDead = false;
-	Bomb(const Vector2DFloat& p) :pos_(p) {}
+	SIDE side_ ;
+	Bomb(const Vector2DFloat& p, SIDE side) :pos_(p),side_(side) {}
 };
 
 class OutSide
 {
 public:
+
+
+
 	
 	OutSide(Camera& camera, int playerCount);
 	~OutSide();
@@ -48,7 +61,14 @@ public:
 	const int NumberOfSurvivors();
 	bool conclusion_;
 
+	void SideChange(Vector2DFloat& pos,SIDE side_);
+
+
 private:
+	SIDE upperSide_;
+	SIDE lowerSide_;
+	SIDE upperOldSide_;
+	SIDE lowerOldSide_;
 
 	Camera& camera_;
 
@@ -68,7 +88,8 @@ private:
 
 	Vector2DFloat lowerPos_;
 	Vector2DFloat lowerVec_;
-	std::list<Bomb> bombs_;
+	std::list<Bomb> upBombs_;
+	std::list<Bomb> downBombs_;
 
 	bool isExploding_ = false;
 	bool bigExploding_ = false;

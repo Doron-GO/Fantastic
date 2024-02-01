@@ -35,7 +35,7 @@ void TimeCount::GoalDraw()
 	DrawGraph(0, -200, goalImg_, true);
 	if (elapsedTime_>= record_ +2.0f)
 	{
-		DrawRotaGraph2F(800.0f, 700.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_, true);
+		//DrawRotaGraph2F(800.0f, 700.0f, 208.0f, 20.0f, 1.0, 0.0, restertImg_, true);
 		DrawFormatStringToHandle(500.0f, 600.0f, 0xff0000, fontHandle_, "RECORD:%f", record_);
 		endFlag_ = true;
 	}

@@ -74,15 +74,15 @@ void Player::Update(Input& input)
 				{
 					itemList_ = ItemList::NON;
 				}		
-				if (input_.IsTriggerd("item"))
+				if (input_.IsTriggerd("item")&& !item_->IsActivate())
 				{
 					item_->Activate(Vector2DFloat{ pos_.x,pos_.y - 20.0f });
 					ItemUse();
 				}		
 				item_->SetPos(Vector2DFloat{ targetPos_.x,targetPos_.y - 20.0f });
-				item_->Update();
 			}
 		}	
+		if (!(itemList_ == ItemList::NON))	{item_->Update();}
 		if (!(_phase == &Player::SwingPhese))
 		{
 			pos_.y += movePow_.y;

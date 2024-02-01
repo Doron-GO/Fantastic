@@ -30,10 +30,6 @@ void Missile::Update()
 
 void Missile::Draw(Vector2DFloat offset)
 {
-	//DrawCircle(itemPos_.x+offset.x, itemPos_.y + offset.y, 20, 0xff0000);
-	//DrawBox(col_.min_.x + offset.x, col_.min_.y + offset.y, col_.max_.x + offset.x, col_.max_.y + offset.y, 0xffaaff, false);
-	//DrawCircle(itemPos_.x, itemPos_.y , 20, 0xff0000);
-	//DrawBox(col_.min_.x , col_.min_.y , col_.max_.x , col_.max_.y , 0xffaaff, false);
 	float deg = atan2f(vel_.y, vel_.x);
 	auto rad = 90 * (DX_PI_F / 180.0f);
 	auto angle = deg + rad;
@@ -55,8 +51,8 @@ bool Missile::IsEnd()
 {
 	if (_update == &Missile::ActivateUpdate &&!activateFlag_ )
 	{
-		explosionFlag_ = true;
 		_draw = &Missile::ExplosionDraw;
+		explosionFlag_ = true;
 		return true;
 	}
 	return false;
@@ -65,11 +61,11 @@ bool Missile::IsEnd()
 void Missile::ActivateUpdate()
 {		
 	vel_ = (vel_ + (targetPos_ - itemPos_).Normalized()).Normalized() * 12.0f;
-	itemPos_ += vel_;
 	if (count_++ > 50)
 	{	
 		IsCollision();
 	}
+	if (activateFlag_) {itemPos_ += vel_;}
 }
 
 void Missile::WaitUpdate()
@@ -103,10 +99,10 @@ void Missile::ExplosionDraw(Vector2DFloat offset)
 		img_[(drawCount_ / 3) % 11],
 		true);
 
-	if (drawCount_++ >= 31)
+	if (drawCount_++ >= 29)
 	{	
-		explosionFlag_ = false;
 		drawCount_ =0;
+		explosionFlag_ = false;
 	}
 
 }

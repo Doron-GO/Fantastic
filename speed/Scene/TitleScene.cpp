@@ -92,7 +92,7 @@ void TitleScene::Draw()
 			{			
 				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 60);
 			}
-			DrawRotaGraph2F(800.0f, 400.0f+((screenSize_.y/6))*num, 133.0f, 20.0f, 3.0, 0.0, selectImg_[num], true);	
+			DrawRotaGraph2F(800.0f, 200.0f+((screenSize_.y/6))*num, 133.0f, 20.0f, 3.0, 0.0, selectImg_[num], true);	
 		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);

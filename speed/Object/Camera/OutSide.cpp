@@ -25,6 +25,7 @@ OutSide::~OutSide()
 void OutSide::Update(std::vector<std::shared_ptr<Player>> players)
 {
 	(this->*_phase)();
+	auto camera = camera_.GetPos();
 
 	//auto target = camera_.GetTargetPos();
 	//auto target = camera_.GetPos();
@@ -35,86 +36,114 @@ void OutSide::Update(std::vector<std::shared_ptr<Player>> players)
 	{
 		dangerZone_->Update();
 		IsDead(players);
-
 	}
 	if (isExploding_)
-	{
-		//画面左上になったら右に行く
-		if (upperPos_.y < minPos_.y && upperPos_.x <= minPos_.x)
-		{
-			upperVec_ = { 20.0f,0.0f };
-		}
-		//画面右上になったら下に行く
-		if (upperPos_.x >= maxPos_.x && upperPos_.y <= minPos_.y)
-		{
-			upperVec_ = { 0.0f,20.0f };
-		}
-		//画面右下になったら左に行く
-		if (upperPos_.y >= maxPos_.y && upperPos_.x >= maxPos_.x)
-		{
-			upperVec_ = { -20.0f ,0.0f };
-		}
-		//画面左下に行ったら上に行く
-		if (upperPos_.x <= minPos_.x && upperPos_.y >= maxPos_.y)
-		{
-			upperVec_ = { 0.0f ,-20.0f };
-		}
-		upperPos_ += upperVec_;
-
-		//lowerは左回り
+	{		//lowerは左回り
 		//画面右上だったら左に行く
 		if (lowerPos_.y <= minPos_.y && lowerPos_.x >= maxPos_.x)
 		{
 			lowerVec_ = { -20.0f ,0.0f };
+			lowerSide_ = SIDE::UP;
+
 		}
 		//画面右下なら上に行く
 		if (lowerPos_.x >= maxPos_.x && lowerPos_.y >= maxPos_.y)
 		{
 			lowerVec_ = { 0.0f,-20.0f };
+			lowerSide_ = SIDE::RIGHT;
+
 		}
 		//画面左下なら右に行く
 		if (lowerPos_.y >= maxPos_.y && lowerPos_.x <= minPos_.x)
 		{
 			lowerVec_ = { 20.0f ,0.0f };
+			lowerSide_ = SIDE::DOWN;
+
 		}
 		//画面左上なら下に行く
-		if (lowerPos_.y <= minPos_.y && lowerPos_.x <= minPos_.x)
+		if ( lowerPos_.x <= minPos_.x &&lowerPos_.y <= minPos_.y)
 		{
 			lowerVec_ = { 0.0f ,20.0f };
+			lowerSide_ = SIDE::LEFT;
 		}
+
+		//画面左上になったら右に行く
+		if (upperPos_.y<= minPos_.y && upperPos_.x <= minPos_.x)
+		{
+			upperVec_ = { 20.0f,0.0f };
+			upperSide_ = SIDE::UP;
+		}
+		//画面右上になったら下に行く
+		if (upperPos_.x >= maxPos_.x && upperPos_.y <= minPos_.y)
+		{
+			upperVec_ = { 0.0f,20.0f };
+			upperSide_ = SIDE::RIGHT;
+		}
+		//画面右下になったら左に行く
+		if (upperPos_.y >= maxPos_.y && upperPos_.x >= maxPos_.x)
+		{
+			upperVec_ = { -20.0f ,0.0f };
+			upperSide_ = SIDE::DOWN;
+		}
+		//画面左下に行ったら上に行く
+		if (upperPos_.x <= minPos_.x && upperPos_.y >= maxPos_.y)
+		{
+			upperVec_ = { 0.0f ,-20.0f };
+			upperSide_ = SIDE::LEFT;
+		}
+
 		lowerPos_ += lowerVec_;
+		upperPos_ += upperVec_;
 
 		//一定時間ごとに爆発させる、あと音も出す
 		if ((frame_) % 3 == 0)
 		{
-			bombs_.emplace_back(upperPos_);
-			bombs_.emplace_back(lowerPos_);
+			upBombs_.emplace_back(upperPos_, upperSide_);
+			downBombs_.emplace_back(lowerPos_, lowerSide_);
 			PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
 		}
+		SideChange(upperPos_, upperSide_);
+		SideChange(lowerPos_, lowerSide_);
+
 		//上からの爆弾と下からの爆弾が重なったらどっちも消す
 		if (lowerPos_.distance(upperPos_)<40)
 		{
 			PlaySoundMem(ExplosionSound_, DX_PLAYTYPE_BACK, true);
-
 			StartJoypadVibration(padNum_, 1000, 400);
-			bombs_.clear();
+			upBombs_.clear();
 			isExploding_ = false;
 			bigExploding_ = true;
 			bigFrame_ = 0;
 		}
 		frame_++;
-		for (auto& b : bombs_)
+		auto bombsCheck = [this](std::list<Bomb>& bomb)
 		{
-			b.frame_++;
-			if (b.frame_ > 30)
+			for (auto& b : bomb)
 			{
-				b.isDead = true;
+				b.frame_++;
+				SideChange(b.pos_, b.side_);
+
+				if (b.frame_ > 29)
+				{
+					b.isDead = true;
+				}
 			}
-		}
-		bombs_.remove_if([](const Bomb& b){
+		};
+		bombsCheck(upBombs_);
+		bombsCheck(downBombs_);
+
+		upBombs_.remove_if([](const Bomb& b){
+			return b.isDead;
+			});
+		downBombs_.remove_if([](const Bomb& b){
 			return b.isDead;
 			});
 	}
+	if (bigExploding_)
+	{
+		SideChange(lowerPos_, lowerSide_);
+	}
+
 	TestSmaller();
 }
 
@@ -146,14 +175,14 @@ void OutSide::Draw(Vector2DFloat offset)
 	auto camera= camera_.GetPos();
 	auto min = (minPos_ + camera);
 	auto max = (maxPos_ + camera);
-	DrawBoxAA( min.x, min.y, max.x, max.y, 0xff0000, false);
+	//DrawBoxAA( min.x, min.y, max.x, max.y, 0xff0000, false);
 
 	if (isExploding_)
 	{
 		DrawRotaGraph2F(upperPos_.x+camera.x, upperPos_.y+camera.y,
 			16.0f, 16.0f,
 			5.0, 0.0,
-			bigBombImg_[frame_ % 6],
+			bigBombImg_[frame_ % 5],
 			true, 0, 0);
 
 		DrawRotaGraph2F(lowerPos_.x + camera.x, lowerPos_.y + camera.y,
@@ -161,17 +190,23 @@ void OutSide::Draw(Vector2DFloat offset)
 			5.0, 0.0,
 			bigBombImg_[frame_%6],
 			true, 0, 0);
-		DrawCircleAA(lowerPos_.x, lowerPos_.y, 10.0f, 20.0f, 0xff0000);
-		DrawCircleAA(upperPos_.x, upperPos_.y, 10.0f, 20.0f, 0x0000ff);
 
-		for (auto& b : bombs_)
+
+		auto bombsDraw = [](std::list<Bomb>& bomb,Vector2DFloat camera,int image[11])
 		{
-			DrawRotaGraph2F(b.pos_.x + camera.x, b.pos_.y + camera.y,
-				18.0, 16.0f,
-				4.5, 0.0,
-				bombImg_[b.frame_%11],
-				true, 0, 0);
-		}
+			for (auto& b : bomb)
+			{
+				
+				DrawRotaGraph2F(b.pos_.x + camera.x, b.pos_.y + camera.y,
+					18.0, 16.0f,
+					4.5, 0.0,
+					image[b.frame_ %10],
+					true, 0, 0);
+				
+			}
+		};
+		bombsDraw(upBombs_, camera, bombImg_);
+		bombsDraw(downBombs_, camera, bombImg_);
 	}
 	if (bigExploding_)
 	{
@@ -256,6 +291,8 @@ void OutSide::UpORDown(Vector2DFloat pos)
 		upperVec_ = { 30.0f,0.0f };
 		low = { pos.x ,minPos_.y };
 		lowerVec_ = { -30.0f ,0.0f };
+		upperSide_ = SIDE::UP;
+		lowerSide_ = SIDE::UP;
 	}
 	else if(maxPos_.y <= pos.y)
 	{
@@ -263,6 +300,8 @@ void OutSide::UpORDown(Vector2DFloat pos)
 		upperVec_ = { -30.0f,0.0f };
 		low = { pos.x, maxPos_.y };
 		lowerVec_ = { 30.0f ,0.0f };
+		upperSide_ = SIDE::DOWN;
+		lowerSide_ = SIDE::DOWN;
 	}
 	upperPos_ = up;
 	lowerPos_ = low;
@@ -279,6 +318,9 @@ void OutSide::LeftOrRight(Vector2DFloat pos)
 		upperVec_ = { 0.0f,20.0f };
 		low = { maxPos_.x, pos.y };
 		lowerVec_ = { 0.0f ,-20.0f };
+		upperSide_ = SIDE::RIGHT;
+		lowerSide_ = SIDE::RIGHT;
+
 	}
 	else if (minPos_.x >= pos.x)
 	{
@@ -286,8 +328,11 @@ void OutSide::LeftOrRight(Vector2DFloat pos)
 		upperVec_ = { 0.0f,-20.0f };
 		low = { minPos_.x, pos.y };
 		lowerVec_ = { 0.0f ,20.0f };
+		upperSide_ = SIDE::LEFT;
+		lowerSide_ = SIDE::LEFT;
+
 	}
-	upperPos_ = up ;
+	upperPos_ = up;
 	lowerPos_ = low ;
 }
 
@@ -302,5 +347,24 @@ void OutSide::TestSmaller()
 const int OutSide::NumberOfSurvivors()
 {
 	return playerCount_;
+}
+
+void OutSide::SideChange(Vector2DFloat& pos, SIDE side_)
+{
+	switch (side_)
+	{
+	case SIDE::UP:
+		pos.y = minPos_.y;
+		break;
+	case SIDE::DOWN:
+		pos.y = maxPos_.y;
+		break;
+	case SIDE::LEFT:
+		pos.x = minPos_.x;
+		break;
+	case SIDE::RIGHT:
+		pos.x = maxPos_.x;
+		break;
+	}
 }
 

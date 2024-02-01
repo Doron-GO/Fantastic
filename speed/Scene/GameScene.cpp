@@ -1,5 +1,6 @@
 #include<DxLib.h>
 #include "GameScene.h"
+#include "TitleScene.h"
 #include "SceneMng.h"
 #include"../Object/Manager/ImageMng.h"
 #include"Transition/TileTransitor.h"
@@ -7,7 +8,7 @@
 #include"../Object/Time/DeltaTime.h"
 
 
-GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager, n, transit), playerNum_(n),_update(&GameScene::MultiPlayUpdate)
+GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager, n, transit), playerNum_(n),_update(&GameScene::MultiPlayUpdate),num_(0)
 {
 
 	sceneTransitor_.Start();
@@ -34,6 +35,12 @@ GameScene::GameScene(SceneMng& manager, int n, Transitor& transit):Scene(manager
 	ReadyImg_ = LoadGraph("Src/Img/Ready.png");
 	sound_[0] = LoadSoundMem("Src/Sound/ready.mp4");
 	sound_[1] = LoadSoundMem("Src/Sound/「ゴー」.mp3");
+	sound_[2] = LoadSoundMem("Src/Sound/カーソル移動5.mp3");
+	sound_[3] = LoadSoundMem("Src/Sound/決定ボタンを押す33.mp3");
+
+	LoadDivGraph("Src/Img/Select2.png", 2, 1, 2, 420, 40, selectImg_);
+
+	camera_->Update();
 
 	deltaTime.Reset();
 	startTime_ = deltaTime.GetElapsedTime();
@@ -49,6 +56,43 @@ void GameScene::Update(Input& input)
 	deltaTime.update();
 	auto elapsed = deltaTime.GetElapsedTime();
 	(this->*_update)(input, elapsed);
+	if (outSide_->conclusion_ || checkPoint_->IsGoal())
+	{
+		if (input.IsTriggerd("down"))
+		{
+			if (num_ < 1)
+			{
+				num_++;
+				PlaySoundMem(sound_[2], DX_PLAYTYPE_BACK);
+			}
+		}
+		if (input.IsTriggerd("up"))
+		{
+			if (num_ > 0)
+
+			{
+				num_--;		
+				PlaySoundMem(sound_[2], DX_PLAYTYPE_BACK);
+
+			}
+		}
+		if (input.IsTriggerd("jump"))
+		{
+			if(num_ == 0)
+			{
+				PlaySoundMem(sound_[3], DX_PLAYTYPE_BACK);
+				sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_, playerNum_, sceneTransitor_));
+				return;
+			}			
+			else	{
+				PlaySoundMem(sound_[3], DX_PLAYTYPE_BACK);
+				sceneManager_.ChangeScene(std::make_shared<TitleScene>(sceneManager_, 0, sceneTransitor_));
+				return;
+			}
+
+		}
+	}
+	sceneTransitor_.Update();
 
 
 }
@@ -60,9 +104,7 @@ void GameScene::Draw()
 	stage_->Draw(camera_->GetPos());
 	outSide_->Draw(camera_->GetPos());
 	playerManager_->Draw(camera_->GetPos());
-
 	checkPoint_->Draw(camera_->GetPos());
-	//DrawFormatStringF(0, 140, 0xffffff, "camera:%f,%f", camera_->GetPos().x, camera_->GetPos().y);
 	auto newLeder = playerManager_->GetNewLeadNum();
 	auto Last = playerManager_->GetLastLeadNum();
 	timeCount_->Draw();
@@ -89,6 +131,24 @@ void GameScene::Draw()
 		DrawRotaGraph2F(screenSize_.x / 2.0f, 0.0f+(screenSize_.y / 3.0f) ,
 			225.0f, 80.0f, 1.0f, 0.0f, GoImg_, true);
 	}
+
+	if (outSide_->conclusion_|| checkPoint_->IsGoal())
+	{
+		for (int num = 0; num < 2; num++)
+		{
+
+			if ((num  == num_))
+			{
+				SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+			}
+			else
+			{
+				SetDrawBlendMode(DX_BLENDMODE_ALPHA, 60);
+			}
+			DrawRotaGraph2F(800.0f, 800.0f + ((screenSize_.y / 10)) * num, 210.0f, 40.0f, 2.0, 0.0, selectImg_[num], true);
+		}
+	}
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 
 	sceneTransitor_.Draw();
@@ -122,15 +182,6 @@ void GameScene::MultiPlayUpdate(Input& input, float elapsedTime)
 		playerManager_->Update(input);
 		DecideOnTheBeginning();
 	}
-	if (outSide_->conclusion_)
-	{
-		if (input.IsTriggerd("jump"))
-		{
-			sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_, playerNum_, sceneTransitor_));
-			return;
-		}
-	}
-	sceneTransitor_.Update();
 }
 
 void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
@@ -149,14 +200,5 @@ void GameScene::SinglePlayUpdate(Input& input, float elapsedTime)
 		playerManager_->Update(input);
 		DecideOnTheBeginning();	
 	}
-	if (timeCount_->IsEnd())
-	{
-		if (input.IsTriggerd("jump"))
-		{
-			sceneManager_.ChangeScene(std::make_shared<GameScene>(sceneManager_, playerNum_, sceneTransitor_));
-			return;
-		}
-	}
-	sceneTransitor_.Update();
 }
 
