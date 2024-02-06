@@ -3,7 +3,7 @@
 
 void DeltaTime::update()
 {	
-	nowTime_ = GetNowHiPerformanceCount();
+	nowTime_ = float(GetNowHiPerformanceCount());
 	deltaTime_ = (nowTime_ - oldTime_) / 1000000.0f;
 	oldTime_ = nowTime_;
 
@@ -23,12 +23,12 @@ const float DeltaTime::GetElapsedTime()
 
 void DeltaTime::SetStart()
 {
-	oldTime_ = GetNowHiPerformanceCount();
+	oldTime_ = float(GetNowHiPerformanceCount());
 }
 
 void DeltaTime::Reset()
 {
-	oldTime_ = GetNowHiPerformanceCount();
+	oldTime_ = float(GetNowHiPerformanceCount());
 	elapsedTime_ = 0.0f;
 
 }

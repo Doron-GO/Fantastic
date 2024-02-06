@@ -5,9 +5,10 @@
 
 Blocks::Blocks(LoadMap& loadMap):loadMap_(loadMap)
 {
-	for (auto col : loadMap_.BlockGetColList())
+	for (auto &col : loadMap_.BlockGetColList())
 	{
-		blocks_.push_back(Block(true, col));
+		auto block = Block(true, col);
+		blocks_.push_back(block);
 	}
 }
 
@@ -43,7 +44,8 @@ void Blocks::Draw(Vector2DFloat cameraPos)
 		{
 			auto min = block.col_.first;
 			auto max = block.col_.second;
-			DrawGraph(min.x+cameraPos.x, max.y + cameraPos.y, lpImageMng.GetID(loadMap_.GetMapKey())
+			DrawGraph(min.x+cameraPos.x, max.y + cameraPos.y,
+				ImageMng::GetInstsnce().GetID(loadMap_.GetMapKey())
 				[6], true);
 		}
 	}

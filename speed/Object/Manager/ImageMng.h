@@ -5,7 +5,7 @@
 #include<string>
 #include<map>
 
-#define lpImageMng ImageMng::GetInstsnce()
+//#define lpImageMng ImageMng::GetInstsnce()
 using VecInt = std::vector<int>;
 
 class ImageMng

@@ -4,7 +4,7 @@
 
 TimeCount::TimeCount(CheckPoint& CheckPoint):checkPoint_(CheckPoint),oldTime_(0.0f),
 deltaTime_(0.000001f),elapsedTime_(0.0f), nowTime_(0.0f), startFlag_(false),
-_draw(&TimeCount::GameDraw),_update(&TimeCount::GameUpdate), endFlag_(false)
+_draw(&TimeCount::GameDraw),_update(&TimeCount::GameUpdate), endFlag_(false), record_(0.0f)
 {
 	goalImg_ = LoadGraph("Src/Img/Goal.png");
 	restertImg_ = LoadGraph("Src/Img/RESTERT.png");

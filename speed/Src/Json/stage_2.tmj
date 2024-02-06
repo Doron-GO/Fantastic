@@ -2448,6 +2448,7 @@
         {
          "draworder":"topdown",
          "id":11,
+         "locked":true,
          "name":"ItemBox",
          "objects":[
                 {

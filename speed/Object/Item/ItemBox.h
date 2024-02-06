@@ -26,7 +26,7 @@ private:
 	bool IsBox(Vector2DFloat pos);
 	ColList itemBoxColList_;
 	LoadMap& loadMap_;
-	int itemBoxImg_[11];
+	int itemBoxImg_[61];
 	int count_;
 };
 

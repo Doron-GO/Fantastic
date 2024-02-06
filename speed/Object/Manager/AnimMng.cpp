@@ -37,7 +37,7 @@ std::string AnimeMng::LoadAnime(std::string fileName)
         getAtr(actionNode, "divSizeY", divSize.y);
         getAtr(actionNode, "divCntX", divCnt.x);
         getAtr(actionNode, "divCntY", divCnt.y);
-        lpImageMng.GetID(source, CharName + KeyName, divSize, divCnt);
+        ImageMng::GetInstsnce().GetID(source, CharName + KeyName, divSize, divCnt);
 
         //Å´Ç±Ç±ÇÃÉLÅ[ÇÃñºëOÇÇ©Ç‘ÇËÇ‚Ç∑Ç¢ÇÃÇ…ÇµÇ»Ç¢Ç±Ç∆
         auto result = animeTbl_.try_emplace(CharName + KeyName);

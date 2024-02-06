@@ -52,7 +52,7 @@ void Stage::Draw(Vector2DFloat cameraPos)
 					{
 						DrawGraph(x * tileSize.x+ cameraPos.x,
 							(y * tileSize.y + cameraPos.y),
-							lpImageMng.GetID(loadMap_.GetMapKey())
+							ImageMng::GetInstsnce().GetID(loadMap_.GetMapKey())
 							[gid], true);
 					}
 				}

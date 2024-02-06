@@ -25,8 +25,8 @@ struct AnimStr
 	std::string objID_; //オブジェクトの種別
 	std::string state_; //状態（Idle等）
 	AnimItr animID_;	//アニメーションの再生位置
-	int animCount_;		//当該アニメーションの経過フレーム
-	int animPlayCount_;//当該アニメーションの現ループ数
+	int animCount_=0;		//当該アニメーションの経過フレーム
+	int animPlayCount_=0;//当該アニメーションの現ループ数
 	bool endFlag;
 
 };

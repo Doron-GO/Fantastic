@@ -7,7 +7,10 @@
 #include"../_debug/_DebugDispOut.h"
 
 Player::Player(int playerNum, Blocks& blocks):dir_LR_(DIR_LR::RIGHT),phase_(PHASE::FALL),
-aliveFlag_(true), padNum_(playerNum), damageCount_(0), blocks_(blocks)
+aliveFlag_(true), padNum_(playerNum), damageCount_(0), blocks_(blocks), _phase(& Player::MovePhase),
+_damage (&Player::Nothing),missileImg_(0),explosionImg_(),expCount_(0)
+
+
 {
 	AnchoringFlag_ = false;
 	doubleJump_ = true;
@@ -117,7 +120,7 @@ void Player::Draw(Vector2DFloat cameraPos)
 		DrawRotaGraph2F(pos.x, pos.y+0.3f,
 			24.0f, 35.0f,
 			1.5, 0.0,
-			lpImageMng.GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
+			ImageMng::GetInstsnce().GetID(animeStr_.imgKey_)[(*animeStr_.animID_)[GraphHD]],
 			true, static_cast<int>(dir_LR_), 0);
 
 		TesItemDraw(cameraPos);

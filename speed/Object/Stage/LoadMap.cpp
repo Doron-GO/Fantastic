@@ -24,7 +24,7 @@ bool LoadMap::LoadTSX(std::string fileName)
 
 	mapKey_ = "mapChip";
 	//GetIDÇ≈âÊëmÇì«Ç›çûÇﬁ(ì‡ïîÇ≈LoadDiveGraph)
-	lpImageMng.GetID(source, mapKey_, { tilewidth, tileheight }, { columns ,tilecount / columns });
+	ImageMng::GetInstsnce().GetID(source, mapKey_, { tilewidth, tileheight }, { columns ,tilecount / columns });
 	return true;
 
 }
@@ -73,10 +73,10 @@ bool LoadMap::SetMap()
 	{
 		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
 		{
-			float x = json[cnt]["x"].get<int>();
-			float y = json[cnt]["y"].get<int>();
-			float w = json[cnt]["width"].get<int>();
-			float h = json[cnt]["height"].get<int>();
+			float x = float(json[cnt]["x"].get<int>());
+			float y = float(json[cnt]["y"].get<int>());
+			float w = float(json[cnt]["width"].get<int>());
+			float h = float(json[cnt]["height"].get<int>());
 			col.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{w,h} });
 		}
 	};
@@ -84,10 +84,10 @@ bool LoadMap::SetMap()
 	{
 		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
 		{
-			float x = json[cnt]["x"].get<int>();
-			float y = json[cnt]["y"].get<int>();
-			float w = json[cnt]["width"].get<int>();
-			float h = json[cnt]["height"].get<int>();
+			float x = float(json[cnt]["x"].get<int>());
+			float y = float(json[cnt]["y"].get<int>());
+			float w = float(json[cnt]["width"].get<int>());
+			float h = float(json[cnt]["height"].get<int>());
 			col.push_back(Collision{ Vector2DFloat{x,y+h},Vector2DFloat{x+w,y} });
 		}
 	};
@@ -95,10 +95,10 @@ bool LoadMap::SetMap()
 	{
 		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
 		{
-			float x = json[cnt]["x"].get<int>();
-			float y = json[cnt]["y"].get<int>();
-			float w = json[cnt]["width"].get<int>();
-			float h = json[cnt]["height"].get<int>();
+			float x = float(json[cnt]["x"].get<int>());
+			float y = float(json[cnt]["y"].get<int>());
+			float w = float(json[cnt]["width"].get<int>());
+			float h = float(json[cnt]["height"].get<int>());
 			col.push_back(Collision{ Vector2DFloat{x,y},Vector2DFloat{x+w,y+h} });
 		}
 	};
@@ -106,10 +106,10 @@ bool LoadMap::SetMap()
 	{
 		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
 		{
-			float x = json[cnt]["x"].get<int>();
-			float y = json[cnt]["y"].get<int>();
-			float w = json[cnt]["width"].get<int>();
-			float h = json[cnt]["height"].get<int>();
+			float x = float(json[cnt]["x"].get<int>());
+			float y = float(json[cnt]["y"].get<int>());
+			float w = float(json[cnt]["width"].get<int>());
+			float h = float(json[cnt]["height"].get<int>());
 			col.push_back(Collision{ Vector2DFloat{x,y+h},Vector2DFloat{x+w,y} });
 		}
 	};
@@ -117,10 +117,10 @@ bool LoadMap::SetMap()
 	{
 		for (int cnt = 0; cnt <= json.size() - 1; cnt++)
 		{
-			float x = json[cnt]["x"].get<int>();
-			float y = json[cnt]["y"].get<int>();
-			float w = json[cnt]["width"].get<int>();
-			float h = json[cnt]["height"].get<int>();
+			float x = float(json[cnt]["x"].get<int>());
+			float y = float(json[cnt]["y"].get<int>());
+			float w = float(json[cnt]["width"].get<int>());
+			float h = float(json[cnt]["height"].get<int>());
 			col.push_back(Collision{ Vector2DFloat{x,y+h},Vector2DFloat{x+w,y} });
 		}
 	};

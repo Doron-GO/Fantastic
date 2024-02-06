@@ -7,12 +7,11 @@
 ItemBox::ItemBox(LoadMap& loadMap,std::vector<std::shared_ptr<Player>> players)
 	:loadMap_(loadMap),players_(players),count_(0)
 {
-	LoadDivGraph("Src/Img/Explosion.png", 11, 11, 1, 32, 31, itemBoxImg_);
+	LoadDivGraph("Src/Img/nebula.png", 61, 8, 8, 100, 100, itemBoxImg_);
 }
 
 ItemBox::~ItemBox()
 {
-
 }
 
 void ItemBox::Draw(Vector2DFloat offset)
@@ -20,32 +19,12 @@ void ItemBox::Draw(Vector2DFloat offset)
 	auto& worldArea = loadMap_.GetWorldArea();
 	const auto& tileSize = loadMap_.GetTileSize();
 	auto& mapData = loadMap_.GetMapData();
-	for (const auto& layer : loadMap_.GetMapData()) 
-	{
-		for (int y = 0; y < worldArea.y; y++)
-		{
-			for (int x = 0; x < worldArea.x; x++)
-			{
-				if (x + y * worldArea.x < layer.second.size())
-				{
-					auto gid = layer.second[x + y * worldArea.x];
-					if (gid == 0)
-					{
-						DrawGraph(x * tileSize.x + offset.x,
-							(y * tileSize.y + offset.y),
-							itemBoxImg_[(count_/2)%11], true);
-					}
-				}
-			}
-		}
-	}
-	count_++;	
 	for (const auto& col : loadMap_.itemBoxGetColList())
 	{
-		DrawBoxAA(col.first.x + offset.x, col.first.y + offset.y,
-			col.second.x + offset.x, col.second.y + offset.y, 0xff0000, false, 5.0f);
+		DrawRotaGraph2F((col.first.x+16.0f ) + offset.x, (col.first.y-16.0f)+ offset.y,
+			50.0f, 50.0f, 0.5f, 0.0f, itemBoxImg_[(count_ / 2) % 61], true);
 	}
-
+	count_++;
 }
 
 void ItemBox::Update()
@@ -71,7 +50,6 @@ void ItemBox::Update()
 						player->SetItemList(2);
 						auto ii = std::make_shared<Laser>();
 						player->SetItem(ii);
-
 					}
 				}
 			}
